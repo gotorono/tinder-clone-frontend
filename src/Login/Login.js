@@ -13,7 +13,7 @@ function Login(props) {
 
   useEffect(() => {
     if(props.auth.isAuthenticated) {
-      props.history.push('/profile');
+      props.history.push('/app');
     }
   });
 
@@ -28,7 +28,7 @@ function Login(props) {
 
     const userData = {
       email: email,
-      password: password,
+      password: password
     };
 
     props.loginUser(userData);
@@ -44,6 +44,7 @@ function Login(props) {
             onChange={(e) => setEmail(e.target.value)}
             value={email}
             error={errors.email}
+            className={classnames("", {invalid: errors.email})}
             id="email"
             type="email"
           />
@@ -55,6 +56,7 @@ function Login(props) {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
             error={errors.password}
+            className={classnames("", {invalid: errors.password})}
             id="password"
             type="password"
           />

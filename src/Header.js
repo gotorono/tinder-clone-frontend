@@ -14,7 +14,7 @@ function Header() {
         </IconButton>
       </Link>
 
-      <Link to="/">
+      <Link to="/app">
         <IconButton>
           <img
             className="header__logo"

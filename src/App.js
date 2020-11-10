@@ -2,13 +2,12 @@
 import "./App.css";
 
 //Components
-import Header from "./Header";
+import Main from './Main/Main';
 import Profile from "./Profile/Profile";
 import Register from './Register/Register';
 import Login from './Login/Login';
 import Messages from "./Messages/Messages";
-import TinderCards from "./TinderCards";
-import SwipeButtons from "./SwipeButtons";
+import LandingPage from './LandingPage/LandingPage';
 
 //NPMs
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -30,7 +29,7 @@ if(localStorage.jwtToken) {
   const currentTime = Date.now() / 1000;
   if(decoded.exp < currentTime) {
     store.dispatch(logoutUser);
-    window.location.href = "./login";
+    window.location.href = "/";
   }
 }
 
@@ -49,18 +48,15 @@ function App() {
           <Login />
         </Route>
 
-        <Route path="/messages">
-          <Messages />
-        </Route>
+        <PrivateRoute exact path="/messages" component={Messages} />
 
         <PrivateRoute exact path="/profile" component={Profile} />
 
+        <PrivateRoute exact path="/app" component={Main} />
+
+
         <Route path="/">
-          <div className="App">
-            <Header />
-            <TinderCards />
-            <SwipeButtons />
-          </div>
+          <LandingPage />
         </Route>
 
       </Switch>

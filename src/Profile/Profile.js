@@ -1,7 +1,6 @@
 import React, {useEffect, useState}from "react";
 import Header from "../Header";
 import "./Profile.css";
-import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { connect } from "react-redux";
 import { logoutUser } from "../actions/authActions"; 
@@ -25,14 +24,6 @@ function Profile(props) {
       <Header />
     <div>Profile Name is {user.name}</div>
     <div><button onClick={(e) => onLogoutClick(e)}>Logout</button></div>
-
-      <Link to="/register">
-        Register
-      </Link>
-
-      <Link to="/login">
-        Login
-      </Link>
     </div>
   );
 }

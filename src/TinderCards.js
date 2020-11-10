@@ -9,6 +9,7 @@ function TinderCards() {
     useEffect(() => {
         async function fetchData() {
             const request = await axios.get('/tinder/cards');
+            console.log(request.data);
             setPeople(request.data);
         }
 
