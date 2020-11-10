@@ -24,6 +24,7 @@ function TinderCards() {
     const outOfFrame = (name) => {
         console.log(name + " has left the screen");
     }
+    console.log(people);
 
 
     return (
@@ -32,12 +33,12 @@ function TinderCards() {
             {people.map((person) => (
                 <TinderCard
                 className="swipe"
-                key={person.name}
+                key={person._id}
                 preventSwipe={['up', 'down']}
                 onSwipe={(dir) => swiped(dir, person.name)}
                 onCardLeftScreen={() => outOfFrame(person.name)}
                 >
-                    <div style={ {backgroundImage: `url(${person.imgUrl})`} }
+                    <div style={ {backgroundImage: `url(${person.profileImg})`} }
                     className="card">
                         <div className="desc-container">
             <h3>{person.name}<span className="age"> &nbsp;{person.age}</span></h3>
