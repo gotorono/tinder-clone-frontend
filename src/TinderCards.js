@@ -8,7 +8,14 @@ function TinderCards() {
 
     useEffect(() => {
         async function fetchData() {
-            const request = await axios.get('/tinder/cards');
+            const request = await axios.post('/tinder/cards', {
+                params: {
+                    user: {
+                        name: 'Luke',
+                        age: 12
+                    }
+                }
+            });
             setPeople(request.data);
         }
 
