@@ -16,9 +16,8 @@ function Register(props) {
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
 
-  const allInputs = { imgUrl: "" };
   const [imageAsFile, setImageAsFile] = useState("");
-  const [imageAsURL, setImageAsURL] = useState(allInputs);
+  const [imageURL, setImageURL] = useState("");
 
   const [errors, setErrors] = useState({});
 
@@ -30,11 +29,15 @@ function Register(props) {
 
   useEffect(() => {
     if (props.errors) {
+      storage.ref("images").child(imageURL).delete().then(function() {
+        console.log('deleted');
+      }).catch(function(err) {
+        console.log(err);
+      });
       setErrors(props.errors);
     }
   }, [props]);
 
-  console.log(imageAsFile);
   const handleImageAsFile = (e) => {
     const image = e.target.files[0];
     setImageAsFile((imageFile) => image);
@@ -47,14 +50,13 @@ function Register(props) {
       name: name,
       email: email,
       password: password,
-      passwordRepeat: passwordRepeat,
+      passwordRepeat: passwordRepeat
     };
 
     if (imageAsFile === "") {
       console.error("not an image");
     } else {
       const rnd = cryptoRandomString({length: 32, type: 'base64'});
-      console.log('start of upload');
 
       const uploadTask = storage
         .ref(`/images/${rnd}`)
@@ -74,17 +76,13 @@ function Register(props) {
             .child(rnd)
             .getDownloadURL()
             .then((fireBaseUrl) => {
-              setImageAsURL((prevObject) => ({
-                ...prevObject,
-                imgUrl: fireBaseUrl,
-              }));
-              console.log(imageAsURL);
+              newUser.profileImg = fireBaseUrl;
+              setImageURL(rnd);
+              props.registerUser(newUser, props.history);
             });
         }
       );
     }
-
-    props.registerUser(newUser, props.history);
   }
 
   return (
