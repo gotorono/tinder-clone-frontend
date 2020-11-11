@@ -3,17 +3,18 @@ import TinderCard from 'react-tinder-card';
 import './TinderCards.css'
 import axios from './axios';
 
-function TinderCards() {
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+
+function TinderCards(props) {
     const [people, setPeople] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
-            const request = await axios.post('/tinder/cards', {
+            const request = await axios.get('/tinder/cards', 
+            {
                 params: {
-                    user: {
-                        name: 'Luke',
-                        age: 12
-                    }
+                    user: props.auth.user,
                 }
             });
             setPeople(request.data);
@@ -31,6 +32,7 @@ function TinderCards() {
     const outOfFrame = (name) => {
         console.log(name + " has left the screen");
     }
+
     console.log(people);
 
 
@@ -59,4 +61,8 @@ function TinderCards() {
     )
 }
 
-export default TinderCards
+const mapStateToProps = (state) => ({
+    auth: state.auth
+  });
+
+export default connect(mapStateToProps)(withRouter(TinderCards));
