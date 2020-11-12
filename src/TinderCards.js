@@ -23,10 +23,17 @@ function TinderCards(props) {
         fetchData();
     }, [])
 
-    const swiped = (direction, nameToDelete) => {
-        console.log("removing " + nameToDelete);
+    const swiped = (direction, user) => {
         console.log(direction);
-        //setLastDirection(direction);
+        axios.post('/tinder/cards', {userId: props.auth.user.id, swipedId: user._id})
+        .then(res => {
+            console.log(res);
+        })
+        .catch(error => {
+            //console.log(error);
+        })
+
+        
     };
 
     const outOfFrame = (name) => {
@@ -44,7 +51,7 @@ function TinderCards(props) {
                 className="swipe"
                 key={person._id}
                 preventSwipe={['up', 'down']}
-                onSwipe={(dir) => swiped(dir, person.name)}
+                onSwipe={(dir) => swiped(dir, person)}
                 onCardLeftScreen={() => outOfFrame(person.name)}
                 >
                     <div style={ {backgroundImage: `url(${person.profileImg})`} }
