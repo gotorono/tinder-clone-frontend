@@ -13,6 +13,21 @@ export const registerUser = (userData, history) => dispatch => {
     }));
 };
 
+export const updateUser = userData => dispatch => {
+    axios.post("/tinder/users/update", userData)
+    .then(res => {
+        const { token } = res.data;
+        localStorage.setItem("jwtToken", token);
+        setAuthToken(token);
+        const decoded = jwt_decode(token);
+        dispatch(setCurrentUser(decoded));
+    })
+    .catch(err => dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+    }));
+}
+
 export const loginUser = userData => dispatch => {
     axios.post("/tinder/users/login", userData)
     .then(res => {

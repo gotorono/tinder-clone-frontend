@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import TinderCard from 'react-tinder-card';
 import './TinderCards.css'
+import { updateUser } from './actions/authActions';
 import axios from './axios';
 
 import { connect } from "react-redux";
@@ -24,24 +25,26 @@ function TinderCards(props) {
     }, [])
 
     const swiped = (direction, user) => {
-        console.log(direction);
+        let error = false;
         axios.post('/tinder/cards', {userId: props.auth.user.id, swipedId: user._id})
-        .then(res => {
-            console.log(res);
-        })
         .catch(error => {
-            //console.log(error);
+            error = true;
         })
 
-        
+        if(!error) {
+            const userData = {
+                id: props.auth.user.id
+            }
+            async function update() {
+                await props.updateUser(userData);
+            }
+            update();
+        }
     };
 
     const outOfFrame = (name) => {
         console.log(name + " has left the screen");
     }
-
-    console.log(people);
-
 
     return (
         <div className="tinderCards">
@@ -72,4 +75,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth
   });
 
-export default connect(mapStateToProps)(withRouter(TinderCards));
+export default connect(mapStateToProps, { updateUser })(withRouter(TinderCards));
