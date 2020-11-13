@@ -24,6 +24,16 @@ function TinderCards(props) {
         fetchData();
     }, [])
 
+    const updateSwiped = () => {
+        const userData = {
+            id: props.auth.user.id
+        }
+        async function update() {
+            await props.updateUser(userData);
+        }
+        update();
+    }
+
     const swiped = (direction, user) => {
         let error = false;
         axios.post('/tinder/cards', {userId: props.auth.user.id, swipedId: user._id})
@@ -32,19 +42,16 @@ function TinderCards(props) {
         })
 
         if(!error) {
-            const userData = {
-                id: props.auth.user.id
-            }
-            async function update() {
-                await props.updateUser(userData);
-            }
-            update();
+            updateSwiped();
         }
     };
 
     const outOfFrame = (name) => {
         console.log(name + " has left the screen");
     }
+
+    console.log(people)
+    console.log(props.auth.user);
 
     return (
         <div className="tinderCards">
