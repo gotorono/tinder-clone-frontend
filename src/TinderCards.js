@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import TinderCard from 'react-tinder-card';
 import './TinderCards.css'
-import { updateUser } from './actions/authActions';
+import { updateUser, getCards } from './actions/authActions';
 import axios from './axios';
 
 import { connect } from "react-redux";
@@ -11,14 +11,15 @@ function TinderCards(props) {
     const [people, setPeople] = useState([]);
 
     useEffect(() => {
+        console.log(props);
         async function fetchData() {
-            const request = await axios.get('/tinder/cards', 
-            {
-                params: {
-                    user: props.auth.user,
-                }
-            });
-            setPeople(request.data);
+            const userData = {
+                user: props.auth.user
+            }
+            await props.updateUser(userData);
+            await props.getCards(userData);
+            setPeople(props.auth.user.cards);
+            
         }
 
         fetchData();
@@ -26,7 +27,7 @@ function TinderCards(props) {
 
     const updateSwiped = () => {
         const userData = {
-            id: props.auth.user.id
+            user: props.auth.user
         }
         async function update() {
             await props.updateUser(userData);
@@ -36,7 +37,7 @@ function TinderCards(props) {
 
     const swiped = (direction, user) => {
         let error = false;
-        axios.post('/tinder/cards', {userId: props.auth.user.id, swipedId: user._id})
+        axios.post('/tinder/push', {userId: props.auth.user.id, swipedId: user._id})
         .catch(error => {
             error = true;
         })
@@ -50,13 +51,12 @@ function TinderCards(props) {
         console.log(name + " has left the screen");
     }
 
-    console.log(people)
-    console.log(props.auth.user);
 
     return (
         <div className="tinderCards">
             <div className="tinderCards__cardContainer">
-            {people.map((person) => (
+            { 
+            people.map((person) => (
                 <TinderCard
                 className="swipe"
                 key={person._id}
@@ -82,4 +82,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth
   });
 
-export default connect(mapStateToProps, { updateUser })(withRouter(TinderCards));
+export default connect(mapStateToProps, { updateUser, getCards })(withRouter(TinderCards));
