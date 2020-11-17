@@ -11,18 +11,26 @@ function TinderCards(props) {
     const [people, setPeople] = useState([]);
 
     useEffect(() => {
-        console.log(props);
-        async function fetchData() {
+        console.log(props.auth.user.cards);
+        console.log(props.auth.user.swiped)
+
+        async function updateUser() {
             const userData = {
                 user: props.auth.user
             }
+
             await props.updateUser(userData);
-            await props.getCards(userData);
-            setPeople(props.auth.user.cards);
-            
+            fetchData();
         }
 
-        fetchData();
+        updateUser();
+
+        async function fetchData() {
+            const req = await axios.get('/tinder/cards', {params: {user: props.auth.user.id}});
+            setPeople(req.data);
+        }
+        
+
     }, [])
 
     const updateSwiped = () => {
@@ -36,8 +44,10 @@ function TinderCards(props) {
     }
 
     const swiped = (direction, user) => {
+
+        async function push() {
         let error = false;
-        axios.post('/tinder/push', {userId: props.auth.user.id, swipedId: user._id})
+        await axios.post('/tinder/push', {userId: props.auth.user.id, swipedId: user._id})
         .catch(error => {
             error = true;
         })
@@ -45,6 +55,8 @@ function TinderCards(props) {
         if(!error) {
             updateSwiped();
         }
+    }
+    push();
     };
 
     const outOfFrame = (name) => {
@@ -82,4 +94,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth
   });
 
-export default connect(mapStateToProps, { updateUser, getCards })(withRouter(TinderCards));
+export default connect(mapStateToProps, { updateUser })(withRouter(TinderCards));

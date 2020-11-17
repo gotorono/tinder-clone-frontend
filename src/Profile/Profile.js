@@ -3,13 +3,21 @@ import Header from "../Header";
 import "./Profile.css";
 import PropTypes from 'prop-types';
 import { connect } from "react-redux";
-import { logoutUser } from "../actions/authActions"; 
+import { logoutUser, deleteSwiped } from "../actions/authActions"; 
 
 function Profile(props) {
   
   function onLogoutClick(e) {
     e.preventDefault();
     props.logoutUser();
+  }
+
+  function deleteSwipedFnc(e) {
+    e.preventDefault();
+    const userData = {
+      user: props.auth.user
+    }
+    props.deleteSwiped(userData);
   }
 
   const [user, setUser] = useState({});
@@ -23,6 +31,7 @@ function Profile(props) {
     <div>
       <Header />
     <div>Profile Name is {user.name}</div>
+    <div><button onClick={(e) => deleteSwipedFnc(e)}>Delete swiped</button></div>
     <div><button onClick={(e) => onLogoutClick(e)}>Logout</button></div>
     </div>
   );
@@ -37,4 +46,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 })
 
-export default connect(mapStateToProps, { logoutUser })(Profile);
+export default connect(mapStateToProps, { logoutUser, deleteSwiped })(Profile);
