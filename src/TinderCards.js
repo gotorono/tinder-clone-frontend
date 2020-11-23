@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import TinderCard from "react-tinder-card";
 import "./TinderCards.css";
-import { updateUser, getCards } from "./actions/authActions";
+import { updateUser } from "./actions/authActions";
 import axios from "./axios";
 
 import { connect } from "react-redux";
@@ -11,11 +11,23 @@ function TinderCards(props) {
   const [people, setPeople] = useState([]);
 
   useEffect(() => {
-    console.log(props.auth.user.cards);
-    console.log(props.auth.user.swiped);
-
     updateUser();
   }, []);
+
+  useEffect(() => {
+    switch (props.refresh.swipe) {
+      case "replay":
+        return;
+      case "left":
+        swipe("left");
+      case "star":
+        return;
+      case "right":
+        swipe("right");
+      case "lightning":
+        return;
+    }
+  }, [props.refresh]);
 
   async function fetchData() {
     const req = await axios.get("/tinder/cards", {
@@ -33,19 +45,48 @@ function TinderCards(props) {
     fetchData();
   }
 
+  const childRefs = useMemo(
+    () =>
+      Array(10)
+        .fill(0)
+        .map((i) => React.createRef()),
+    []
+  );
+
+  const swipe = (dir) => {
+    if (people.length > 0) childRefs[people.length - 1].current.swipe(dir);
+  };
+
   const swiped = (direction, user) => {
-      let a = people;
-      a.splice(a.findIndex(e => e._id === user._id), 1);
-      setPeople(a);
-    async function push() {
-      await axios
-        .post("/tinder/push", {
+    let a = people;
+    a.splice(
+      a.findIndex((e) => e._id === user._id),
+      1
+    );
+    setPeople(a);
+
+    switch (props.refresh.swipe) {
+      case "left":
+        axios.post("/tinder/push/left", {
           userId: props.auth.user.id,
           swipedId: user._id,
-        })
-        .then(people.length < 2 ? updateUser() : null);
+        });
+        break;
+      case "right":
+        axios.post("/tinder/push/right", {
+          userId: props.auth.user.id,
+          swipedId: user._id,
+        });
+        break;
+      case "star":
+        axios.post("/tinder/push/star", {
+          userId: props.auth.user.id,
+          swipedId: user._id,
+        });
+        break;
     }
-    push();
+    //if(people.length < 2)
+    //updateUser();
   };
 
   const outOfFrame = (name) => {
@@ -55,8 +96,9 @@ function TinderCards(props) {
   return (
     <div className="tinderCards">
       <div className="tinderCards__cardContainer">
-        {people.map((person) => (
+        {people.map((person, index) => (
           <TinderCard
+            ref={childRefs[index]}
             className="swipe"
             key={person._id}
             preventSwipe={["up", "down"]}
