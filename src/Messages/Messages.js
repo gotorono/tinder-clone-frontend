@@ -5,7 +5,6 @@ import "./Messages.css";
 function Messages() {
   return (
     <div>
-      <Header />
       <div>Messages!</div>
     </div>
   );

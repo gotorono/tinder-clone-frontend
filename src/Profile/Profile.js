@@ -1,5 +1,4 @@
 import React, {useEffect, useState}from "react";
-import Header from "../Header";
 import "./Profile.css";
 import PropTypes from 'prop-types';
 import { connect } from "react-redux";
@@ -29,7 +28,6 @@ function Profile(props) {
 
   return (
     <div>
-      <Header />
     <div>Profile Name is {user.name}</div>
     <div><button onClick={(e) => deleteSwipedFnc(e)}>Delete swiped</button></div>
     <div><button onClick={(e) => onLogoutClick(e)}>Logout</button></div>

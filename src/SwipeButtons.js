@@ -19,6 +19,7 @@ function SwipeButtons(props) {
             props.swipe(value);
         }
     }
+    
     return (
         <div className="swipeButtons">
             <IconButton onMouseUp={() => handleClick('replay')} className="swipeButtons__ replay">
@@ -32,9 +33,6 @@ function SwipeButtons(props) {
             </IconButton>
             <IconButton onMouseUp={() => handleClick('right')} className="swipeButtons__ right">
                 <FavoriteIcon className="swipeButton" />
-            </IconButton>
-            <IconButton onMouseUp={() => handleClick('lightning')} className="swipeButtons__ lightning">
-                <FlashOnIcon className="swipeButton" />
             </IconButton>
         </div>
     )

@@ -1,0 +1,12 @@
+.sidebar {
+    float:left;
+    left:0;
+    top:0;
+    width: 500px;
+    margin: 20px 40px;
+}
+
+.app {
+    float: left;
+    width: calc(100% - 580px);
+}

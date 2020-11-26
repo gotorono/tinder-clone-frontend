@@ -5,30 +5,31 @@ import PersonIcon from "@material-ui/icons/Person";
 import IconButton from "@material-ui/core/IconButton";
 import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
 
-function Header() {
+function Header(props) {
+
+  function handleClick(value) {
+    if(props.route) {
+        props.route(value);
+    }
+}
+
   return (
     <div className="header">
-      <Link to="/profile">
-        <IconButton>
+        <IconButton onClick={() => handleClick('profile')}>
           <PersonIcon fontSize="large" className="header__icon" />
         </IconButton>
-      </Link>
 
-      <Link to="/app">
-        <IconButton>
+        <IconButton onClick={() => handleClick('matches')}>
           <img
             className="header__logo"
             src="https://1000logos.net/wp-content/uploads/2018/07/tinder-logo.png"
             alt=""
           />
         </IconButton>
-      </Link>
 
-      <Link to="/messages">
-        <IconButton>
+        <IconButton onClick={() => handleClick('messages')}>
           <QuestionAnswerIcon fontSize="large" className="header__icon" />
         </IconButton>
-      </Link>
     </div>
   );
 }
