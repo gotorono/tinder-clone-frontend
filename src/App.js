@@ -3,10 +3,8 @@ import "./App.css";
 
 //Components
 import Main from './Main/Main';
-import Profile from "./Profile/Profile";
 import Register from './Register/Register';
 import Login from './Login/Login';
-import Messages from "./Messages/Messages";
 import LandingPage from './LandingPage/LandingPage';
 
 //NPMs
@@ -48,10 +46,10 @@ function App() {
           <Login />
         </Route>
 
-        {/* <PrivateRoute exact path="/messages" component={Messages} />
+        {/* <PrivateRoute exact path="/messages" component={Main} /> */}
 
-        <PrivateRoute exact path="/profile" component={Profile} />
-          */}
+        <PrivateRoute exact path="/app/profile" component={Main} />
+
         <PrivateRoute exact path="/app" component={Main} />
 
 
