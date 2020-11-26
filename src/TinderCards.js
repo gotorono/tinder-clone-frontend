@@ -9,6 +9,8 @@ import { withRouter } from "react-router-dom";
 
 function TinderCards(props) {
   const [people, setPeople] = useState([]);
+  
+  let origin = 'none';
 
   useEffect(() => {
     updateUser();
@@ -20,7 +22,9 @@ function TinderCards(props) {
         return;
       case "left":
         swipe("left");
+        return;
       case "star":
+        swipe("right");
         return;
       case "right":
         swipe("right");
@@ -54,6 +58,7 @@ function TinderCards(props) {
   );
 
   const swipe = (dir) => {
+    origin = 'btn';
     if (people.length > 0) childRefs[people.length - 1].current.swipe(dir);
   };
 
@@ -65,28 +70,64 @@ function TinderCards(props) {
     );
     setPeople(a);
 
-    switch (props.refresh.swipe) {
+    let push;
+
+    if(origin == 'none') 
+      push = direction
+    else 
+      push = props.refresh.swipe;
+    
+
+    switch (push) {
       case "left":
         axios.post("/tinder/push/left", {
           userId: props.auth.user.id,
           swipedId: user._id,
-        });
+        })
         break;
       case "right":
         axios.post("/tinder/push/right", {
           userId: props.auth.user.id,
           swipedId: user._id,
+        }).then(function(data) {
+          switch(data.data) {
+            case 'match' :
+               console.log('match!') 
+            break;
+            case 'star match' :
+              console.log('star match!');
+            break;
+            default: 
+              console.log('no match');
+            break;
+          }
         });
         break;
       case "star":
         axios.post("/tinder/push/star", {
           userId: props.auth.user.id,
           swipedId: user._id,
+        }).then(function(data) {
+          switch(data.data) {
+            case 'match' :
+               console.log('match!') 
+            break;
+            case 'star match' :
+              console.log('star match!');
+            break;
+            default: 
+              console.log('no match');
+            break;
+          }
         });
+        break;
+      default:
         break;
     }
     //if(people.length < 2)
     //updateUser();
+
+    origin = 'none';
   };
 
   const outOfFrame = (name) => {
