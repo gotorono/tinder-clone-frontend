@@ -90,17 +90,7 @@ function TinderCards(props) {
           userId: props.auth.user.id,
           swipedId: user._id,
         }).then(function(data) {
-          switch(data.data) {
-            case 'match' :
-               console.log('match!') 
-            break;
-            case 'star match' :
-              console.log('star match!');
-            break;
-            default: 
-              console.log('no match');
-            break;
-          }
+          console.log(data);
         });
         break;
       case "star":
@@ -108,17 +98,7 @@ function TinderCards(props) {
           userId: props.auth.user.id,
           swipedId: user._id,
         }).then(function(data) {
-          switch(data.data) {
-            case 'match' :
-               console.log('match!') 
-            break;
-            case 'star match' :
-              console.log('star match!');
-            break;
-            default: 
-              console.log('no match');
-            break;
-          }
+          console.log(data);
         });
         break;
       default:
