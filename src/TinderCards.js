@@ -6,14 +6,26 @@ import axios from "./axios";
 
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { Update } from "@material-ui/icons";
 
 function TinderCards(props) {
   const [people, setPeople] = useState([]);
+
+  console.log(props);
   
   let origin = 'none';
 
+  function handleMatch(res) {
+    if(props.matchFnc) {
+      setTimeout(function() {
+        props.matchFnc(res);
+      }, 600)
+    }
+  }
+
   useEffect(() => {
     updateUser();
+    
   }, []);
 
   useEffect(() => {
@@ -90,7 +102,7 @@ function TinderCards(props) {
           userId: props.auth.user.id,
           swipedId: user._id,
         }).then(function(data) {
-          console.log(data);
+          handleMatch(data.data);
         });
         break;
       case "star":
@@ -98,7 +110,7 @@ function TinderCards(props) {
           userId: props.auth.user.id,
           swipedId: user._id,
         }).then(function(data) {
-          console.log(data);
+          handleMatch(data.data);
         });
         break;
       default:

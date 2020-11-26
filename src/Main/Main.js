@@ -12,14 +12,20 @@ import SwipeButtons from "../SwipeButtons";
 function Main() {
   const [refresh, setRefresh] = useState({ swipe: 0 });
 
+  const [matchUser, setMatchUser] = useState("");
+
   const [render, setRender] = useState("matches");
 
-  function fnc(value) {
+  function swipe(value) {
     setRefresh({ swipe: value });
   }
 
   function route(value) {
     setRender(value);
+  }
+
+  function match(value) {
+    setMatchUser(value);
   }
 
   function _renderSubComp() {
@@ -29,7 +35,7 @@ function Main() {
     else {
       switch (render) {
         case "matches":
-          return <Matches />;
+          return <Matches match={matchUser} />;
         case "profile":
           return <Profile />;
         case "messages":
@@ -45,8 +51,8 @@ function Main() {
         {_renderSubComp()}
       </div>
       <div className="app">
-        <TinderCards refresh={refresh} />
-        <SwipeButtons swipe={fnc} />
+        <TinderCards matchFnc={match} refresh={refresh} />
+        <SwipeButtons swipe={swipe} />
       </div>
     </div>
   );

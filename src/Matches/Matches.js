@@ -4,23 +4,30 @@ import axios from "../axios";
 import { connect } from "react-redux";
 
 function Matches(props) {
-  const [matches, setMatches] = useState();
+  const [matches, setMatches] = useState("");
+
+  async function getMatches() {
+    const req = await axios.get("/tinder/matches", {
+      params: { user: props.auth.user.id },
+    });
+    setMatches(req.data);
+  }
 
   useEffect(() => {
-    async function getMatches() {
-      const req = await axios.get("/tinder/matches", {
-        params: { user: props.auth.user.id },
-      });
-      setMatches(req.data);
-    }
     getMatches();
   }, []);
+
+  useEffect(() => {
+    getMatches();
+  }, [props.match]);
 
 
   return (
     <div className="matchesContainer">
+      <div className="title">Your matches &#128293;</div>
+      <div className="matchesFlexWrapper">
       {matches ? matches.map((person, index) => (
-        <div className="match">
+        <div className="match" key={index}>
           <div
             style={{ backgroundImage: `url(${person.profileImg})` }}
             className="matchCard"
@@ -31,6 +38,7 @@ function Matches(props) {
           </div>
         </div>
       )) : null}
+    </div>
     </div>
   );
 }
