@@ -36,10 +36,10 @@ function Login(props) {
 
 
   return (
-    <div>
+    <div className="loginWrapper">
       <form noValidate onSubmit={onSubmit}>
         <div>
-          Email
+          <div className="inputTitle">Email</div>
           <input
             onChange={(e) => setEmail(e.target.value)}
             value={email}
@@ -51,7 +51,7 @@ function Login(props) {
           <span>{errors.email}</span>
         </div>
         <div>
-          Password
+        <div className="inputTitle">Password</div>
           <input
             onChange={(e) => setPassword(e.target.value)}
             value={password}
@@ -62,7 +62,7 @@ function Login(props) {
           />
           <span>{errors.password}</span>
         </div>
-        <div><button type="submit">Sign In</button></div>
+        <div className="buttonLast"><button type="submit">Sign In</button></div>
       </form>
     </div>
   );

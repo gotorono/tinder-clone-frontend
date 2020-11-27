@@ -18,6 +18,7 @@ function Register(props) {
 
   const [imageAsFile, setImageAsFile] = useState("");
   const [imageURL, setImageURL] = useState("");
+  const [fireBaseURL, setFireBaseURL] = useState("");
 
   const [errors, setErrors] = useState({});
 
@@ -29,9 +30,7 @@ function Register(props) {
 
   useEffect(() => {
     if (props.errors) {
-      storage.ref("images").child(imageURL).delete().then(function() {
-        console.log('deleted');
-      }).catch(function(err) {
+      storage.ref("images").child(imageURL).delete().then(console.log('deleted')).catch(function(err) {
         console.log(err);
       });
       setErrors(props.errors);
@@ -41,17 +40,6 @@ function Register(props) {
   const handleImageAsFile = (e) => {
     const image = e.target.files[0];
     setImageAsFile((imageFile) => image);
-  };
-
-  function onSubmit(e) {
-    e.preventDefault();
-
-    const newUser = {
-      name: name,
-      email: email,
-      password: password,
-      passwordRepeat: passwordRepeat
-    };
 
     if (imageAsFile === "") {
       console.error("not an image");
@@ -76,13 +64,28 @@ function Register(props) {
             .child(rnd)
             .getDownloadURL()
             .then((fireBaseUrl) => {
-              newUser.profileImg = fireBaseUrl;
               setImageURL(rnd);
-              props.registerUser(newUser, props.history);
+              setFireBaseURL(fireBaseUrl);
             });
         }
       );
     }
+    
+  };
+
+  function onSubmit(e) {
+    e.preventDefault();
+
+    const newUser = {
+      name: name,
+      email: email,
+      password: password,
+      passwordRepeat: passwordRepeat,
+      profileImg: fireBaseURL
+    };
+
+    props.registerUser(newUser, props.history);
+    
   }
 
   return (
@@ -90,7 +93,10 @@ function Register(props) {
       <form noValidate onSubmit={onSubmit}>
         <div>
           Profile:
-          <input type="file" onChange={handleImageAsFile} />
+          <label htmlFor="profileImg" className="profileImg">
+               Custom Upload
+          </label>
+          <input type="file" id="profileImg" onChange={handleImageAsFile} />
         </div>
         <div>
           Name

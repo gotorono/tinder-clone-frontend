@@ -1,0 +1,26 @@
+.loginWrapper {
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginWrapper form > div{
+    margin: 20px 0;
+}
+
+.loginWrapper form div > div:first-child {
+    font-size: 1.25em;
+    margin-left: .25em;
+    margin-bottom: .5em;
+}
+
+button[type="submit"] {
+    width: 175px;
+}
+
+.buttonLast {
+    text-align: center;
+}

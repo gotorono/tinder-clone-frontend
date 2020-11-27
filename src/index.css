@@ -14,6 +14,39 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button:not(.MuiButtonBase-root) {
+  padding: 15px 30px;
+  border-radius: 21px;
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.5);
+  border: none;
+  color:white;
+  font-weight: 500;
+  font-size: 1.125em;
+  cursor: pointer;
+  background: rgb(180,58,165);
+  background: linear-gradient(90deg, rgba(180,58,165,0.925) 0%, rgba(255,78,78,0.925) 100%);
+  margin: .5em 0;
+}
+
+input {
+  padding: 15px 20px;
+  font-size: 1.125em;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 4px 2px rgba(0,0,0,0.085);
+  border-radius: 10px;
+  background: transparent;
+}
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0 30px white inset, 0 0 4px 2px rgba(0, 0, 0, 0.1);
+}
+
+input:focus,
+button:focus,
+textarea:focus {
+  outline:none;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
