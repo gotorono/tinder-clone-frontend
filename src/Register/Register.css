@@ -1,10 +1,102 @@
-.profileImg {
-    border: 1px solid #ccc;
-    display: inline-block;
-    padding: 6px 12px;
-    cursor: pointer;
+.profileImg div {
+  padding: 15px 30px;
+  border-radius: 21px;
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.5);
+  border: none;
+  color:white;
+  font-weight: 400;
+  font-size: 1.125em;
+  cursor: pointer;
+  background: rgb(180,58,165);
+  background: linear-gradient(220deg, rgba(180,58,165,0.925) 0%, rgba(255,78,78,0.925) 100%);
+  margin: .5em 0;
+}
+
+.profileImgUploadWrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.profileImgWrapper {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profileImgWrapper div {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center top;
+    height: 400px;
+    width: 300px;
+
+    border-radius: 12px;
+    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.5);   
+}
+
+.registerWrapper {
+    width:100vw;
+    min-height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.registerWrapper form div div > div{
+    margin: 20px 0;
+}
+
+.flexColumn {
+    margin: 0 40px;
+    flex-basis: 25%;
+}
+
+.flexColumnWrapper {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.profileImgHeadWrapper {
+    float:left;
+    width: 500px;
+
+}
+
+.registerWrapper form div div div > div:first-child {
+    font-size: 1.25em;
+    margin-left: .25em;
+    margin-bottom: .5em;
+}
+
+button#signUp {
+    width: 250px;
+}
+
+.buttonLast {
+    text-align: center;
+    flex-basis: 100%;
 }
 
 #profileImg {
     display: none;
+}
+
+.profileImgUpload {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    width: 350px;
+}
+
+span.uploadIcon {
+    display:flex;
+}
+
+span.uploadIcon .MuiSvgIcon-root{
+    color: white;
+    margin-right: .5em;
+    font-size:1.75em;
 }

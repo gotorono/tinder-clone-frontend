@@ -62,7 +62,7 @@ function Login(props) {
           />
           <span>{errors.password}</span>
         </div>
-        <div className="buttonLast"><button type="submit">Sign In</button></div>
+        <div className="buttonLast"><button type="submit" id="signIn">Sign In</button></div>
       </form>
     </div>
   );
