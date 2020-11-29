@@ -47,8 +47,8 @@
 
 .registerWrapper {
     width:100vw;
-    min-height:100vh;
-    margin-top: 40px;
+    min-height: calc(100vh - 40px);
+    padding-top: 35px;
     overflow:hidden;
     display:flex;
     justify-content: center;
@@ -60,8 +60,10 @@
 }
 
 .flexColumn {
-    margin: 0 40px;
-    flex-basis: 25%;
+    display:flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-basis: 100%;
 }
 
 .react-calendar__tile:disabled {
@@ -73,8 +75,8 @@
     color: white !important;
 }
 
-.flexColumn > div {
-    margin:20px 0;
+.flexColumn > div:not(.flexbasis100) {
+    margin:20px 40px;
 }
 
 .flexColumn div.inputTitle {
@@ -83,6 +85,7 @@
 
 .flexColumnWrapper {
     display:flex;
+    flex-basis: 62.5%;
     flex-wrap: wrap;
     justify-content: center;
 }
@@ -90,7 +93,7 @@
 .profileImgHeadWrapper {
     float:left;
     width: 500px;
-    min-height:100vh;
+    min-height: calc(100vh - 40px);
 }
 
 .registerWrapper form div div div > div:first-child:not(.react-calendar *) {
@@ -103,9 +106,13 @@ button#signUp {
     width: 250px;
 }
 
+.flexbasis100 {
+    flex-basis: 100% !important;
+}
+
 .buttonLast {
+    margin: 40px 0;
     text-align: center; 
-    flex-basis: 100%;
 }
 
 #profileImg {
@@ -124,34 +131,73 @@ button#birthDateButton {
     border-radius: 4px;
     border-style: solid;
     border-width: 1px;
-    cursor: pointer;
     font-size: 1em;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    width:200px;
-    margin: 0 auto;
+    width: 263px;
     position: relative;
+    transition: border-color 100ms ease;
+}
 
+span.textBirth {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    color: black;
+}
+
+button#birthDateButton.placeholder span.textBirth {
+    color: hsl(0,0%,50%);
+}
+
+
+button#birthDateButton:hover {
+    border-color: rgb(180,58,165);
+}
+
+button#birthDateButton.active {
+    border-color: rgb(180,58,165) !important;
 }
 
 .birthDateWrapper {
-    position: relative;
-    width:100%;
-    width:350px;
     overflow: visible;
 }
 
 .birthDateWrapper .react-calendar {
     position: absolute;
     width: 350px;
-    margin: 6px 0;
+    z-index:10;
+    margin: 2px 0;
+    border-color: rgb(180,58,165) !important;
 }
 
 button#birthDateButton span {
-    padding: 8px 0;
-    margin: 0;
+    padding: 4px 0;
+    margin: 2px 0;
 }
+
+.css-2b097c-container {
+    width: 263px;
+}
+
+.css-1okebmr-indicatorSeparator {
+    background-color: unset !important;
+    border-left: 1px solid hsl(0,0%,80%);
+    width: auto !important;
+}
+
+button#birthDateButton span.symbolsBirth svg path {
+    transition: color 200ms ease;
+}
+
+button#birthDateButton:hover span.symbolsBirth svg path,
+button#birthDateButton span.symbolsBirth.hover svg path,
+button#birthDateButton.active:not(.hasValue) span.symbolsBirth svg path
+{
+    color:darkgray;
+}
+
 
 span.symbolsBirth {
     display:flex;

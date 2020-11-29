@@ -5,14 +5,15 @@ import PropTypes from "prop-types";
 import "./Register.css";
 import { registerUser } from "../actions/authActions";
 
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+import { useClickAway } from "use-click-away";
 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
-import Select from 'react-select';
-import { customStyles } from '../customStyles/select';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
+import Select from "react-select";
+import { customStyles } from "../customStyles/select";
 
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import classnames from "classnames";
@@ -22,7 +23,6 @@ import Resizer from "react-image-file-resizer";
 import cryptoRandomString from "crypto-random-string";
 
 import { storage } from "../firebase/firebase";
-import { Hidden } from "@material-ui/core";
 
 function Register(props) {
   const [email, setEmail] = useState("");
@@ -41,12 +41,18 @@ function Register(props) {
   const [errors, setErrors] = useState({});
 
   function birthDateClicked(e) {
+    if(e !== null) {
+      e.preventDefault();
+    }
 
-    e.preventDefault();
-
-   calendarVisible ? setCalendarVisible(false) : setCalendarVisible(true);
-
+    calendarVisible ? setCalendarVisible(false) : setCalendarVisible(true);
   }
+
+  const clickRef = React.useRef("");
+
+  useClickAway(clickRef, () => {
+    setCalendarVisible(false);
+  })
 
   useEffect(() => {
     if (props.auth.isAuthenticated) {
@@ -99,7 +105,6 @@ function Register(props) {
       passwordRepeat: passwordRepeat,
     };
 
-
     if (imageBase64 == null) {
       console.error("not an image");
     } else {
@@ -131,39 +136,47 @@ function Register(props) {
     }
   }
 
-  const selectOptions = [
-    { value: 'M', label: 'Male' },
-    { value: 'F', label: 'Female' },
-    { value: 'U', label: 'Undefined' },
+  const genderOptions = [
+    { value: "M", label: "Male" },
+    { value: "F", label: "Female" },
+    { value: "U", label: "Undefined" },
   ];
-  
+
+  const orientationOptions = [
+    { value: "hetero", label: "Heterosexual" },
+    { value: "homo", label: "Homosexual" },
+    { value: "bi", label: "Bisexual" },
+  ];
+
   return (
     <div className="registerWrapper">
       <form noValidate autoComplete="new-password" onSubmit={onSubmit}>
-
-    <div className="profileImgHeadWrapper">
-        <div className="profileImgUploadWrapper">
-          <label htmlFor="profileImg" className="profileImg">
-            <div className="profileImgUpload">
-              <span className="uploadIcon">
-                <CloudUploadIcon />
-              </span>
-              Your profile image
-            </div>
-          </label>
-          <input type="file" id="profileImg" onChange={handleImageAsFile} />
-          
+        <div className="profileImgHeadWrapper">
+          <div className="profileImgUploadWrapper">
+            <label htmlFor="profileImg" className="profileImg">
+              <div className="profileImgUpload">
+                <span className="uploadIcon">
+                  <CloudUploadIcon />
+                </span>
+                Your profile image
+              </div>
+            </label>
+            <input type="file" id="profileImg" onChange={handleImageAsFile} />
+          </div>
+          <div
+            className="profileImgWrapper"
+            style={imageBase64 == null ? { display: "none" } : null}
+          >
+            <div style={{ backgroundImage: `url(${imageBase64})` }}></div>
+          </div>
         </div>
-        <div className="profileImgWrapper" style={imageBase64 == null ? {display:"none"} : null}><div 
-        style={{ backgroundImage: `url(${imageBase64})` }}></div></div>
-</div>
-        
+
         <div className="flexColumnWrapper">
-          <div className="flexColumn" >
-            <div style={{marginTop: 0}}>
-              <div style={{marginTop: 0}} className="inputTitle">First name</div>
+          <div className="flexColumn">
+            <div>
+              <div className="inputTitle">First name</div>
               <input
-              autoComplete="new-password"
+                autoComplete="new-password"
                 onChange={(e) => setName(e.target.value)}
                 value={name}
                 error={errors.name}
@@ -176,7 +189,7 @@ function Register(props) {
             <div>
               <div className="inputTitle">Email address</div>
               <input
-              autoComplete="new-password"
+                autoComplete="new-password"
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
                 error={errors.email}
@@ -189,23 +202,13 @@ function Register(props) {
                 {errors.emailnotfound}
               </span>
             </div>
-            <div style={{marginTop: 0}}>
-            <div className="inputTitle">Gender</div>
 
-              <Select 
-              options={selectOptions}
-              isSearchable={false}
-              styles={customStyles}
-              placeholder="Select gender" />
+            <div className="flexbasis100"></div>
 
-              <span>{errors.gender}</span>
-            </div>
-          </div>
-          <div className="flexColumn">
-            <div style={{marginTop: 0}}>
-              <div style={{marginTop: 0}} className="inputTitle">Password</div>
+            <div>
+              <div className="inputTitle">Password</div>
               <input
-              autoComplete="new-password"
+                autoComplete="new-password"
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
                 error={errors.password}
@@ -218,38 +221,108 @@ function Register(props) {
             <div>
               <div className="inputTitle">Repeat your password</div>
               <input
-              autoComplete="new-password"
+                autoComplete="new-password"
                 onChange={(e) => setPasswordRepeat(e.target.value)}
                 value={passwordRepeat}
                 error={errors.passwordRepeat}
-                className={classnames("styled", { invalid: errors.passwordRepeat })}
+                className={classnames("styled", {
+                  invalid: errors.passwordRepeat,
+                })}
                 id="passwordRepeat"
                 type="password"
               />
               <span>{errors.passwordRepeat}</span>
             </div>
-            
           </div>
-
+          <div className="flexbasis100"></div>
           <div className="flexColumn">
-            
+            <div>
+              <div className="inputTitle">Gender</div>
+
+              <Select
+                options={genderOptions}
+                isSearchable={false}
+                styles={customStyles}
+                placeholder="Select gender"
+              />
+
+              <span>{errors.gender}</span>
+            </div>
+            <div>
+              <div className="inputTitle">Orientation</div>
+
+              <Select
+                options={orientationOptions}
+                isSearchable={false}
+                styles={customStyles}
+                placeholder="Select orientation"
+              />
+
+              <span>{errors.orientation}</span>
+            </div>
+            <div className="flexbasis100"></div>
+
             <div className="birthDateWrapper">
-              <button id="birthDateButton" onClick={(e) => birthDateClicked(e)}><span className="textBirth">Birth date</span> <span className="symbolsBirth"><span className="css-1okebmr-indicatorSeparator"></span><ExpandMoreIcon /></span></button>
+              <div className="inputTitle">Birth date</div>
+
+              <button
+                ref={clickRef}
+                className={classnames(
+                  calendarVisible ? "active" : "",
+                  birthDate ? "active hasValue" : "placeholder"
+                )}
+                id="birthDateButton"
+                onClick={(e) => birthDateClicked(e)}
+              >
+                <span className="textBirth">
+                  {birthDate
+                    ? birthDate.getDate() +
+                      ". " +
+                      (birthDate.getMonth() + 1) +
+                      ". " +
+                      birthDate.getFullYear()
+                    : "Select birth date"}
+                </span>
+                <span
+                  className={classnames(
+                    "symbolsBirth",
+                    calendarVisible ? "hover" : ""
+                  )}
+                >
+                  <span className="css-1okebmr-indicatorSeparator"></span>
+                  <ExpandMoreIcon />
+                </span>
+              </button>
               <Calendar
-              className={classnames(calendarVisible ? "" : "hidden")}
-               onChange={(e) => setBirthDate(e)} 
-               maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
-               minDate={new Date(new Date().setFullYear(new Date().getFullYear() - 80))}
-               defaultActiveStartDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
-               />
-              
+                onClickDay={() => birthDateClicked(null)}
+                className={classnames(calendarVisible ? "" : "hidden")}
+                onChange={(e) => setBirthDate(e)}
+                maxDate={
+                  new Date(
+                    new Date().setFullYear(new Date().getFullYear() - 18)
+                  )
+                }
+                minDate={
+                  new Date(
+                    new Date().setFullYear(new Date().getFullYear() - 80)
+                  )
+                }
+                defaultActiveStartDate={
+                  new Date(
+                    new Date().setFullYear(new Date().getFullYear() - 18)
+                  )
+                }
+              />
+
               <span>{errors.birthDate}</span>
             </div>
           </div>
 
-          <div className="buttonLast">
-              <button type="submit" className="styled" id="signUp">Sign Up</button>
-            </div>
+          <div className="buttonLast flexbasis100">
+            <button type="submit" className="styled" id="signUp">
+              Sign Up
+            </button>
+          </div>
         </div>
       </form>
     </div>
