@@ -20,8 +20,8 @@ function TinderCards(props) {
   }
   
   function showPosition(position) {
-    console.log("Latitude: " + position.coords.latitude);
-    console.log("Longitude: " + position.coords.longitude);
+    //console.log("Latitude: " + position.coords.latitude);
+    //console.log("Longitude: " + position.coords.longitude);
   }
 
   getLocation();

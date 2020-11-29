@@ -14,6 +14,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+div.errorWrapper {
+  margin-top: 4px;
+  margin-left: 6px;
+  font-size: .825em;
+  color: rgb(70, 70, 70);
+}
+
+.invalid {
+  border-color: rgba(207, 64, 64, 0.404) !important;
+}
+
 button.styled {
   padding: 15px 30px;
   border-radius: 18px;

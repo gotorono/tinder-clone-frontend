@@ -36,23 +36,34 @@ function Register(props) {
 
   const [imageURL, setImageURL] = useState("");
   const [imageBase64, setImageBase64] = useState();
+
   const [calendarVisible, setCalendarVisible] = useState(false);
+  const [clickAwayOrigin, setClickAwayOrigin] = useState(false);
 
   const [errors, setErrors] = useState({});
+  console.log(errors);
 
   function birthDateClicked(e) {
-    if(e !== null) {
+    if (e !== null) {
       e.preventDefault();
     }
 
-    calendarVisible ? setCalendarVisible(false) : setCalendarVisible(true);
+    if (clickAwayOrigin) {
+      setCalendarVisible(false);
+      setClickAwayOrigin(false);
+    } else {
+      calendarVisible ? setCalendarVisible(false) : setCalendarVisible(true);
+    }
   }
 
   const clickRef = React.useRef("");
 
   useClickAway(clickRef, () => {
-    setCalendarVisible(false);
-  })
+    if (calendarVisible) {
+      setClickAwayOrigin(true);
+      setCalendarVisible(false);
+    } else setClickAwayOrigin(false);
+  });
 
   useEffect(() => {
     if (props.auth.isAuthenticated) {
@@ -103,6 +114,9 @@ function Register(props) {
       email: email,
       password: password,
       passwordRepeat: passwordRepeat,
+      gender: gender,
+      orientation: orientation,
+      birthDate: birthDate,
     };
 
     if (imageBase64 == null) {
@@ -184,7 +198,9 @@ function Register(props) {
                 id="name"
                 type="text"
               />
-              <span>{errors.name}</span>
+              <div className="errorWrapper">
+                <span>{errors.name}</span>
+              </div>
             </div>
             <div>
               <div className="inputTitle">Email address</div>
@@ -197,10 +213,12 @@ function Register(props) {
                 id="email"
                 type="email"
               />
-              <span>
-                {errors.email}
-                {errors.emailnotfound}
-              </span>
+              <div className="errorWrapper">
+                <span>
+                  {errors.email}
+                  {errors.emailnotfound}
+                </span>
+              </div>
             </div>
 
             <div className="flexbasis100"></div>
@@ -216,7 +234,9 @@ function Register(props) {
                 id="password"
                 type="password"
               />
-              <span>{errors.password}</span>
+              <div className="errorWrapper">
+                <span>{errors.password}</span>
+              </div>
             </div>
             <div>
               <div className="inputTitle">Repeat your password</div>
@@ -231,7 +251,9 @@ function Register(props) {
                 id="passwordRepeat"
                 type="password"
               />
-              <span>{errors.passwordRepeat}</span>
+              <div className="errorWrapper">
+                <span>{errors.passwordRepeat}</span>
+              </div>
             </div>
           </div>
           <div className="flexbasis100"></div>
@@ -240,25 +262,37 @@ function Register(props) {
               <div className="inputTitle">Gender</div>
 
               <Select
+              className={classnames("", {
+                invalid: errors.gender,
+              })}
+                onChange={(e) => setGender(e.value)}
                 options={genderOptions}
                 isSearchable={false}
                 styles={customStyles}
                 placeholder="Select gender"
               />
 
-              <span>{errors.gender}</span>
+              <div className="errorWrapper">
+                <span>{errors.gender}</span>
+              </div>
             </div>
             <div>
               <div className="inputTitle">Orientation</div>
 
               <Select
+              className={classnames("", {
+                invalid: errors.orientation,
+              })}
+                onChange={(e) => setOrientation(e.value)}
                 options={orientationOptions}
                 isSearchable={false}
                 styles={customStyles}
                 placeholder="Select orientation"
               />
 
-              <span>{errors.orientation}</span>
+              <div className="errorWrapper">
+                <span>{errors.orientation}</span>
+              </div>
             </div>
             <div className="flexbasis100"></div>
 
@@ -266,10 +300,10 @@ function Register(props) {
               <div className="inputTitle">Birth date</div>
 
               <button
-                ref={clickRef}
                 className={classnames(
                   calendarVisible ? "active" : "",
-                  birthDate ? "active hasValue" : "placeholder"
+                  birthDate ? "active hasValue" : "placeholder",
+                  errors.birthDate ? "invalid" : ""
                 )}
                 id="birthDateButton"
                 onClick={(e) => birthDateClicked(e)}
@@ -294,6 +328,7 @@ function Register(props) {
                 </span>
               </button>
               <Calendar
+                inputRef={clickRef}
                 onClickDay={() => birthDateClicked(null)}
                 className={classnames(calendarVisible ? "" : "hidden")}
                 onChange={(e) => setBirthDate(e)}
@@ -314,7 +349,9 @@ function Register(props) {
                 }
               />
 
-              <span>{errors.birthDate}</span>
+              <div className="errorWrapper">
+                <span>{errors.birthDate}</span>
+              </div>
             </div>
           </div>
 

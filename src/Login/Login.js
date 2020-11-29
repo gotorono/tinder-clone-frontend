@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import "./Login.css";
-import PropTypes from 'prop-types';
-import { loginUser } from '../actions/authActions';
-import classnames from 'classnames';
+import PropTypes from "prop-types";
+import { loginUser } from "../actions/authActions";
+import classnames from "classnames";
 
 function Login(props) {
   const [email, setEmail] = useState("");
@@ -12,28 +12,27 @@ function Login(props) {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if(props.auth.isAuthenticated) {
-      props.history.push('/app');
+    if (props.auth.isAuthenticated) {
+      props.history.push("/app");
     }
   });
 
   useEffect(() => {
-    if(props.errors) {
+    if (props.errors) {
       setErrors(props.errors);
     }
-  }, [props])
+  }, [props]);
 
   function onSubmit(e) {
     e.preventDefault();
 
     const userData = {
       email: email,
-      password: password
+      password: password,
     };
 
     props.loginUser(userData);
-  };
-
+  }
 
   return (
     <div className="loginWrapper">
@@ -44,25 +43,33 @@ function Login(props) {
             onChange={(e) => setEmail(e.target.value)}
             value={email}
             error={errors.email}
-            className={classnames("styled", {invalid: errors.email})}
+            className={classnames("styled", { invalid: errors.email })}
             id="email"
             type="email"
           />
-          <span>{errors.email}</span>
+          <div className="errorWrapper">
+            <span>{errors.email}</span>
+          </div>
         </div>
         <div>
-        <div className="inputTitle">Password</div>
+          <div className="inputTitle">Password</div>
           <input
             onChange={(e) => setPassword(e.target.value)}
             value={password}
             error={errors.password}
-            className={classnames("styled", {invalid: errors.password})}
+            className={classnames("styled", { invalid: errors.password })}
             id="password"
             type="password"
           />
-          <span>{errors.password}</span>
+          <div className="errorWrapper">
+            <span>{errors.password}</span>
+          </div>
         </div>
-        <div className="buttonLast"><button type="submit" className="styled" id="signIn">Sign In</button></div>
+        <div className="buttonLast">
+          <button type="submit" className="styled" id="signIn">
+            Sign In
+          </button>
+        </div>
       </form>
     </div>
   );
@@ -71,13 +78,12 @@ function Login(props) {
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
-}
+  errors: PropTypes.object.isRequired,
+};
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  errors: state.errors
-})
-
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, { loginUser })(withRouter(Login));
