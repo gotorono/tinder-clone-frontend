@@ -29,8 +29,8 @@ function Profile(props) {
   return (
     <div>
     <div>Profile Name is {user.name}</div>
-    <div><button onClick={(e) => deleteSwipedFnc(e)}>Delete swiped</button></div>
-    <div><button onClick={(e) => onLogoutClick(e)}>Logout</button></div>
+    <div><button className="styled" onClick={(e) => deleteSwipedFnc(e)}>Delete swiped</button></div>
+    <div><button className="styled" onClick={(e) => onLogoutClick(e)}>Logout</button></div>
     </div>
   );
 }

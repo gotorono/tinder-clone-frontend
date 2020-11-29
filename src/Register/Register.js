@@ -5,6 +5,15 @@ import PropTypes from "prop-types";
 import "./Register.css";
 import { registerUser } from "../actions/authActions";
 
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+import Select from 'react-select';
+import { customStyles } from '../customStyles/select';
+
+
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import classnames from "classnames";
 
@@ -13,6 +22,7 @@ import Resizer from "react-image-file-resizer";
 import cryptoRandomString from "crypto-random-string";
 
 import { storage } from "../firebase/firebase";
+import { Hidden } from "@material-ui/core";
 
 function Register(props) {
   const [email, setEmail] = useState("");
@@ -20,10 +30,23 @@ function Register(props) {
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
 
+  const [gender, setGender] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [orientation, setOrientation] = useState("");
+
   const [imageURL, setImageURL] = useState("");
   const [imageBase64, setImageBase64] = useState();
+  const [calendarVisible, setCalendarVisible] = useState(false);
 
   const [errors, setErrors] = useState({});
+
+  function birthDateClicked(e) {
+
+    e.preventDefault();
+
+   calendarVisible ? setCalendarVisible(false) : setCalendarVisible(true);
+
+  }
 
   useEffect(() => {
     if (props.auth.isAuthenticated) {
@@ -76,7 +99,8 @@ function Register(props) {
       passwordRepeat: passwordRepeat,
     };
 
-    if (imageBase64 === "") {
+
+    if (imageBase64 == null) {
       console.error("not an image");
     } else {
       const rnd = cryptoRandomString({ length: 32, type: "base64" });
@@ -107,9 +131,15 @@ function Register(props) {
     }
   }
 
+  const selectOptions = [
+    { value: 'M', label: 'Male' },
+    { value: 'F', label: 'Female' },
+    { value: 'U', label: 'Undefined' },
+  ];
+  
   return (
     <div className="registerWrapper">
-      <form noValidate onSubmit={onSubmit}>
+      <form noValidate autoComplete="new-password" onSubmit={onSubmit}>
 
     <div className="profileImgHeadWrapper">
         <div className="profileImgUploadWrapper">
@@ -131,24 +161,26 @@ function Register(props) {
         <div className="flexColumnWrapper">
           <div className="flexColumn" >
             <div style={{marginTop: 0}}>
-              <div style={{marginTop: 0}}>First name</div>
+              <div style={{marginTop: 0}} className="inputTitle">First name</div>
               <input
+              autoComplete="new-password"
                 onChange={(e) => setName(e.target.value)}
                 value={name}
                 error={errors.name}
-                className={classnames("", { invalid: errors.name })}
+                className={classnames("styled", { invalid: errors.name })}
                 id="name"
                 type="text"
               />
               <span>{errors.name}</span>
             </div>
             <div>
-              <div>Email address</div>
+              <div className="inputTitle">Email address</div>
               <input
+              autoComplete="new-password"
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
                 error={errors.email}
-                className={classnames("", { invalid: errors.email })}
+                className={classnames("styled", { invalid: errors.email })}
                 id="email"
                 type="email"
               />
@@ -157,35 +189,66 @@ function Register(props) {
                 {errors.emailnotfound}
               </span>
             </div>
+            <div style={{marginTop: 0}}>
+            <div className="inputTitle">Gender</div>
+
+              <Select 
+              options={selectOptions}
+              isSearchable={false}
+              styles={customStyles}
+              placeholder="Select gender" />
+
+              <span>{errors.gender}</span>
+            </div>
           </div>
           <div className="flexColumn">
-            <div>
-              <div>Password</div>
+            <div style={{marginTop: 0}}>
+              <div style={{marginTop: 0}} className="inputTitle">Password</div>
               <input
+              autoComplete="new-password"
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
                 error={errors.password}
-                className={classnames("", { invalid: errors.password })}
+                className={classnames("styled", { invalid: errors.password })}
                 id="password"
                 type="password"
               />
               <span>{errors.password}</span>
             </div>
             <div>
-              <div>Repeat your password</div>
+              <div className="inputTitle">Repeat your password</div>
               <input
+              autoComplete="new-password"
                 onChange={(e) => setPasswordRepeat(e.target.value)}
                 value={passwordRepeat}
                 error={errors.passwordRepeat}
-                className={classnames("", { invalid: errors.passwordRepeat })}
+                className={classnames("styled", { invalid: errors.passwordRepeat })}
                 id="passwordRepeat"
                 type="password"
               />
               <span>{errors.passwordRepeat}</span>
             </div>
+            
           </div>
+
+          <div className="flexColumn">
+            
+            <div className="birthDateWrapper">
+              <button id="birthDateButton" onClick={(e) => birthDateClicked(e)}><span className="textBirth">Birth date</span> <span className="symbolsBirth"><span className="css-1okebmr-indicatorSeparator"></span><ExpandMoreIcon /></span></button>
+              <Calendar
+              className={classnames(calendarVisible ? "" : "hidden")}
+               onChange={(e) => setBirthDate(e)} 
+               maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
+               minDate={new Date(new Date().setFullYear(new Date().getFullYear() - 80))}
+               defaultActiveStartDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
+               />
+              
+              <span>{errors.birthDate}</span>
+            </div>
+          </div>
+
           <div className="buttonLast">
-              <button type="submit" id="signUp">Sign Up</button>
+              <button type="submit" className="styled" id="signUp">Sign Up</button>
             </div>
         </div>
       </form>

@@ -44,7 +44,7 @@ function Login(props) {
             onChange={(e) => setEmail(e.target.value)}
             value={email}
             error={errors.email}
-            className={classnames("", {invalid: errors.email})}
+            className={classnames("styled", {invalid: errors.email})}
             id="email"
             type="email"
           />
@@ -56,13 +56,13 @@ function Login(props) {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
             error={errors.password}
-            className={classnames("", {invalid: errors.password})}
+            className={classnames("styled", {invalid: errors.password})}
             id="password"
             type="password"
           />
           <span>{errors.password}</span>
         </div>
-        <div className="buttonLast"><button type="submit" id="signIn">Sign In</button></div>
+        <div className="buttonLast"><button type="submit" className="styled" id="signIn">Sign In</button></div>
       </form>
     </div>
   );
