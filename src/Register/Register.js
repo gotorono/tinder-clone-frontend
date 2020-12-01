@@ -33,6 +33,7 @@ function Register(props) {
   const [gender, setGender] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [orientation, setOrientation] = useState("");
+  const [description, setDescription] = useState("");
 
   const [imageURL, setImageURL] = useState("");
   const [imageBase64, setImageBase64] = useState();
@@ -41,7 +42,6 @@ function Register(props) {
   const [clickAwayOrigin, setClickAwayOrigin] = useState(false);
 
   const [errors, setErrors] = useState({});
-  console.log(errors);
 
   function birthDateClicked(e) {
     if (e !== null) {
@@ -77,7 +77,6 @@ function Register(props) {
         .ref("images")
         .child(imageURL)
         .delete()
-        .then(console.log("deleted"))
         .catch(function (err) {
           console.log(err);
         });
@@ -117,6 +116,7 @@ function Register(props) {
       gender: gender,
       orientation: orientation,
       birthDate: birthDate,
+      description: description
     };
 
     if (imageBase64 == null) {
@@ -130,7 +130,7 @@ function Register(props) {
       uploadTask.on(
         "state_changed",
         (snapShot) => {
-          console.log(snapShot);
+          //console.log(snapShot);
         },
         (err) => {
           console.log(err);
@@ -187,9 +187,10 @@ function Register(props) {
 
         <div className="flexColumnWrapper">
           <div className="flexColumn">
-            <div>
+            <div >
               <div className="inputTitle">First name</div>
               <input
+              spellCheck="false"
                 autoComplete="new-password"
                 onChange={(e) => setName(e.target.value)}
                 value={name}
@@ -205,6 +206,7 @@ function Register(props) {
             <div>
               <div className="inputTitle">Email address</div>
               <input
+              spellCheck="false"
                 autoComplete="new-password"
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
@@ -226,6 +228,7 @@ function Register(props) {
             <div>
               <div className="inputTitle">Password</div>
               <input
+              spellCheck="false"
                 autoComplete="new-password"
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
@@ -241,6 +244,7 @@ function Register(props) {
             <div>
               <div className="inputTitle">Repeat your password</div>
               <input
+              spellCheck="false"
                 autoComplete="new-password"
                 onChange={(e) => setPasswordRepeat(e.target.value)}
                 value={passwordRepeat}
@@ -262,9 +266,9 @@ function Register(props) {
               <div className="inputTitle">Gender</div>
 
               <Select
-              className={classnames("", {
-                invalid: errors.gender,
-              })}
+                className={classnames("", {
+                  invalid: errors.gender,
+                })}
                 onChange={(e) => setGender(e.value)}
                 options={genderOptions}
                 isSearchable={false}
@@ -280,9 +284,9 @@ function Register(props) {
               <div className="inputTitle">Orientation</div>
 
               <Select
-              className={classnames("", {
-                invalid: errors.orientation,
-              })}
+                className={classnames("", {
+                  invalid: errors.orientation,
+                })}
                 onChange={(e) => setOrientation(e.value)}
                 options={orientationOptions}
                 isSearchable={false}
@@ -352,6 +356,18 @@ function Register(props) {
               <div className="errorWrapper">
                 <span>{errors.birthDate}</span>
               </div>
+            </div>
+            <div className="descriptionWrapper">
+              <div className="inputTitle">Description</div>
+
+              <textarea
+                spellCheck="false"
+                rows="4"
+                className="styled"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Tell us something about yourself"
+              ></textarea>
             </div>
           </div>
 

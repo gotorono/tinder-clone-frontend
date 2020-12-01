@@ -6,7 +6,6 @@ import axios from "./axios";
 
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Update } from "@material-ui/icons";
 
 function TinderCards(props) {
   const [people, setPeople] = useState([]);
@@ -18,6 +17,7 @@ function TinderCards(props) {
       navigator.geolocation.getCurrentPosition(showPosition);
     }
   }
+
   
   function showPosition(position) {
     //console.log("Latitude: " + position.coords.latitude);
@@ -134,7 +134,7 @@ function TinderCards(props) {
   };
 
   const outOfFrame = (name) => {
-    console.log(name + " has left the screen");
+    (name + " has left the screen");
   };
 
   return (
@@ -156,9 +156,9 @@ function TinderCards(props) {
               <div className="desc-container">
                 <h3>
                   {person.name}
-                  <span className="age"> &nbsp;{person.age}</span>
+                  <span className="age"> &nbsp;{new Date().getFullYear() - new Date(person.birthDate).getFullYear()}</span>
                 </h3>
-                <div className="desc">{person.desc}</div>
+                <div className="desc">{person.description}</div>
               </div>
             </div>
           </TinderCard>

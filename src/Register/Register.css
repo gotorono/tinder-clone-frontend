@@ -13,6 +13,7 @@
 }
 
 .profileImgUploadWrapper {
+    margin-top: 40px;
     display: flex;
     justify-content: center;
 }
@@ -115,6 +116,10 @@ button#signUp {
     text-align: center; 
 }
 
+.invalid .css-f284s8-control {
+    border-color: rgba(207, 64, 64, 0.404) !important;
+}
+
 #profileImg {
     display: none;
 }
@@ -170,6 +175,13 @@ button#birthDateButton.active {
     z-index:10;
     margin: 2px 0;
     border-color: rgb(180,58,165) !important;
+}
+
+.descriptionWrapper textarea {
+    width: 263px;
+    resize: none;
+    padding: 15px 15px;
+    font-size: .925em;
 }
 
 button#birthDateButton span {

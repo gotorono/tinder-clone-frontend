@@ -39,13 +39,22 @@ button.styled {
   margin: .5em 0;
 }
 
-input.styled {
+input.styled,
+textarea.styled {
   padding: 15px 20px;
   font-size: 1.125em;
   border: 1px solid rgba(0, 0, 0, 0.25);
   box-shadow: 0 0 4px 2px rgba(0,0,0,0.085);
   border-radius: 10px;
   background: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  width: 263px;
+}
+
+textarea.styled::placeholder {
+  font-size: .925em;
 }
 
 select.styled {
