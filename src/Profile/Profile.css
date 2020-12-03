@@ -1,104 +1,47 @@
-button.dropdown {
-    padding: 0;
-    padding-left: .75em;
-    background-color: hsl(0,0%,100%);
-    border-color: hsl(0,0%,80%);
-    border-radius: 4px;
-    border-style: solid;
-    border-width: 1px;
-    cursor: pointer;
-    font-size: 1em;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    width: 263px;
+.card {
     position: relative;
-    transition: border-color 100ms ease;
+    height: 60vh;
+    width: 400px;
+    max-width: 85vw;
+    padding: 20px;
+    box-shadow: 0 0px 10px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
 }
 
-button.dropdown.placeholder span.textBirth {
-    color: hsl(0,0%,50%);
+.swipe {
+    position: absolute;
 }
 
-
-button.dropdown:hover {
-    border-color: rgb(180,58,165);
-}
-
-button.dropdown.active {
-    border-color: rgb(180,58,165) !important;
-}
-
-button.dropdown span {
-    padding: 4px 0;
-    margin: 2px 0;
-}
-
-.dropdownImages {
-    min-height: 240px;
-    width:100%;
-    border: 1px solid;
-    border-color: rgb(180,58,165);
-    margin-top: 4px;
-    border-radius: 6px;
-    box-shadow: 0 0 6px 2px rgba(0,0,0,0.085), inset 0 0 8px 2px rgba(0,0,0,0.085);
-    background-color: white;
-}
-
-.imgItem {
-    height: 100px;
-    width: 75px;
-    border: 1px solid;
-    border-color: rgba(0, 0, 0, 0.521);
-    border-radius: 6px;
-    margin: 10px;
-}
-
-.imgItem.plus {
-    display:flex;
-    box-shadow: 0 0 6px 2px rgba(0,0,0,0.085), inset 0 0 8px 2px rgba(0,0,0,0.085);
+.cardContainer {
+    height: 65vh;
+    display: flex;
     justify-content: center;
-    align-items: center;
-    cursor: pointer;
+    margin-top: 10vh;
 }
 
-.imgItem.plus svg {
-    font-size: 2em;
-    color:rgba(184, 23, 165, 0.767);
-}
-
-.dropdownImages.hidden {
-    display:none;
-}
-
-.css-1okebmr-indicatorSeparator {
-    background-color: unset !important;
-    border-left: 1px solid hsl(0,0%,80%);
-    width: auto !important;
-}
-
-button.dropdown span.symbolsBirth svg path {
-    transition: color 200ms ease;
-}
-
-button.dropdown:hover span.symbolsBirth svg path,
-button.dropdown span.symbolsBirth.hover svg path,
-button.dropdown.active:not(.hasValue) span.symbolsBirth svg path
-{
-    color:darkgray;
-}
-
-
-span.symbolsBirth {
-    display:flex;
-    align-items: center;
-}
-
-span.symbolsBirth svg {
-    margin: 0 6px;
-    color: lightgray;
-}
-
-button.dropdown:focus {
-    outline: none;
-}
+.card h3 {
+    font-size: 2.25em;
+    font-weight: 600;
+    color: #fff; 
+ }
+ 
+ .card .desc-container {
+     position: absolute;
+     margin:10px;
+     bottom:0;
+     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.55);
+ }
+ 
+ .card span.age {
+     font-size:.725em;
+     font-weight: 400;
+ }
+ 
+ .card .desc {
+     font-size: 1.5em;
+    font-weight: 300;
+    color: #fff; 
+ }

@@ -6,6 +6,7 @@ import Header from "../Header";
 import Messages from "../Messages/Messages";
 import Matches from "../Matches/Matches";
 import Profile from "../Profile/Profile";
+import ProfileSettings from "../Profile/ProfileSettings";
 import TinderCards from "../TinderCards";
 import SwipeButtons from "../SwipeButtons";
 
@@ -29,18 +30,34 @@ function Main() {
   }
 
   function _renderSubComp() {
-    if(window.location.pathname === '/app/profile') {
-        return <Profile />
-    }
-    else {
+    if (window.location.pathname === "/app/profile") {
+      return <ProfileSettings />;
+    } else {
       switch (render) {
         case "matches":
           return <Matches match={matchUser} />;
         case "profile":
-          return <Profile />;
+          return <ProfileSettings />;
         case "messages":
           return <Messages />;
       }
+    }
+  }
+
+  function _renderMainComp() {
+    if (window.location.pathname === "/app/profile") {
+      return (
+        <div className="app">
+          <Profile />
+        </div>
+      );
+    } else {
+      return (
+        <div className="app">
+          <TinderCards matchFnc={match} refresh={refresh} />
+          <SwipeButtons swipe={swipe} />
+        </div>
+      );
     }
   }
 
@@ -50,10 +67,7 @@ function Main() {
         <Header route={route} />
         {_renderSubComp()}
       </div>
-      <div className="app">
-        <TinderCards matchFnc={match} refresh={refresh} />
-        <SwipeButtons swipe={swipe} />
-      </div>
+      {_renderMainComp()}
     </div>
   );
 }

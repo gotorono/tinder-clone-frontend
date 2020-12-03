@@ -1,0 +1,111 @@
+button.dropdown {
+    padding: 0;
+    padding-left: .75em;
+    background-color: hsl(0,0%,100%);
+    border-color: hsl(0,0%,80%);
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    cursor: pointer;
+    font-size: 1em;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 263px;
+    position: relative;
+    transition: border-color 100ms ease;
+}
+
+button.dropdown.placeholder span.textBirth {
+    color: hsl(0,0%,50%);
+}
+
+
+button.dropdown:hover {
+    border-color: rgb(180,58,165);
+}
+
+button.dropdown.active {
+    border-color: rgb(180,58,165) !important;
+}
+
+button.dropdown span {
+    padding: 4px 0;
+    margin: 2px 0;
+}
+
+.dropdownImages {
+    min-height: 240px;
+    width:100%;
+    margin-top: 4px;
+    padding: 10px 5px;
+    border-radius: 4px;
+    box-shadow: 0 0 2px 1px rgba(0,0,0,0.085), inset 0 0 8px 2px rgba(0,0,0,0.085);
+    background-color: whitesmoke;
+    display:flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.imgItem {
+    height: 200px;
+    width: 145px;
+    border-radius: 4px;
+    margin: 5px 0 5px 5px;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    box-shadow: 0 0 4px 2px rgba(0,0,0,0.25);
+}
+
+.imgItem.plus {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: white;
+    box-shadow: inset 0 0 8px 2px rgba(0,0,0,0.085);
+    border: 2px solid rgb(228, 228, 228);
+}
+
+.imgItem.plus svg {
+    font-size: 2em;
+    color:rgb(68, 68, 68);
+}
+
+.dropdownImages.hidden {
+    display:none;
+}
+
+.css-1okebmr-indicatorSeparator {
+    background-color: unset !important;
+    border-left: 1px solid hsl(0,0%,80%);
+    width: auto !important;
+    align-self: stretch;
+}
+
+button.dropdown span.symbolsBirth svg path {
+    transition: color 200ms ease;
+}
+
+button.dropdown:hover span.symbolsBirth svg path,
+button.dropdown span.symbolsBirth.hover svg path,
+button.dropdown.active:not(.hasValue) span.symbolsBirth svg path
+{
+    color:darkgray;
+}
+
+
+span.symbolsBirth {
+    display:flex;
+    align-items: center;
+}
+
+span.symbolsBirth svg {
+    margin: 0 6px;
+    color: lightgray;
+}
+
+button.dropdown:focus {
+    outline: none;
+}
