@@ -16,10 +16,36 @@ button.dropdown {
     transition: border-color 100ms ease;
 }
 
+
 button.dropdown.placeholder span.textBirth {
     color: hsl(0,0%,50%);
 }
 
+.profile-pic {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    cursor: pointer;
+}
+
+.profile-pic svg {
+    color: rgb(82, 137, 255);
+    font-size: 1.375em;
+    opacity: .925;
+}
+
+.cross-delete {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+}
+
+.cross-delete svg {
+    color: rgb(245, 46, 46);
+    font-size: 1.375em;
+    opacity: .925;
+}
 
 button.dropdown:hover {
     border-color: rgb(180,58,165);
@@ -48,6 +74,7 @@ button.dropdown span {
 }
 
 .imgItem {
+    position: relative;
     height: 200px;
     width: 145px;
     border-radius: 4px;

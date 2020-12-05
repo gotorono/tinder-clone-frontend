@@ -4,9 +4,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
 import { updateUser, logoutUser, deleteSwiped } from "../actions/authActions";
-import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 
-import axios from '../axios';
+import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
+import ClearIcon from "@material-ui/icons/Clear";
+import PersonIcon from '@material-ui/icons/Person';
+
+import axios from "../axios";
 
 import cryptoRandomString from "crypto-random-string";
 
@@ -25,7 +28,6 @@ function ProfileSettings(props) {
     e.preventDefault();
     props.logoutUser();
   }
-    
 
   function showImages(e) {
     e.preventDefault();
@@ -48,44 +50,44 @@ function ProfileSettings(props) {
       );
     });
 
-    async function uploadImg(imgURL) {
-        await axios.post("/tinder/users/uploadimg", {
-            id: user.id,
-            img: imgURL
-        });
-
-        updateUser();
-    }
+  function uploadImg(imgURL) {
+    axios
+      .post("/tinder/users/uploadimg", {
+        id: user.id,
+        img: imgURL,
+      })
+      .then(updateUser());
+  }
 
   const handleImageAsFile = async (e) => {
     const image = await resizeFile(e.target.files[0]);
     if (image == null) {
-        console.error("not an image");
-      } else {
-        const rnd = cryptoRandomString({ length: 32, type: "base64" });
-        const uploadTask = storage
-          .ref(`/images/${rnd}`)
-          .putString(image, "data_url", { contentType: "image/jpeg" });
-  
-        uploadTask.on(
-          "state_changed",
-          (snapShot) => {
-            //console.log(snapShot);
-          },
-          (err) => {
-            console.log(err);
-          },
-          () => {
-            storage
-              .ref("images")
-              .child(rnd)
-              .getDownloadURL()
-              .then((fireBaseUrl) => {
-                uploadImg(fireBaseUrl);
-              });
-          }
-        );
-      }
+      console.error("not an image");
+    } else {
+      const rnd = cryptoRandomString({ length: 32, type: "base64" });
+      const uploadTask = storage
+        .ref(`/images/${rnd}`)
+        .putString(image, "data_url", { contentType: "image/jpeg" });
+
+      uploadTask.on(
+        "state_changed",
+        (snapShot) => {
+          //console.log(snapShot);
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          storage
+            .ref("images")
+            .child(rnd)
+            .getDownloadURL()
+            .then((fireBaseUrl) => {
+              uploadImg(fireBaseUrl);
+            });
+        }
+      );
+    }
   };
 
   function deleteSwipedFnc(e) {
@@ -96,12 +98,30 @@ function ProfileSettings(props) {
     props.deleteSwiped(userData);
   }
 
+  async function updateUser() {
+    const userData = {
+      user: props.auth.user,
+    };
 
+    await props.updateUser(userData);
+    fetchImgs();
+  }
+
+  async function fetchImgs() {
+    const req = await axios.get("/tinder/users/imgs", {
+      params: { user: props.auth.user.id },
+    });
+    setUserImages(req.data);
+  }
+
+  const handleDelete = (e, index) => {
+    e.preventDefault();
+    console.log(index);
+  }
 
   useEffect(() => {
     updateUser();
     setUser(props.auth.user);
-    setUserImages(props.auth.user.imgs);
   }, []);
 
   return (
@@ -132,10 +152,24 @@ function ProfileSettings(props) {
         <div
           className={classnames("dropdownImages", imagesShown ? "" : "hidden")}
         >
-            <div className="imgItem" style={{ backgroundImage: `url(${user.profileImg})` }}></div>
+          <div
+            className="imgItem"
+            style={{ backgroundImage: `url(${user.profileImg})` }}
+          ></div>
           {userImages
             ? userImages.map((item, index) => (
-                <div className="imgItem" key={index} style={{ backgroundImage: `url(${item})` }}></div>
+                <div
+                  className="imgItem"
+                  key={index}
+                  style={{ backgroundImage: `url(${item})` }}
+                >
+                  <div className="profile-pic" title="Set as profile picture">
+                    <PersonIcon />
+                  </div>
+                  <div className="cross-delete" title="Delete from gallery" data-val={index} onClick={(e) => handleDelete(e, index)}> 
+                    <ClearIcon />
+                  </div>
+                </div>
               ))
             : null}
 
@@ -144,7 +178,12 @@ function ProfileSettings(props) {
               <AddToPhotosIcon />
             </div>
           </label>
-          <input type="file" style={{display: "none"}} id="addImg" onChange={handleImageAsFile}></input>
+          <input
+            type="file"
+            style={{ display: "none" }}
+            id="addImg"
+            onChange={handleImageAsFile}
+          ></input>
         </div>
       </div>
     </div>
@@ -160,4 +199,8 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps, { updateUser, logoutUser, deleteSwiped })(ProfileSettings);
+export default connect(mapStateToProps, {
+  updateUser,
+  logoutUser,
+  deleteSwiped,
+})(ProfileSettings);

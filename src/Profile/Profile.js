@@ -10,8 +10,6 @@ function Profile(props) {
     setUser(props.auth.user);
   }, []);
 
-  console.log(user);
-
   return (
     <div className="cardContainer">
       <div className="swipe">
