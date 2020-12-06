@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Profile.css";
 import PropTypes from "prop-types";
+import { updateUser } from "../actions/authActions";
 import { connect } from "react-redux";
 
 function Profile(props) {
@@ -8,25 +9,34 @@ function Profile(props) {
 
   useEffect(() => {
     setUser(props.auth.user);
-  }, []);
+  }, [props]);
+
+  function updateUser() {
+    const userData = {
+      user: props.auth.user,
+    };
+    props.updateUser(userData);
+  }
 
   return (
-    <div className="cardContainer">
-      <div className="swipe">
-        <div
-          className="card"
-          style={{ backgroundImage: `url(${user.profileImg})` }}
-        >
-          <div className="desc-container">
-            <h3>
-              {user.name}
-              <span className="age">
-                &nbsp;
-                {new Date().getFullYear() -
-                  new Date(user.birthDate).getFullYear()}
-              </span>
-            </h3>
-            <div className="desc">{user.description}</div>
+    <div>
+      <div className="cardContainer">
+        <div className="swipe">
+          <div
+            className="card"
+            style={{ backgroundImage: `url(${user.profileImg})` }}
+          >
+            <div className="desc-container">
+              <h3>
+                {user.name}
+                <span className="age">
+                  &nbsp;
+                  {new Date().getFullYear() -
+                    new Date(user.birthDate).getFullYear()}
+                </span>
+              </h3>
+              <div className="desc">{user.description}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -42,4 +52,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps, { updateUser })(Profile);

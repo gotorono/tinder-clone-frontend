@@ -3,11 +3,11 @@ import "./ProfileSettings.css";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { updateUser, logoutUser, deleteSwiped } from "../actions/authActions";
+import { logoutUser, deleteSwiped, updateUser } from "../actions/authActions";
 
 import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
 import ClearIcon from "@material-ui/icons/Clear";
-import PersonIcon from '@material-ui/icons/Person';
+import PersonIcon from "@material-ui/icons/Person";
 
 import axios from "../axios";
 
@@ -18,11 +18,14 @@ import { storage } from "../firebase/firebase";
 import Resizer from "react-image-file-resizer";
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
+
 
 function ProfileSettings(props) {
   const [user, setUser] = useState({});
   const [userImages, setUserImages] = useState([]);
   const [imagesShown, setImagesShown] = useState(false);
+  const [canSetProfile, setCanSetProfile] = useState(true);
 
   function onLogoutClick(e) {
     e.preventDefault();
@@ -52,11 +55,15 @@ function ProfileSettings(props) {
 
   function uploadImg(imgURL) {
     axios
-      .post("/tinder/users/uploadimg", {
+      .post("/tinder/users/imgs/upload", {
         id: user.id,
         img: imgURL,
       })
-      .then(updateUser());
+      .then(
+        setTimeout(function () {
+          fetchImgs();
+        }, 250)
+      );
   }
 
   const handleImageAsFile = async (e) => {
@@ -90,21 +97,19 @@ function ProfileSettings(props) {
     }
   };
 
+  function updateUser() {
+    const userData = {
+      user: props.auth.user,
+    };
+    props.updateUser(userData);
+  }
+
   function deleteSwipedFnc(e) {
     e.preventDefault();
     const userData = {
       user: props.auth.user,
     };
     props.deleteSwiped(userData);
-  }
-
-  async function updateUser() {
-    const userData = {
-      user: props.auth.user,
-    };
-
-    await props.updateUser(userData);
-    fetchImgs();
   }
 
   async function fetchImgs() {
@@ -114,14 +119,43 @@ function ProfileSettings(props) {
     setUserImages(req.data);
   }
 
-  const handleDelete = (e, index) => {
-    e.preventDefault();
-    console.log(index);
-  }
+  const setProfilePic = (e, imgID, url) => {
+    if (canSetProfile === true) {
+      setCanSetProfile(false);
+      axios
+        .post("/tinder/users/imgs/setprofile", {
+          id: user.id,
+          imgID: imgID,
+          url: url,
+        })
+        .then(() => {
+          setTimeout(function () {
+            fetchImgs();
+          }, 500);
+          setTimeout(function () {
+            updateUser();
+            setCanSetProfile(true);
+          }, 1000);
+        });
+    }
+  };
+
+  const handleDelete = (e, imgID) => {
+    axios
+      .post("/tinder/users/imgs/delete", {
+        id: user.id,
+        imgID: imgID,
+      })
+      .then(
+        setTimeout(function () {
+          fetchImgs();
+        }, 250)
+      );
+  };
 
   useEffect(() => {
-    updateUser();
     setUser(props.auth.user);
+    fetchImgs();
   }, []);
 
   return (
@@ -142,7 +176,7 @@ function ProfileSettings(props) {
             className={classnames("dropdown", imagesShown ? "active" : "")}
             onClick={(e) => showImages(e)}
           >
-            <span>Your images</span>
+            <span className="symbolGallery"><PhotoLibraryIcon /></span>
             <span className="symbolsBirth">
               <span className="css-1okebmr-indicatorSeparator"></span>
               <ExpandMoreIcon />
@@ -154,23 +188,33 @@ function ProfileSettings(props) {
         >
           <div
             className="imgItem"
-            style={{ backgroundImage: `url(${user.profileImg})` }}
+            style={{ backgroundImage: `url(${userImages[0]})` }}
           ></div>
           {userImages
-            ? userImages.map((item, index) => (
-                <div
-                  className="imgItem"
-                  key={index}
-                  style={{ backgroundImage: `url(${item})` }}
-                >
-                  <div className="profile-pic" title="Set as profile picture">
-                    <PersonIcon />
+            ? userImages.map((item, index) =>
+                index !== 0 ? (
+                  <div
+                    className="imgItem"
+                    key={index}
+                    style={{ backgroundImage: `url(${item.url})` }}
+                  >
+                    <div
+                      className="profile-pic"
+                      title="Set as profile picture"
+                      onClick={(e) => setProfilePic(e, item.id, item.url)}
+                    >
+                      <PersonIcon />
+                    </div>
+                    <div
+                      className="cross-delete"
+                      title="Delete from gallery"
+                      onClick={(e) => handleDelete(e, item.id)}
+                    >
+                      <ClearIcon />
+                    </div>
                   </div>
-                  <div className="cross-delete" title="Delete from gallery" data-val={index} onClick={(e) => handleDelete(e, index)}> 
-                    <ClearIcon />
-                  </div>
-                </div>
-              ))
+                ) : null
+              )
             : null}
 
           <label htmlFor="addImg" className="addImg">
@@ -200,7 +244,7 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  updateUser,
   logoutUser,
   deleteSwiped,
+  updateUser
 })(ProfileSettings);
