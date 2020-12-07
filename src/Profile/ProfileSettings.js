@@ -62,6 +62,7 @@ function ProfileSettings(props) {
       .then(
         setTimeout(function () {
           fetchImgs();
+          updateUser();
         }, 250)
       );
   }
@@ -149,6 +150,7 @@ function ProfileSettings(props) {
       .then(
         setTimeout(function () {
           fetchImgs();
+          updateUser();
         }, 250)
       );
   };
