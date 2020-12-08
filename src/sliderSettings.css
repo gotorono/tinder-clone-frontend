@@ -1,0 +1,45 @@
+.slick-prev {
+    left: 10px !important;
+    z-index: 1;
+}
+
+.slick-next {
+    right: 10px !important;
+}
+
+.itemWrapper {
+    outline: none !important;
+}
+
+.slick-slider,
+.slick-list,
+.slick-track,
+.slick-track div div {
+    height: 100%;
+}
+
+.backgroundItem {
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+
+.slick-next, .slick-prev {
+    color: white !important;
+    transition: opacity 200ms ease, visibility 0ms ease 200ms !important;
+    opacity: 1;
+    visibility: visible;
+}
+
+.slick-next {
+    font-size: 2em !important;
+}
+
+.slick-prev {
+    font-size: 2em !important;
+}
+
+.slick-disabled {
+    opacity: 0;
+    visibility: hidden;
+}

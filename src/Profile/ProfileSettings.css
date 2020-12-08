@@ -1,6 +1,6 @@
 button.dropdown {
-    margin: 0 auto;
     margin-top: 20px;
+    margin-left: 10px;
     margin-bottom: 10px;
     padding: 0;
     padding-left: .75em;
@@ -14,7 +14,7 @@ button.dropdown {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    width: 200px;
+    width: 100px;
     position: relative;
     transition: border-color 100ms ease;
 }
@@ -81,28 +81,6 @@ button.dropdown span svg {
     display:flex;
     justify-content: center;
     flex-wrap: wrap;
-}
-
-.imgItem {
-    position: relative;
-    height: 200px;
-    width: 145px;
-    border-radius: 4px;
-    margin: 5px 0 5px 5px;
-    background-size: cover;
-    background-position: center top;
-    background-repeat: no-repeat;
-    box-shadow: 0 0 4px 2px rgba(0,0,0,0.25);
-}
-
-.imgItem.plus {
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: white;
-    box-shadow: inset 0 0 8px 2px rgba(0,0,0,0.085);
-    border: 2px solid rgb(228, 228, 228);
 }
 
 .imgItem.plus svg {

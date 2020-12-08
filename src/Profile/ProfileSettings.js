@@ -2,12 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ProfileSettings.css";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import classnames from "classnames";
 import { logoutUser, deleteSwiped, updateUser } from "../actions/authActions";
-
-import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
-import ClearIcon from "@material-ui/icons/Clear";
-import PersonIcon from "@material-ui/icons/Person";
 
 import axios from "../axios";
 
@@ -16,9 +11,6 @@ import cryptoRandomString from "crypto-random-string";
 import { storage } from "../firebase/firebase";
 
 import Resizer from "react-image-file-resizer";
-
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 
 
 function ProfileSettings(props) {
@@ -171,66 +163,6 @@ function ProfileSettings(props) {
         <button className="styled" onClick={(e) => onLogoutClick(e)}>
           Logout
         </button>
-      </div>
-      <div className="dropdownImagesWrapper">
-        <div>
-          <button
-            className={classnames("dropdown", imagesShown ? "active" : "")}
-            onClick={(e) => showImages(e)}
-          >
-            <span className="symbolGallery"><PhotoLibraryIcon /></span>
-            <span className="symbolsBirth">
-              <span className="css-1okebmr-indicatorSeparator"></span>
-              <ExpandMoreIcon />
-            </span>
-          </button>
-        </div>
-        <div
-          className={classnames("dropdownImages", imagesShown ? "" : "hidden")}
-        >
-          <div
-            className="imgItem"
-            style={{ backgroundImage: `url(${userImages[0]})` }}
-          ></div>
-          {userImages
-            ? userImages.map((item, index) =>
-                index !== 0 ? (
-                  <div
-                    className="imgItem"
-                    key={index}
-                    style={{ backgroundImage: `url(${item.url})` }}
-                  >
-                    <div
-                      className="profile-pic"
-                      title="Set as profile picture"
-                      onClick={(e) => setProfilePic(e, item.id, item.url)}
-                    >
-                      <PersonIcon />
-                    </div>
-                    <div
-                      className="cross-delete"
-                      title="Delete from gallery"
-                      onClick={(e) => handleDelete(e, item.id)}
-                    >
-                      <ClearIcon />
-                    </div>
-                  </div>
-                ) : null
-              )
-            : null}
-
-          <label htmlFor="addImg" className="addImg">
-            <div className="imgItem plus">
-              <AddToPhotosIcon />
-            </div>
-          </label>
-          <input
-            type="file"
-            style={{ display: "none" }}
-            id="addImg"
-            onChange={handleImageAsFile}
-          ></input>
-        </div>
       </div>
     </div>
   );

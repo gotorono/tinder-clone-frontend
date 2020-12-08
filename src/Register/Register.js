@@ -20,6 +20,8 @@ import classnames from "classnames";
 
 import Resizer from "react-image-file-resizer";
 
+import { orientationOptions, genderOptions } from '../variables';
+
 import cryptoRandomString from "crypto-random-string";
 
 import { storage } from "../firebase/firebase";
@@ -149,18 +151,6 @@ function Register(props) {
       );
     }
   }
-
-  const genderOptions = [
-    { value: "M", label: "Male" },
-    { value: "F", label: "Female" },
-    { value: "U", label: "Undefined" },
-  ];
-
-  const orientationOptions = [
-    { value: "hetero", label: "Heterosexual" },
-    { value: "homo", label: "Homosexual" },
-    { value: "bi", label: "Bisexual" },
-  ];
 
   return (
     <div className="registerWrapper">

@@ -4,6 +4,12 @@ import "./TinderCards.css";
 import { updateUser } from "./actions/authActions";
 import axios from "./axios";
 
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { sliderSettings } from "./sliderSettings";
+
+import Slider from 'react-slick';
+
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
@@ -150,9 +156,18 @@ function TinderCards(props) {
             onCardLeftScreen={() => outOfFrame(person.name)}
           >
             <div
-              style={{ backgroundImage: `url(${person.profileImg})` }}
               className="card"
             >
+              <Slider {...sliderSettings}>
+              <div className="itemWrapper">
+                    <div style={{backgroundImage: `url(${person.profileImg})` }} className="backgroundItem"></div>
+                </div>
+              {person.imgs.map( (item, index) => (
+                <div className="itemWrapper" key={index}>
+                  <div style={{ backgroundImage: `url(${item.url})` }} className="backgroundItem"></div>
+                </div>
+              ) )}
+            </Slider>
               <div className="desc-container">
                 <h3>
                   {person.name}
