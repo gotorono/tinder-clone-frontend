@@ -120,6 +120,26 @@ function Profile(props) {
       );
   }
 
+  async function saveButtonHandler(e) {
+    e.preventDefault();
+
+    await axios
+        .post("/tinder/users/updateProfile", {
+         user: {
+            id: user.id,
+            name: name,
+            description: description,
+            gender: gender,
+            orientation: orientation,
+            birthDate: birthDate
+          }
+        })
+    updateUser();
+
+
+    showOptions(e);
+  }
+
   function showOptions(e) {
     e.preventDefault();
     optionsOpen ? setOptionsOpen(false) : setOptionsOpen(true);
@@ -204,6 +224,11 @@ function Profile(props) {
 
   useEffect(() => {
     setUser(props.auth.user);
+    setGender(props.auth.user.gender);
+    setOrientation(props.auth.user.orientation);
+    setName(props.auth.user.name);
+    setBirthDate(new Date(props.auth.user.birthDate));
+    setDescription(props.auth.user.description);
     fetchImgs();
     if (props.errors) setErrors(props.errors);
   }, [props]);
@@ -257,19 +282,20 @@ function Profile(props) {
               <div className="fixedWrapper">
                 <button
                   className="styled closeOptions"
-                  onClick={(e) => showOptions(e)}
+                  onClick={(e) => saveButtonHandler(e)}
                 >
                   <div className="flex-center">
-                    <span className="flex-center close">
+                    {/* <span className="flex-center close">
                       <ClearIcon />
-                    </span>
-                    <span>Zavřít</span>
+                    </span> */}
+                    <span>Save</span>
                   </div>
                 </button>
               </div>
             </div>
             <div className="imgItemsContainer">
               <div
+                title="Current profile image"
                 className="imgItem"
                 style={{ backgroundImage: `url(${userImagesOptions[0]})` }}
               ></div>
@@ -279,7 +305,7 @@ function Profile(props) {
                       item !== null ? (
                         <div
                           className="imgItem"
-                          key={index}
+                          key={item.url}
                           style={{ backgroundImage: `url(${item.url})` }}
                         >
                           <div
@@ -298,7 +324,7 @@ function Profile(props) {
                           </div>
                         </div>
                       ) : (
-                        <label htmlFor="addImg" className="addImg">
+                        <label htmlFor="addImg" className="addImg" key={index}>
                           <div className="imgItem plus">
                             <div className="addIconWrapper">
                               <AddIcon />
@@ -321,10 +347,12 @@ function Profile(props) {
               <div>
                 <div>First name</div>
                 <input
+                  spellCheck="false"
                   className="styled"
                   type="text"
                   placeholder="First name"
-                  value={user.name}
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
                 ></input>
               </div>
               {/* Description */}
@@ -337,7 +365,6 @@ function Profile(props) {
                   className="styled"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Tell us something about yourself"
                 ></textarea>
               </div>
               {/* Gender */}
@@ -351,6 +378,9 @@ function Profile(props) {
                   onChange={(e) => setGender(e.value)}
                   options={genderOptions}
                   isSearchable={false}
+                  value={genderOptions.filter(
+                    (option) => option.value === gender
+                  )}
                   styles={customStyles}
                   placeholder="Select gender"
                 />
@@ -370,6 +400,9 @@ function Profile(props) {
                   onChange={(e) => setOrientation(e.value)}
                   options={orientationOptions}
                   isSearchable={false}
+                  value={orientationOptions.filter(
+                    (option) => option.value === orientation
+                  )}
                   styles={customStyles}
                   placeholder="Select orientation"
                 />
@@ -380,69 +413,66 @@ function Profile(props) {
               </div>
               {/* Birth date */}
               <div className="birthDateWrapper">
-              <div className="inputTitle">Birth date</div>
+                <div className="inputTitle">Birth date</div>
 
-              <button
-                className={classnames(
-                  calendarVisible ? "active" : "",
-                  birthDate ? "active hasValue" : "placeholder",
-                  errors.birthDate ? "invalid" : ""
-                )}
-                id="birthDateButton"
-                onClick={(e) => birthDateClicked(e)}
-              >
-                <span className="textBirth">
-                  {birthDate
-                    ? birthDate.getDate() +
-                      ". " +
-                      (birthDate.getMonth() + 1) +
-                      ". " +
-                      birthDate.getFullYear()
-                    : "Select birth date"}
-                </span>
-                <span
+                <button
                   className={classnames(
-                    "symbolsBirth",
-                    calendarVisible ? "hover" : ""
+                    calendarVisible ? "active" : "",
+                    birthDate ? "active hasValue" : "placeholder",
+                    errors.birthDate ? "invalid" : ""
                   )}
+                  id="birthDateButton"
+                  onClick={(e) => birthDateClicked(e)}
                 >
-                  <span className="css-1okebmr-indicatorSeparator"></span>
-                  <ExpandMoreIcon />
-                </span>
-              </button>
-              <Calendar
-                inputRef={clickRef}
-                onClickDay={() => birthDateClicked(null)}
-                className={classnames(calendarVisible ? "" : "hidden")}
-                onChange={(e) => setBirthDate(e)}
-                maxDate={
-                  new Date(
-                    new Date().setFullYear(new Date().getFullYear() - 18)
-                  )
-                }
-                minDate={
-                  new Date(
-                    new Date().setFullYear(new Date().getFullYear() - 80)
-                  )
-                }
-                defaultActiveStartDate={
-                  new Date(
-                    new Date().setFullYear(new Date().getFullYear() - 18)
-                  )
-                }
-              />
+                  <span className="textBirth">
+                    {birthDate
+                      ? birthDate.getDate() +
+                        ". " +
+                        (birthDate.getMonth() + 1) +
+                        ". " +
+                        birthDate.getFullYear()
+                      : "Select birth date"}
+                  </span>
+                  <span
+                    className={classnames(
+                      "symbolsBirth",
+                      calendarVisible ? "hover" : ""
+                    )}
+                  >
+                    <span className="css-1okebmr-indicatorSeparator"></span>
+                    <ExpandMoreIcon />
+                  </span>
+                </button>
+                <Calendar
+                  value={birthDate}
+                  inputRef={clickRef}
+                  onClickDay={() => birthDateClicked(null)}
+                  className={classnames(calendarVisible ? "" : "hidden")}
+                  onChange={(e) => setBirthDate(e)}
+                  maxDate={
+                    new Date(
+                      new Date().setFullYear(new Date().getFullYear() - 18)
+                    )
+                  }
+                  minDate={
+                    new Date(
+                      new Date().setFullYear(new Date().getFullYear() - 80)
+                    )
+                  }
+                />
 
-              <div className="errorWrapper">
-                <span>{errors.birthDate}</span>
+                <div className="errorWrapper">
+                  <span>{errors.birthDate}</span>
+                </div>
               </div>
-            </div>
+              <div className="spacer-bottom"></div>
             </div>
           </div>
         </div>
       </div>
       <div style={{ textAlign: "center" }}>
         <button className="styled" onClick={(e) => showOptions(e)}>
-          Upravit
+          Change
         </button>
       </div>
     </div>
