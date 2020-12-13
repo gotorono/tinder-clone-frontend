@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./Matches.css";
 import axios from "../axios";
 import { connect } from "react-redux";
@@ -27,6 +28,7 @@ function Matches(props) {
       <div className="title">Your matches &#128293;</div>
       <div className="matchesFlexWrapper">
       {matches ? matches.map((person, index) => (
+        <Link to={`/app/messages/${person._id}`}>
         <div className="match" key={index}>
           <div
             style={{ backgroundImage: `url(${person.profileImg})` }}
@@ -37,6 +39,7 @@ function Matches(props) {
             </div>
           </div>
         </div>
+        </Link>
       )) : null}
     </div>
     </div>

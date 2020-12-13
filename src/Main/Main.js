@@ -4,13 +4,14 @@ import "./Main.css";
 
 import Header from "../Header";
 import Messages from "../Messages/Messages";
+import MessagesList from "../Messages/MessagesList";
 import Matches from "../Matches/Matches";
 import Profile from "../Profile/Profile";
 import ProfileSettings from "../Profile/ProfileSettings";
 import TinderCards from "../TinderCards";
 import SwipeButtons from "../SwipeButtons";
 
-function Main() {
+function Main(props) {
   const [refresh, setRefresh] = useState({ swipe: 0 });
 
   const [matchUser, setMatchUser] = useState("");
@@ -39,12 +40,22 @@ function Main() {
         case "profile":
           return <ProfileSettings />;
         case "messages":
-          return <Messages />;
+          return <MessagesList />;
       }
     }
   }
 
+  if(props.match.params.id) {
+  }
+
   function _renderMainComp() {
+    if(props.match.params.id) {
+      return (
+        <div className="app">
+          <Messages id={props.match.params.id} />
+        </div>
+      );
+    }
     if (window.location.pathname === "/app/profile") {
       return (
         <div className="app">

@@ -11,6 +11,7 @@ import LandingPage from './LandingPage/LandingPage';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from 'react-redux';
 import jwt_decode from 'jwt-decode';
+import io from 'socket.io-client';
 
 //Declared
 import store from './store';
@@ -32,6 +33,8 @@ if(localStorage.jwtToken) {
 }
 
 function App() {
+  const socket = io("http://localhost:8001");
+
   return (
     <Provider store={store}>
     <Router>
@@ -49,6 +52,8 @@ function App() {
         {/* <PrivateRoute exact path="/messages" component={Main} /> */}
 
         <PrivateRoute exact path="/app/profile" component={Main} />
+
+        <PrivateRoute exact path="/app/messages/:id" component={Main} />
 
         <PrivateRoute exact path="/app" component={Main} />
 
