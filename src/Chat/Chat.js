@@ -1,51 +1,73 @@
 import React, { useState, useEffect } from "react";
 import "./Chat.css";
 
-import { socket } from '../socket';
+import { socket } from "../socket";
 
-import { getRoomString } from '../variables';
+import { getRoomString } from "../variables";
 
 import { connect } from "react-redux";
 
 function Chat(props) {
-
-  console.log(getRoomString(props.auth.user.id, props.id));
-
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  const roomString = getRoomString(props.auth.user.id, props.id);
 
   useEffect(() => {
-    socket.emit('join', {  });
-  })
+    socket.emit("join", roomString);
+  }, []);
 
-  const handleMessageBox = (e) => {
-    setMessage(e.target.value);
-  }
+  console.log(messages);
 
-  const handleSendMessage = () => {
-    //socket.emit('message', {for: props.id, msg: message});
-  }
+  useEffect(() => {
+    socket.on("receiveMsg", (msg) => {
+      setMessages([...messages, msg]);
+    });
+  }, [messages]);
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    socket.emit("message", {
+      roomString,
+      message: message,
+      origin: props.auth.user.id,
+    });
+    setMessage("");
+  };
 
   return (
     <div className="chatWrapper">
       <div className="chatMessagesWrapper">
-        <div className="message right">
-          <div className="messageTextWrapper">
-            <span>Message from me random text random text random text random text random text random text random text random text </span>
-          </div>
-        </div>
-        <div className="message left">
-          <div className="messageTextWrapper">
-          <span>Random text text text</span>
-          </div>
-        </div>
+        {messages.map((msgObject, index) => (
+          msgObject.origin === props.auth.user.id ? (
+            <div className="message right" key={index}>
+              <div className="messageTextWrapper">
+                <span>{msgObject.message}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="message left" key={index}>
+              <div className="messageTextWrapper">
+                <span>{msgObject.message}</span>
+              </div>
+            </div>
+          )
+        ))}
       </div>
       <div className="messageField">
-        <input type="text" onKeyUp={(e) => handleMessageBox(e)} />
+        <input
+          type="text"
+          onKeyPress={(e) => e.key === 'Enter' ? handleSendMessage(e) : null}
+          onChange={(e) => setMessage(e.target.value)}
+          value={message}
+        />
 
-        <input type="submit" value="SEND" onClick={handleSendMessage}/>
-
-
-        </div>
+        <input
+          type="submit"
+          value="SEND"
+          onClick={(e) => handleSendMessage(e)}
+        />
+      </div>
     </div>
   );
 }

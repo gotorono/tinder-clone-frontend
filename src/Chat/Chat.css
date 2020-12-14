@@ -15,7 +15,7 @@
 }
 
 .message {
-    padding: 1em 0;
+    padding: .25em 0;
     margin: .25em 0;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .message.right .messageTextWrapper {
-    margin-left: 55%;
+    margin-left: auto;
 }
 
 .message.left .messageTextWrapper {

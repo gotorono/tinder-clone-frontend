@@ -28,8 +28,8 @@ function Matches(props) {
       <div className="title">Your matches &#128293;</div>
       <div className="matchesFlexWrapper">
       {matches ? matches.map((person, index) => (
-        <Link to={`/app/messages/${person._id}`}>
-        <div className="match" key={index}>
+        <Link to={`/app/messages/${person._id}`} key={person._id}>
+        <div className="match">
           <div
             style={{ backgroundImage: `url(${person.profileImg})` }}
             className="matchCard"
