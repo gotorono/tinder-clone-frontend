@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import TinderCard from "react-tinder-card";
 import "./TinderCards.css";
-import { updateUser } from "./actions/authActions";
 import axios from "./axios";
 
 import "slick-carousel/slick/slick.css";
@@ -41,7 +40,7 @@ function TinderCards(props) {
   }
 
   useEffect(() => {
-    updateUser();
+    fetchData();
     
   }, []);
 
@@ -67,15 +66,6 @@ function TinderCards(props) {
       params: { user: props.auth.user.id },
     });
     setPeople(req.data);
-  }
-
-  async function updateUser() {
-    const userData = {
-      user: props.auth.user,
-    };
-
-    await props.updateUser(userData);
-    fetchData();
   }
 
   const childRefs = useMemo(
@@ -133,8 +123,6 @@ function TinderCards(props) {
       default:
         break;
     }
-    //if(people.length < 2)
-    //updateUser();
 
     origin = 'none';
   };
@@ -187,6 +175,6 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps, { updateUser })(
+export default connect(mapStateToProps)(
   withRouter(TinderCards)
 );

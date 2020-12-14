@@ -9,3 +9,14 @@ export const orientationOptions = [
     { value: "homo", label: "Homosexual" },
     { value: "bi", label: "Bisexual" },
   ];
+
+export const getRoomString = (currentUserID, sendingMessageToID) => {
+  let roomName = currentUserID + sendingMessageToID;
+  roomName = roomName.split("");
+  roomName.sort();
+  roomName = roomName.join("");
+  return roomName;
+
+  //01111224444444555556677788abbccccddddddddeefffff
+  //01111224444444555556677788abbccccddddddddeefffff
+}

@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import "./Main.css";
 
 import Header from "../Header";
-import Messages from "../Messages/Messages";
-import MessagesList from "../Messages/MessagesList";
+import Chat from "../Chat/Chat";
+import ChatList from "../Chat/ChatList";
 import Matches from "../Matches/Matches";
 import Profile from "../Profile/Profile";
 import ProfileSettings from "../Profile/ProfileSettings";
@@ -40,7 +40,7 @@ function Main(props) {
         case "profile":
           return <ProfileSettings />;
         case "messages":
-          return <MessagesList />;
+          return <ChatList />;
       }
     }
   }
@@ -52,7 +52,7 @@ function Main(props) {
     if(props.match.params.id) {
       return (
         <div className="app">
-          <Messages id={props.match.params.id} />
+          <Chat id={props.match.params.id} />
         </div>
       );
     }
