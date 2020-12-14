@@ -34,16 +34,17 @@
 
 .message.right .messageTextWrapper {
     margin-left: auto;
+    border-radius: 24px 24px 0 24px;
 }
 
 .message.left .messageTextWrapper {
     margin-right: 55%;
+    border-radius: 24px 24px 24px 0;
 }   
 
 .message .messageTextWrapper {
     background-color: white;
     padding: 1em 1.5em;
-    border-radius: 24px;
     width: fit-content;
 }
 

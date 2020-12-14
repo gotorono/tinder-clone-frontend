@@ -6,6 +6,9 @@ import axios from "../axios";
 import { socket } from "../socket";
 
 import { getRoomString } from "../variables";
+import ScrollToBottom from 'react-scroll-to-bottom';
+
+import { animateScroll } from 'react-scroll';
 
 import { connect } from "react-redux";
 
@@ -15,16 +18,26 @@ function Chat(props) {
 
   const roomString = getRoomString(props.auth.user.id, props.id);
 
+  const scrollToBottom = () => {
+    animateScroll.scrollToBottom({
+      containerId: "chatMessagesWrapper",
+      duration: 0,
+      delay: 0,
+      smooth: false
+    })
+  }
+
   useEffect(() => {
     socket.emit("join", roomString);
     fetchMessages();
 
     return () => socket.emit("leave", roomString);
-  }, []);
+  }, [props.id]);
 
   useEffect(() => {
     socket.on("receiveMsg", (msg) => {
       setMessages([...messages, msg]);
+      scrollToBottom();
     });
 
     return () => {
@@ -37,6 +50,7 @@ function Chat(props) {
       params: { roomString },
     });
     setMessages(req.data.map( ({body, from }) => ({message: body, origin: from}) ))
+    scrollToBottom();
   }
 
   const handleSendMessage = (e) => {
@@ -55,7 +69,7 @@ function Chat(props) {
 
   return (
     <div className="chatWrapper">
-      <div className="chatMessagesWrapper">
+      <div className="chatMessagesWrapper" id="chatMessagesWrapper">
         {messages.map((msgObject, index) =>
           msgObject.origin === props.auth.user.id ? (
             <div className="message right" key={index}>
