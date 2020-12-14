@@ -41,7 +41,6 @@ function TinderCards(props) {
 
   useEffect(() => {
     fetchData();
-    
   }, []);
 
   useEffect(() => {
@@ -62,7 +61,7 @@ function TinderCards(props) {
   }, [props.refresh]);
 
   async function fetchData() {
-    const req = await axios.get("/tinder/cards", {
+    const req = await axios.get("/tinder/cards/get", {
       params: { user: props.auth.user.id },
     });
     setPeople(req.data);
@@ -99,13 +98,13 @@ function TinderCards(props) {
 
     switch (push) {
       case "left":
-        axios.post("/tinder/push/left", {
+        axios.post("/tinder/cards/push/left", {
           userId: props.auth.user.id,
           swipedId: user._id,
         })
         break;
       case "right":
-        axios.post("/tinder/push/right", {
+        axios.post("/tinder/cards/push/right", {
           userId: props.auth.user.id,
           swipedId: user._id,
         }).then(function(data) {
@@ -113,7 +112,7 @@ function TinderCards(props) {
         });
         break;
       case "star":
-        axios.post("/tinder/push/star", {
+        axios.post("/tinder/cards/push/star", {
           userId: props.auth.user.id,
           swipedId: user._id,
         }).then(function(data) {

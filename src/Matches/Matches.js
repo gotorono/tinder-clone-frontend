@@ -8,7 +8,7 @@ function Matches(props) {
   const [matches, setMatches] = useState("");
 
   async function getMatches() {
-    const req = await axios.get("/tinder/matches", {
+    const req = await axios.get("/tinder/cards/matches", {
       params: { user: props.auth.user.id },
     });
     setMatches(req.data);

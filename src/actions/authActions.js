@@ -14,22 +14,7 @@ export const registerUser = (userData, history) => dispatch => {
 };
 
 export const deleteSwiped = userData => dispatch => {
-    axios.post("/tinder/delete/swiped", userData)
-    .then(res => {
-        const { token } = res.data;
-        localStorage.setItem("jwtToken", token);
-        setAuthToken(token);
-        const decoded = jwt_decode(token);
-        dispatch(setCurrentUser(decoded));
-    })
-    .catch(err => dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-    }));
-}
-
-export const getCards = userData => dispatch => {
-    axios.post("/tinder/cards", userData)
+    axios.post("/tinder/cards/delete/swiped", userData)
     .then(res => {
         const { token } = res.data;
         localStorage.setItem("jwtToken", token);
