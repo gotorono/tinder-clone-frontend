@@ -2,6 +2,10 @@ import React, { useState } from "react";
 
 import "./Main.css";
 
+import { socket } from '../socket';
+
+import { connect } from "react-redux";
+
 import Header from "../Header";
 import Chat from "../Chat/Chat";
 import ChatList from "../Chat/ChatList";
@@ -17,6 +21,8 @@ function Main(props) {
   const [matchUser, setMatchUser] = useState("");
 
   const [render, setRender] = useState("matches");
+
+  socket.emit('userid', props.auth.user.id);
 
   function swipe(value) {
     setRefresh({ swipe: value });
@@ -43,9 +49,6 @@ function Main(props) {
           return <ChatList />;
       }
     }
-  }
-
-  if(props.match.params.id) {
   }
 
   function _renderMainComp() {
@@ -83,4 +86,8 @@ function Main(props) {
   );
 }
 
-export default Main;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(Main);

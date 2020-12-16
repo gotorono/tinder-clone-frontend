@@ -12,8 +12,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from 'react-redux';
 import jwt_decode from 'jwt-decode';
 
-import { socket } from './socket';
-
 //Declared
 import store from './store';
 import setAuthToken from './utils/setAuthToken';

@@ -4,8 +4,14 @@ import "./Matches.css";
 import axios from "../axios";
 import { connect } from "react-redux";
 
+import { socket } from '../socket';
+
 function Matches(props) {
   const [matches, setMatches] = useState("");
+
+  socket.on('online', (userId) => {
+    console.log(userId);
+  })
 
   async function getMatches() {
     const req = await axios.get("/tinder/cards/matches", {
