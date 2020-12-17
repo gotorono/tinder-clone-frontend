@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "./Main.css";
 
@@ -22,7 +22,10 @@ function Main(props) {
 
   const [render, setRender] = useState("matches");
 
-  socket.emit('userid', props.auth.user.id);
+  useEffect(() => {
+    socket.emit('userBecameOnline', props.auth.user.id);
+  }, [])
+
 
   function swipe(value) {
     setRefresh({ swipe: value });

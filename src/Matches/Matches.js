@@ -4,6 +4,8 @@ import "./Matches.css";
 import axios from "../axios";
 import { connect } from "react-redux";
 
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+
 import { socket } from "../socket";
 
 function Matches(props) {
@@ -11,6 +13,10 @@ function Matches(props) {
   const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
+    socket.on('sendOnlineMatches', (onlineUsers) => {
+      setOnlineUsers(onlineUsers)
+    })
+
     socket.on("online", (userId) => {
       setOnlineUsers([...new Set([...onlineUsers, userId])]);
     });
@@ -22,6 +28,7 @@ function Matches(props) {
     return () => {
       socket.off();
     };
+
   }, [onlineUsers]);
 
   console.log(onlineUsers);
@@ -35,11 +42,14 @@ function Matches(props) {
 
   useEffect(() => {
     getMatches();
+    socket.emit('getOnlineMatches', props.auth.user.id);
   }, []);
 
   useEffect(() => {
     getMatches();
   }, [props.match]);
+
+  console.log(matches);
 
   return (
     <div className="matchesContainer">
@@ -49,7 +59,7 @@ function Matches(props) {
           ? matches.map((person, index) => (
               <Link to={`/app/messages/${person._id}`} key={person._id}>
                 <div className="match">
-                  {onlineUsers.includes(person._id) ? <div>ONLINE</div> : null}
+                  {onlineUsers.includes(person._id) ? <div className="online"></div> : null}
                   <div
                     style={{ backgroundImage: `url(${person.profileImg})` }}
                     className="matchCard"
