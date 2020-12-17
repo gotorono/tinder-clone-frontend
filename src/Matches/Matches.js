@@ -4,14 +4,27 @@ import "./Matches.css";
 import axios from "../axios";
 import { connect } from "react-redux";
 
-import { socket } from '../socket';
+import { socket } from "../socket";
 
 function Matches(props) {
   const [matches, setMatches] = useState("");
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
-  socket.on('online', (userId) => {
-    console.log(userId);
-  })
+  useEffect(() => {
+    socket.on("online", (userId) => {
+      setOnlineUsers([...new Set([...onlineUsers, userId])]);
+    });
+
+    socket.on("offline", (userId) => {
+      setOnlineUsers(onlineUsers.filter(id => id !== userId));
+    })
+
+    return () => {
+      socket.off();
+    };
+  }, [onlineUsers]);
+
+  console.log(onlineUsers);
 
   async function getMatches() {
     const req = await axios.get("/tinder/cards/matches", {
@@ -28,26 +41,28 @@ function Matches(props) {
     getMatches();
   }, [props.match]);
 
-
   return (
     <div className="matchesContainer">
       <div className="title">Your matches &#128293;</div>
       <div className="matchesFlexWrapper">
-      {matches ? matches.map((person, index) => (
-        <Link to={`/app/messages/${person._id}`} key={person._id}>
-        <div className="match">
-          <div
-            style={{ backgroundImage: `url(${person.profileImg})` }}
-            className="matchCard"
-          >
-            <div className="desc-container">
-              <h3>{person.name}</h3>
-            </div>
-          </div>
-        </div>
-        </Link>
-      )) : null}
-    </div>
+        {matches
+          ? matches.map((person, index) => (
+              <Link to={`/app/messages/${person._id}`} key={person._id}>
+                <div className="match">
+                  {onlineUsers.includes(person._id) ? <div>ONLINE</div> : null}
+                  <div
+                    style={{ backgroundImage: `url(${person.profileImg})` }}
+                    className="matchCard"
+                  >
+                    <div className="desc-container">
+                      <h3>{person.name}</h3>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))
+          : null}
+      </div>
     </div>
   );
 }

@@ -69,7 +69,7 @@ function TinderCards(props) {
 
   const childRefs = useMemo(
     () =>
-      Array(10)
+      Array(100)
         .fill(0)
         .map((i) => React.createRef()),
     []
