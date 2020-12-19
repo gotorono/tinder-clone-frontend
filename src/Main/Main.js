@@ -2,12 +2,16 @@ import React, { useState, useEffect } from "react";
 
 import "./Main.css";
 
-import { socket } from '../socket';
+import { socket } from "../socket";
 
 import { connect } from "react-redux";
 
+import classnames from 'classnames';
+
 import Header from "../Header";
-import Chat from "../Chat/Chat";
+
+import ChatWindow from "../Chat/ChatWindow";
+
 import ChatList from "../Chat/ChatList";
 import Matches from "../Matches/Matches";
 import Profile from "../Profile/Profile";
@@ -22,10 +26,29 @@ function Main(props) {
 
   const [render, setRender] = useState("matches");
 
-  useEffect(() => {
-    socket.emit('userBecameOnline', props.auth.user.id);
-  }, [])
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
+  const [empty, setEmpty] = useState(null);
+
+  useEffect(() => {
+    socket.emit("userBecameOnline", props.auth.user.id);
+  }, []);
+
+  useEffect(() => {
+    socket.on("sendOnlineMatches", (onlineUsers) => {
+      setOnlineUsers(onlineUsers);
+    });
+
+    socket.on("online", (userId) => {
+      setOnlineUsers([...new Set([...onlineUsers, userId])]);
+    });
+
+    socket.on("offline", (userId) => {
+      setOnlineUsers(onlineUsers.filter((id) => id !== userId));
+    });
+
+    return () => {socket.off("sendOnlineMatches"); socket.off("online"); socket.off("offline");};
+  }, [onlineUsers]);
 
   function swipe(value) {
     setRefresh({ swipe: value });
@@ -39,13 +62,17 @@ function Main(props) {
     setMatchUser(value);
   }
 
+  function emptyFnc(value) {
+    setEmpty(value);
+  }
+
   function _renderSubComp() {
     if (window.location.pathname === "/app/profile") {
       return <ProfileSettings />;
     } else {
       switch (render) {
         case "matches":
-          return <Matches match={matchUser} />;
+          return <Matches match={matchUser} onlineUsers={onlineUsers} />;
         case "profile":
           return <ProfileSettings />;
         case "messages":
@@ -55,10 +82,10 @@ function Main(props) {
   }
 
   function _renderMainComp() {
-    if(props.match.params.id) {
+    if (props.match.params.id) {
       return (
         <div className="app">
-          <Chat id={props.match.params.id} />
+          <ChatWindow id={props.match.params.id} onlineUsers={onlineUsers} />
         </div>
       );
     }
@@ -71,8 +98,31 @@ function Main(props) {
     } else {
       return (
         <div className="app">
-          <TinderCards matchFnc={match} refresh={refresh} />
-          <SwipeButtons swipe={swipe} />
+          { empty === true ? (
+            <div className="emptyWrapper">
+              <div className="emptyInside">
+                <div className="pictureEmpty" style={{ backgroundImage: `url(${props.auth.user.profileImg})` }}>
+                  <div className="circleOne"></div>
+                  <div className="circleTwo"></div>
+                  <div className="circleOneCopy"></div>
+                  <div className="circleTwoCopy"></div>
+                </div>
+                <div className="noConnections">No more connections found</div>
+                <div className="tryRealLife">Try real life!</div>
+              </div>
+            </div>
+          ) : (
+            <div className={classnames("", empty !== false ? "hidden" : "")}>
+              <TinderCards
+                matchFnc={match}
+                refresh={refresh}
+                empty={emptyFnc}
+              />
+              {empty !== null ?
+              <SwipeButtons swipe={swipe} />
+     : null} 
+            </div>
+          )}
         </div>
       );
     }

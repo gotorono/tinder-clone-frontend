@@ -13,25 +13,8 @@ function Matches(props) {
   const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
-    socket.on('sendOnlineMatches', (onlineUsers) => {
-      setOnlineUsers(onlineUsers)
-    })
-
-    socket.on("online", (userId) => {
-      setOnlineUsers([...new Set([...onlineUsers, userId])]);
-    });
-
-    socket.on("offline", (userId) => {
-      setOnlineUsers(onlineUsers.filter(id => id !== userId));
-    })
-
-    return () => {
-      socket.off();
-    };
-
-  }, [onlineUsers]);
-
-  console.log(onlineUsers);
+    setOnlineUsers(props.onlineUsers);
+  }, [props.onlineUsers]);
 
   async function getMatches() {
     const req = await axios.get("/tinder/cards/matches", {
@@ -49,7 +32,6 @@ function Matches(props) {
     getMatches();
   }, [props.match]);
 
-  console.log(matches);
 
   return (
     <div className="matchesContainer">
@@ -58,8 +40,8 @@ function Matches(props) {
         {matches
           ? matches.map((person, index) => (
               <Link to={`/app/messages/${person._id}`} key={person._id}>
-                <div className="match">
-                  {onlineUsers.includes(person._id) ? <div className="online"></div> : null}
+                <div className="match" title="Click to chat">
+                  {onlineUsers.includes(person._id) ? <div className="online" title="User is online"></div> : null}
                   <div
                     style={{ backgroundImage: `url(${person.profileImg})` }}
                     className="matchCard"

@@ -4,23 +4,56 @@
     left:0;
     width:100%;
     height:78px;
-    border-top: 1px solid lightgray;
+    border-top: 1px solid rgb(228, 228, 228);
 }
+
+.message.right .userSentMessage {
+    margin-left: 10px;
+}
+
+.message.left .userSentMessage {
+    margin-right: 10px;
+}
+
+.userSentMessage {
+    background-color: white;
+    background-position: top center;
+    background-size: cover;
+    background-repeat: repeat;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.125);
+}
+
+
 
 .chatMessagesWrapper {
     width: 100%;
     padding: .5em 20px;
-    max-height: calc(100% - 78px);
+    max-height: calc(100% - 168px);
+    background-color: white;
     overflow-y: auto;
 }
 
 .message {
     padding: .25em 0;
     margin: .25em 0;
+    display: flex;
+    align-items: flex-end;
 }
 
 .message.right {
     text-align: right;
+}
+
+.message.right:not(.withImg) {
+    margin-right: 65px;
+}
+
+.message.left:not(.withImg) {
+    margin-left: 65px;
+
 }
 
 .message.left {
@@ -34,18 +67,106 @@
 
 .message.right .messageTextWrapper {
     margin-left: auto;
-    border-radius: 24px 24px 0 24px;
+    border-radius: 20px 20px 0 20px;
 }
 
 .message.left .messageTextWrapper {
     margin-right: 55%;
-    border-radius: 24px 24px 24px 0;
+    border-radius: 20px 20px 20px 0;
 }   
 
 .message .messageTextWrapper {
+    background-color: rgb(236, 236, 236);
+    padding: .75em 1.25em;
+    margin-bottom: 2px;
+}
+
+div.chatStatus {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chatStatusText {
+    font-size: 1.125em;
+    color:rgb(85, 85, 85);
+    font-weight: 600;
+}
+
+.borderNoBlur {
+    position: absolute;
     background-color: white;
-    padding: 1em 1.5em;
-    width: fit-content;
+    width: calc(100% + 8px);
+    height:  calc(100% + 8px);
+    z-index: 1;
+    top:-4px;
+    box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.125);
+    left:-4px;
+    border-radius: 50%;
+}
+
+.chatStatusPicWrapper {
+    margin-right: 1.75em;
+    position: relative;
+    width: 3em;
+    height: 3em;
+}
+
+.chatStatusPic {
+    position: absolute;
+    background-color: white;
+    background-position: top center;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+div.currentlyOnline {
+    margin-left: .75em;
+    position: relative;
+    width:.825em;
+    height:.825em;
+    border-radius:50%;
+    box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.125);
+    background-color: rgb(69, 240, 1);
+    border: 2px solid #fff;
+    animation: currentlyOnline 2.5s linear infinite;
+}
+
+div.currentlyOnline::after {
+    content: "";
+    top: -2px;
+    left: -2px;
+    position: absolute;
+    width:100%;
+    height: 100%;
+    border-radius:50%;
+    box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.125);
+    background-color: rgb(69, 240, 1);
+    border: 2px solid #fff;
+    animation: currentlyOnline 2.5s linear infinite 1.25s;
+}
+
+@keyframes currentlyOnline {
+    0% {
+        box-shadow: 0 0 0 0 rgba(75, 223, 16, 0.39);;
+    }
+
+    100% {
+        box-shadow: 0 0 0 15px rgba(0, 255, 0, 0);
+    }
+}
+
+.chatHeader {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    width:100%;
+    height: 90px;
+    background-color: white;
+    border-bottom: 1px solid rgb(228, 228, 228);
 }
 
 .messageField input[type="text"] {
@@ -80,7 +201,9 @@
 
 .chatWrapper {
     position: relative;
-    width:100%;
+    width:70%;
+    min-width: 400px;
+    float:left;
     height:100vh;
     overflow: hidden;
 }

@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { sliderSettings } from "./sliderSettings";
 
-import Slider from 'react-slick';
+import Slider from "react-slick";
 
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -15,7 +15,7 @@ import { withRouter } from "react-router-dom";
 function TinderCards(props) {
   const [people, setPeople] = useState([]);
 
-  let origin = 'none';
+  let origin = "none";
 
   function getLocation() {
     if (navigator.geolocation) {
@@ -23,7 +23,6 @@ function TinderCards(props) {
     }
   }
 
-  
   function showPosition(position) {
     //console.log("Latitude: " + position.coords.latitude);
     //console.log("Longitude: " + position.coords.longitude);
@@ -31,11 +30,19 @@ function TinderCards(props) {
 
   getLocation();
 
+  function handleEmpty(array) {
+    console.log("hadnleEmpty");
+    setTimeout(function () {
+      if (array.length === 0) props.empty(true);
+      else props.empty(false);
+    }, 750);
+  }
+
   function handleMatch(res) {
-    if(props.matchFnc) {
-      setTimeout(function() {
+    if (props.matchFnc) {
+      setTimeout(function () {
         props.matchFnc(res);
-      }, 500)
+      }, 250);
     }
   }
 
@@ -46,17 +53,20 @@ function TinderCards(props) {
   useEffect(() => {
     switch (props.refresh.swipe) {
       case "replay":
-        return;
+        break;
       case "left":
         swipe("left");
-        return;
+        break;
       case "star":
         swipe("right");
-        return;
+        break;
       case "right":
         swipe("right");
+        break;
       case "lightning":
-        return;
+        break;
+      default:
+        break;
     }
   }, [props.refresh]);
 
@@ -65,6 +75,7 @@ function TinderCards(props) {
       params: { user: props.auth.user.id },
     });
     setPeople(req.data);
+    handleEmpty(req.data);
   }
 
   const childRefs = useMemo(
@@ -76,7 +87,7 @@ function TinderCards(props) {
   );
 
   const swipe = (dir) => {
-    origin = 'btn';
+    origin = "btn";
     if (people.length > 0) childRefs[people.length - 1].current.swipe(dir);
   };
 
@@ -88,42 +99,45 @@ function TinderCards(props) {
     );
     setPeople(a);
 
+    handleEmpty(a);
+
     let push;
 
-    if(origin == 'none') 
-      push = direction
-    else 
-      push = props.refresh.swipe;
-    
+    if (origin === "none") push = direction;
+    else push = props.refresh.swipe;
 
     switch (push) {
       case "left":
         axios.post("/tinder/cards/push/left", {
           userId: props.auth.user.id,
           swipedId: user._id,
-        })
+        });
         break;
       case "right":
-        axios.post("/tinder/cards/push/right", {
-          userId: props.auth.user.id,
-          swipedId: user._id,
-        }).then(function(data) {
-          handleMatch(data.data);
-        });
+        axios
+          .post("/tinder/cards/push/right", {
+            userId: props.auth.user.id,
+            swipedId: user._id,
+          })
+          .then(function (data) {
+            handleMatch(data.data);
+          });
         break;
       case "star":
-        axios.post("/tinder/cards/push/star", {
-          userId: props.auth.user.id,
-          swipedId: user._id,
-        }).then(function(data) {
-          handleMatch(data.data);
-        });
+        axios
+          .post("/tinder/cards/push/star", {
+            userId: props.auth.user.id,
+            swipedId: user._id,
+          })
+          .then(function (data) {
+            handleMatch(data.data);
+          });
         break;
       default:
         break;
     }
 
-    origin = 'none';
+    origin = "none";
   };
 
   const outOfFrame = (name) => {
@@ -142,23 +156,32 @@ function TinderCards(props) {
             onSwipe={(dir) => swiped(dir, person)}
             onCardLeftScreen={() => outOfFrame(person.name)}
           >
-            <div
-              className="card"
-            >
+            <div className="card">
               <Slider {...sliderSettings}>
-              <div className="itemWrapper">
-                    <div style={{backgroundImage: `url(${person.profileImg})` }} className="backgroundItem"></div>
+                <div className="itemWrapper">
+                  <div
+                    style={{ backgroundImage: `url(${person.profileImg})` }}
+                    className="backgroundItem"
+                  ></div>
                 </div>
-              {person.imgs.map( (item, index) => (
-                <div className="itemWrapper" key={index}>
-                  <div style={{ backgroundImage: `url(${item.url})` }} className="backgroundItem"></div>
-                </div>
-              ) )}
-            </Slider>
+                {person.imgs.map((item, index) => (
+                  <div className="itemWrapper" key={index}>
+                    <div
+                      style={{ backgroundImage: `url(${item.url})` }}
+                      className="backgroundItem"
+                    ></div>
+                  </div>
+                ))}
+              </Slider>
               <div className="desc-container">
                 <h3>
                   {person.name}
-                  <span className="age"> &nbsp;{new Date().getFullYear() - new Date(person.birthDate).getFullYear()}</span>
+                  <span className="age">
+                    {" "}
+                    &nbsp;
+                    {new Date().getFullYear() -
+                      new Date(person.birthDate).getFullYear()}
+                  </span>
                 </h3>
                 <div className="desc">{person.description}</div>
               </div>
@@ -174,6 +197,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps)(
-  withRouter(TinderCards)
-);
+export default connect(mapStateToProps)(withRouter(TinderCards));

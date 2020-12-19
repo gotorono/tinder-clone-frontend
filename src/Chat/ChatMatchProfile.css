@@ -1,0 +1,62 @@
+.chatMatchProfileWrapper {
+    position: relative;
+    width: 30%;
+    height: 100vh;
+    min-width: 300px;
+    float:left;
+    overflow: hidden;
+    border-left:1px solid rgb(228, 228, 228);
+}
+
+.chatMatchProfileWrapper .card {
+    border-radius: 0;
+    width: 100%;
+    max-height: 65%;
+    min-height: 400px;
+    height: 32.5vw;
+}
+
+.chatMatchProfileWrapper div.online {
+    left: .25em;
+    top:.25em;
+    font-size: 1.25em;
+}
+
+.chatMatchProfileWrapper .inside {
+    padding: 1em;
+}
+
+.chatMatchProfileWrapper .desc-container {
+    height: 100%;
+    background-color: white;
+}
+
+.chatMatchProfileWrapper .desc-container h3 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.chatMatchProfileWrapper .desc-container h3 span.age {
+    font-size: .75em;
+    font-weight: 400;
+}
+
+.chatMatchProfileWrapper .desc {
+    letter-spacing: .025em;
+}
+
+.chatMatchProfileWrapper .gender {
+    display:flex;
+    align-items: center;
+}
+
+.chatMatchProfileWrapper .gender svg {
+    margin-right: 6px;
+}
+
+.chatMatchProfileWrapper .dividerLine {
+    height: 1px;
+    border-top: 1px solid rgb(228, 228, 228);
+    margin: 5px 0;
+    
+}
