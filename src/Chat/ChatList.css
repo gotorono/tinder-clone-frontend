@@ -4,7 +4,6 @@
     align-items: center;
     cursor: pointer;
     padding: 1em 0;
-    margin: .5em 0;
     position: relative;
     transition: all 200ms ease;
 }
@@ -14,6 +13,10 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+
+.chatListingWrapper .chatListingDescWrapper {
+    width: 60%;
 }
 
 .chatListingWrapper:hover {

@@ -25,10 +25,6 @@ function Chat(props) {
 
   const [chatUser, setChatUser] = useState({});
 
-  getMatchString(props.auth.user.id, props.id).then((data) => {
-    setMatchString(data);
-  })
-
   const scrollToBottom = () => {
     animateScroll.scrollToBottom({
       containerId: "chatMessagesWrapper",
@@ -50,6 +46,10 @@ function Chat(props) {
   useEffect(() => {
     if(matchString !== "")
       socket.emit("join", matchString);
+
+      getMatchString(props.auth.user.id, props.id).then((data) => {
+        setMatchString(data);
+      })
 
     fetchMessages();
     getProfile();
