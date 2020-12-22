@@ -1,3 +1,5 @@
+import axios from './axios';
+
 export const genderOptions = [
     { value: "M", label: "Male" },
     { value: "F", label: "Female" },
@@ -10,13 +12,13 @@ export const orientationOptions = [
     { value: "bi", label: "Bisexual" },
   ];
 
-export const getRoomString = (currentUserID, sendingMessageToID) => {
-  let roomName = currentUserID + sendingMessageToID;
-  roomName = roomName.split("");
-  roomName.sort();
-  roomName = roomName.join("");
-  return roomName;
+export const getMatchString = async(currentUserID, sendingMessageToID) => {
 
-  //01111224444444555556677788abbccccddddddddeefffff
-  //01111224444444555556677788abbccccddddddddeefffff
+  const matchString = await axios.get('/tinder/users/matchString', {params: {
+    _id: currentUserID,
+    matchId: sendingMessageToID
+  }})
+
+  return matchString.data;
+
 }

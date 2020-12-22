@@ -4,9 +4,15 @@
     height: 100vh;
     min-width: 300px;
     float:left;
-    overflow: hidden;
+    overflow: auto;
     border-left:1px solid rgb(228, 228, 228);
+    -ms-overflow-style: none;
+    scrollbar-width: none;  
 }
+
+.chatMatchProfileWrapper::-webkit-scrollbar {
+    display: none;
+  }
 
 .chatMatchProfileWrapper .card {
     border-radius: 0;

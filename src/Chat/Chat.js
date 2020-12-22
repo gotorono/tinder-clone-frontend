@@ -9,7 +9,7 @@ import { socket } from "../socket";
 
 import Scrollbar from "../Scrollbar";
 
-import { getRoomString } from "../variables";
+import { getMatchString } from "../variables";
 
 import { animateScroll } from "react-scroll";
 
@@ -21,9 +21,13 @@ function Chat(props) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [matchDate, setMatchDate] = useState("");
 
+  const [matchString, setMatchString] = useState("");
+
   const [chatUser, setChatUser] = useState({});
 
-  const roomString = getRoomString(props.auth.user.id, props.id);
+  getMatchString(props.auth.user.id, props.id).then((data) => {
+    setMatchString(data);
+  })
 
   const scrollToBottom = () => {
     animateScroll.scrollToBottom({
@@ -44,16 +48,17 @@ function Chat(props) {
   }, [props.onlineUsers]);
 
   useEffect(() => {
-    socket.emit("join", roomString);
+    if(matchString !== "")
+      socket.emit("join", matchString);
 
     fetchMessages();
     getProfile();
     getMatches();
 
     return () => {
-      socket.emit("leave", roomString);
+      socket.emit("leave", matchString);
     };
-  }, [props.id]);
+  }, [props.id, matchString]);
 
   useEffect(() => {
     socket.on("receiveMsg", msgHandler);
@@ -84,7 +89,7 @@ function Chat(props) {
 
   async function fetchMessages() {
     const req = await axios.get("/tinder/messages/get", {
-      params: { roomString },
+      params: { matchString },
     });
     setMessages(
       req.data.map(({ body, from, timeSent }) => ({
@@ -102,7 +107,7 @@ function Chat(props) {
       socket.emit("message", {
         from: props.auth.user.id,
         to: props.id,
-        roomString,
+        matchString,
         message: message,
         origin: props.auth.user.id,
       });

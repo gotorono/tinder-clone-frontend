@@ -25,6 +25,11 @@ div.errorWrapper {
   border-color: rgba(207, 64, 64, 0.404) !important;
 }
 
+a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
 button.styled {
   padding: 15px 30px;
   border-radius: 18px;
