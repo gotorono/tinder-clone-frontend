@@ -4,13 +4,18 @@ import "./Matches.css";
 import axios from "../axios";
 import { connect } from "react-redux";
 
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import classnames from 'classnames';
 
 import { socket } from "../socket";
 
 function Matches(props) {
   const [matches, setMatches] = useState("");
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [activeChat, setActiveChat] = useState("");
+
+  useEffect(() => {
+    setActiveChat(props.activeChat);
+  }, [props.activeChat])
 
   useEffect(() => {
     setOnlineUsers(props.onlineUsers);
@@ -40,7 +45,7 @@ function Matches(props) {
         {matches
           ? matches.map((person, index) => (
               <Link to={`/app/messages/${person._id}`} key={person._id}>
-                <div className="match" title="Click to chat">
+                <div className={classnames("match", activeChat === person._id ? "active" : null, activeChat === undefined ? "" : "faded")} title="Click to chat">
                   {onlineUsers.includes(person._id) ? <div className="online" title="User is online"></div> : null}
                   <div
                     style={{ backgroundImage: `url(${person.profileImg})` }}

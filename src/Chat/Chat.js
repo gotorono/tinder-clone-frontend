@@ -167,7 +167,7 @@ function Chat(props) {
             <div
               className={classnames(
                 "message right",
-                checkIfImg(index) ? "withImg" : null
+                checkIfImg(index) ? "withImg" : null, index === 0 ? "first" : index === messages.length - 1 ? "last" : null
               )}
               key={index}
             >
@@ -187,7 +187,7 @@ function Chat(props) {
             <div
               className={classnames(
                 "message left",
-                checkIfImg(index) ? "withImg" : null
+                checkIfImg(index) ? "withImg" : null, index === 0 ? "first" : index === messages.length - 1 ? "last" : null
               )}
               key={index}
             >

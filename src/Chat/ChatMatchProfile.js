@@ -3,8 +3,6 @@ import "./ChatMatchProfile.css";
 
 import axios from "../axios";
 
-import { genderOptions } from "../variables";
-
 import { IoIosMale } from "react-icons/io";
 import { IoIosFemale } from "react-icons/io";
 
@@ -18,7 +16,6 @@ import Slider from "react-slick";
 
 function ChatMatchProfile(props) {
   const [matchProfile, setMatchProfile] = useState({});
-  const [onlineUsers, setOnlineUsers] = useState([]);
 
   async function getProfile() {
     const req = await axios.get("/tinder/users/profile/get", {

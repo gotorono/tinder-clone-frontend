@@ -72,11 +72,11 @@ function Main(props) {
     } else {
       switch (render) {
         case "matches":
-          return <Matches match={matchUser} onlineUsers={onlineUsers} />;
+          return <Matches match={matchUser} onlineUsers={onlineUsers} activeChat={props.match.params.id} />;
         case "profile":
           return <ProfileSettings />;
         case "messages":
-          return <ChatList />;
+          return <ChatList activeChat={props.match.params.id} onlineUsers={onlineUsers}/>;
       }
     }
   }

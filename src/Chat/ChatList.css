@@ -6,6 +6,8 @@
     padding: 1em 0;
     position: relative;
     transition: all 200ms ease;
+    background-color: whitesmoke;
+    z-index: 1;
 }
 
 .chatListingWrapper .chatListingInside {
@@ -19,7 +21,15 @@
     width: 60%;
 }
 
-.chatListingWrapper:hover {
+.chatListingWrapper.active {
+    z-index: 10 !important;
+    background-color: white !important;
+}
+
+.chatListingWrapper:hover,
+.chatListingWrapper.active {
+    z-index: 5;
+    background-color: rgb(252, 252, 252);
     box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.125);
 }
 
@@ -34,7 +44,8 @@
     transition: all 200ms ease;
 }
 
-.chatListingWrapper:hover::after {
+.chatListingWrapper:hover::after,
+.chatListingWrapper.active::after {
     background-color: rgba(255, 14, 94, 0.877);
 }
 
@@ -43,6 +54,13 @@
     height: 75px;
     background-size: cover;
     border-radius: 50%;
+    position: relative;
+}
+
+.chatListingPic div.online {
+    right:.1em;
+    bottom:.1em;
+    top: unset;
 }
 
 .chatListingWrapper .chatListingName {

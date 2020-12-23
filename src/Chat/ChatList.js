@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 import "./ChatList.css";
 import { Link } from "react-router-dom";
 
-import axios from "../axios";
+import classnames from 'classnames';
 
-import classnames from "classnames";
+import axios from "../axios";
 
 import { connect } from "react-redux";
 
 function ChatList(props) {
   const [activeChats, setActiveChats] = useState([]);
+  const [currentActiveChat, setCurrentActiveChat] = useState("");
+
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   const getActiveChats = async () => {
     const res = await axios.get("/tinder/users/activeChats", {
@@ -23,18 +26,28 @@ function ChatList(props) {
     getActiveChats();
   }, []);
 
+  useEffect(() => {
+    setCurrentActiveChat(props.activeChat);
+  }, [props.activeChat])
+
+  useEffect(() => {
+    setOnlineUsers(props.onlineUsers);
+  }, [props.onlineUsers]);
+
   console.log(activeChats);
 
   return (
     <div className="chatList">
       {activeChats.map((activeChat) => (
         <Link to={`/app/messages/${activeChat.userId}`} key={activeChat.userId}>
-          <div className="chatListingWrapper">
+          <div className={classnames("chatListingWrapper", currentActiveChat === activeChat.userId ? "active" : "")} >
             <div className="chatListingInside">
             <div
               className="chatListingPic"
               style={{ backgroundImage: `url(${activeChat.pic})` }}
-            ></div>
+            >
+            {onlineUsers.includes(activeChat.userId) ? <div className="online" title="User is online"></div> : null}
+            </div>
             <div className="chatListingDescWrapper">
               <div className="chatListingName">{activeChat.name}</div>
               <div className="chatListingMessage">

@@ -2,12 +2,47 @@
     display:flex;
     align-items: center;
     justify-content: space-between;
-    margin: 20px;
+    margin: 30px;
 }
 
 .header__logo {
     object-fit: contain;
     height: 40px;
+}
+
+.appIcon {
+    transition: all 250ms ease !important;
+}
+
+.appIcon .MuiTouchRipple-root {
+    display: none;
+}
+
+.appIcon:hover {
+    background-color: unset !important;
+    transform: scale(1.325);
+}
+
+.profilePicWrapper:hover {
+    transform: scale(1.125);
+}
+
+.profilePicWrapper {
+    position: relative;
+    min-width: 3.25em;
+    min-height: 3.25em;
+    transition: all 250ms ease;
+}
+
+.profilePic {
+    z-index: 2;
+    position: absolute;
+    background-color: white;
+    background-position: top center;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
 }
 
 .header__icon {

@@ -5,6 +5,8 @@ import PersonIcon from "@material-ui/icons/Person";
 import IconButton from "@material-ui/core/IconButton";
 import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
 
+import { connect } from "react-redux";
+
 function Header(props) {
   function handleClick(value) {
     if (props.route) {
@@ -14,14 +16,16 @@ function Header(props) {
 
   return (
     <div className="header">
-      <Link to="/app/profile">
-        <IconButton onClick={() => handleClick("profile")}>
-          <PersonIcon fontSize="large" className="header__icon" />
-        </IconButton>
+      <Link to="/app/profile" title="My profile">
+        <div className="profilePicWrapper">
+          <div className="profilePic" style={{ backgroundImage: `url(${props.auth.user.profileImg})` }} onClick={() => handleClick("profile")}></div>
+          <div className="borderNoBlur"></div>
+          {/* <PersonIcon fontSize="large" className="header__icon" /> */}
+        </div>
       </Link>
 
-      <Link to="/app">
-        <IconButton onClick={() => handleClick("matches")}>
+      <Link to="/app" title="Connections">
+        <IconButton onClick={() => handleClick("matches")} className="appIcon">
           <img
             className="header__logo"
             src="https://1000logos.net/wp-content/uploads/2018/07/tinder-logo.png"
@@ -30,13 +34,23 @@ function Header(props) {
         </IconButton>
       </Link>
 
-      <Link to="/app">
-        <IconButton onClick={() => handleClick("messages")}>
+      {window.location.pathname === "/app/profile" ? (
+        <Link to="/app">
+          <IconButton onClick={() => handleClick("messages")} title="Messages">
+            <QuestionAnswerIcon fontSize="large" className="header__icon" />
+          </IconButton>
+        </Link>
+      ) : (
+        <IconButton onClick={() => handleClick("messages")} title="Messages">
           <QuestionAnswerIcon fontSize="large" className="header__icon" />
         </IconButton>
-      </Link>
+      )}
     </div>
   );
 }
 
-export default Header;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(Header);

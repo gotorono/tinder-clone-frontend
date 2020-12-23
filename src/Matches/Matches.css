@@ -16,6 +16,19 @@
     height:150px;
     cursor: pointer;
     position: relative;
+    transition: opacity 250ms ease, transform 400ms ease;
+}
+
+.matchesContainer .match:hover {
+    transform: scale(1.125);
+}
+
+.matchesContainer .match.faded {
+    opacity: .25;
+}
+
+.matchesContainer .match.active {
+    opacity: 1;
 }
 
 .matchesContainer .matchCard {
@@ -31,8 +44,8 @@
 }
 
 .matchCard h3 {
-    font-size: 1.175em;
-    font-weight: 500;
+    font-size: 1.125em;
+    font-weight: bold;
     color: #fff; 
  }
  
