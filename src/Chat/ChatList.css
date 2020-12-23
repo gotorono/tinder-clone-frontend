@@ -30,7 +30,7 @@
 .chatListingWrapper.active {
     z-index: 5;
     background-color: rgb(252, 252, 252);
-    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.125);
+    box-shadow: 16px 0 16px 4px rgba(0, 0, 0, 0.125);
 }
 
 .chatListingWrapper::after {

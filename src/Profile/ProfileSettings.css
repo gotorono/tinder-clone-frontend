@@ -1,142 +1,33 @@
-button.dropdown {
-    margin-top: 20px;
-    margin-left: 10px;
-    margin-bottom: 10px;
-    padding: 0;
-    padding-left: .75em;
-    background-color: hsl(0,0%,100%);
-    border-color: rgb(133, 133, 133);
+.profileSettingsItemsWrapper {
+    width: 85%;
+    margin: 0 auto;
+}
+
+.profileSettings {
+    padding-top:30px;
+}
+
+.profileSettingsItemsWrapper .profileSettingsItem {
+    background-color: white;
+    text-align: center;
+    padding: 0 1em;
+    height: 52px;
+    border:1px solid rgb(212, 212, 212);
     border-radius: 4px;
-    border-style: solid;
-    border-width: 1px;
+    margin-bottom: 20px;
     cursor: pointer;
-    font-size: 1em;
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    width: 100px;
-    position: relative;
-    transition: border-color 100ms ease;
-}
-
-
-button.dropdown.placeholder span.textBirth {
-    color: hsl(0,0%,50%);
-}
-
-.profile-pic {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    cursor: pointer;
-}
-
-.profile-pic svg {
-    color: white;
-    font-size: 1.5em;
-    padding: 3px;
-    opacity: 1;
-    background:rgb(82, 137, 255);
-    box-shadow: 0 0 2px 1px rgba(0,0,0,0.125);
-    border-radius: 50%;
-}
-
-.cross-delete {
-    position: absolute;
-    bottom: -10px;
-    right: -5px;
-    cursor: pointer;
-}
-
-.cross-delete svg {
-    color: rgb(255, 93, 93);
-    font-size: 1.75em;
-    padding: 3px;
-    opacity: 1;
-    background: white;
-    box-shadow: 0 0 2px 1px rgba(0,0,0,0.125);
-    border-radius: 50%;
-}
-
-button.dropdown:hover {
-    border-color: rgb(93, 93, 93);
-}
-
-button.dropdown.active {
-    border-color: rgb(185, 36, 148) !important;
-}
-
-button.dropdown span {
-    margin: 5px 0;
-    display:flex;
     justify-content: center;
     align-items: center;
-}
-
-button.dropdown span svg {
-    color: rgb(129, 129, 129);
-
-}
-
-.dropdownImages {
-    min-height: 240px;
-    width:100%;
-    margin-top: 4px;
-    padding: 10px 5px;
-    border-radius: 4px;
-    box-shadow: 0 0 2px 1px rgba(0,0,0,0.085), inset 0 0 8px 2px rgba(0,0,0,0.085);
-    background-color: whitesmoke;
-    display:flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.imgItem.plus svg {
-    font-size: 2em;
-    color:rgb(68, 68, 68);
-}
-
-.dropdownImages.hidden {
-    display:none;
-}
-
-.css-1okebmr-indicatorSeparator {
-    background-color: unset !important;
-    border-left: 1px solid rgb(131, 131, 131);
-    width: auto !important;
-    align-self: stretch;
-}
-
-button.dropdown span svg path {
-    transition: color 200ms ease;
-}
-
-button.dropdown:hover span svg,
-button.dropdown.active span.hover svg,
-button.dropdown.active:not(.hasValue) span svg
-{
-    color:rgb(92, 92, 92);
-}
-
-button.dropdown.active span svg {
-    color: rgb(82, 82, 82);
-}
-
-button.dropdown.active span.symbolGallery svg {
-    color: rgb(185, 36, 148);
+    box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.068);
 }
 
 
-span.symbolsBirth {
-    display:flex;
-    align-items: center;
+.profileSettingsItem span {
+    font-size: 1em;
+    transition: all 250ms ease;
 }
 
-span.symbolsBirth svg {
-    margin: 0 6px;
-    color: rgb(149, 149, 149);
-}
-
-button.dropdown:focus {
-    outline: none;
+.profileSettingsItem:hover span {
+    font-size: 1.125em;
 }

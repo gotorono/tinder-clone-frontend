@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./ProfileSettings.css";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser, deleteSwiped } from "../actions/authActions";
 
 function ProfileSettings(props) {
-  const [user, setUser] = useState({});
-
   function onLogoutClick(e) {
     e.preventDefault();
     props.logoutUser();
@@ -20,21 +18,15 @@ function ProfileSettings(props) {
     props.deleteSwiped(userData);
   }
 
-  useEffect(() => {
-    setUser(props.auth.user);
-  }, []);
-
   return (
-    <div>
-      <div>
-        <button className="styled" onClick={(e) => deleteSwipedFnc(e)}>
-          Delete swiped
-        </button>
-      </div>
-      <div>
-        <button className="styled" onClick={(e) => onLogoutClick(e)}>
-          Logout
-        </button>
+    <div className="profileSettings">
+      <div className="profileSettingsItemsWrapper">
+        <div className="profileSettingsItem" onClick={(e) => deleteSwipedFnc(e)}>
+          <span>WIP: Delete swiped</span>
+        </div>
+        <div className="profileSettingsItem"  onClick={(e) => onLogoutClick(e)}>
+          <span>Logout</span>
+        </div>
       </div>
     </div>
   );

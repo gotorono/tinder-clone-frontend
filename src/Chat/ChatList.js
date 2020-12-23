@@ -34,8 +34,6 @@ function ChatList(props) {
     setOnlineUsers(props.onlineUsers);
   }, [props.onlineUsers]);
 
-  console.log(activeChats);
-
   return (
     <div className="chatList">
       {activeChats.map((activeChat) => (

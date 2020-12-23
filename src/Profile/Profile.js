@@ -361,7 +361,7 @@ function Profile(props) {
                   spellCheck="false"
                   rows="4"
                   className="styled"
-                  value={description}
+                  value={description !== null ? description : ""}
                   onChange={(e) => setDescription(e.target.value)}
                 ></textarea>
               </div>
@@ -442,7 +442,7 @@ function Profile(props) {
                   </span>
                 </button>
                 <Calendar
-                  value={birthDate}
+                  defaultValue={birthDate !== "" ? birthDate : new Date()}
                   inputRef={clickRef}
                   onClickDay={() => birthDateClicked(null)}
                   className={classnames(calendarVisible ? "" : "hidden")}

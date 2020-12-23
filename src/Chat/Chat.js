@@ -46,10 +46,12 @@ function Chat(props) {
   useEffect(() => {
     if(matchString !== "")
       socket.emit("join", matchString);
-
+      
+      if(props.id) {
       getMatchString(props.auth.user.id, props.id).then((data) => {
         setMatchString(data);
       })
+    }
 
     fetchMessages();
     getProfile();

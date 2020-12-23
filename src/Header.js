@@ -17,10 +17,13 @@ function Header(props) {
   return (
     <div className="header">
       <Link to="/app/profile" title="My profile">
+        <div className="flexProfileWrapper">
         <div className="profilePicWrapper">
           <div className="profilePic" style={{ backgroundImage: `url(${props.auth.user.profileImg})` }} onClick={() => handleClick("profile")}></div>
           <div className="borderNoBlur"></div>
           {/* <PersonIcon fontSize="large" className="header__icon" /> */}
+        </div>
+        <div className="titleProfile">My profile</div>
         </div>
       </Link>
 
@@ -34,7 +37,7 @@ function Header(props) {
         </IconButton>
       </Link>
 
-      {window.location.pathname === "/app/profile" ? (
+      {/* {window.location.pathname === "/app/profile" ? (
         <Link to="/app">
           <IconButton onClick={() => handleClick("messages")} title="Messages">
             <QuestionAnswerIcon fontSize="large" className="header__icon" />
@@ -44,7 +47,7 @@ function Header(props) {
         <IconButton onClick={() => handleClick("messages")} title="Messages">
           <QuestionAnswerIcon fontSize="large" className="header__icon" />
         </IconButton>
-      )}
+      )} */}
     </div>
   );
 }

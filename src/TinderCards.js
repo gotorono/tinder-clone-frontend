@@ -31,7 +31,6 @@ function TinderCards(props) {
   getLocation();
 
   function handleEmpty(array) {
-    console.log("hadnleEmpty");
     setTimeout(function () {
       if (array.length === 0) props.empty(true);
       else props.empty(false);

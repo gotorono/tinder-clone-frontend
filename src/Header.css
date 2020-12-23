@@ -2,7 +2,27 @@
     display:flex;
     align-items: center;
     justify-content: space-between;
-    margin: 30px;
+    padding: 20px 30px;
+    margin-bottom: 40px;
+    background-color: white;
+    border-bottom: 1px solid rgb(210,210,210);
+}
+
+.flexProfileWrapper {
+    display:flex;
+    align-items: center;
+    transition: all 320ms ease;
+}
+
+.flexProfileWrapper:hover {
+    transform: scale(1.125);
+}
+
+.titleProfile {
+    font-size: 1em;
+    font-weight: 600;
+    margin-left: 12px;
+    letter-spacing: .0125em;
 }
 
 .header__logo {

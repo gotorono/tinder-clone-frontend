@@ -40,7 +40,6 @@ function Matches(props) {
 
   return (
     <div className="matchesContainer">
-      <div className="title">Your matches &#128293;</div>
       <div className="matchesFlexWrapper">
         {matches
           ? matches.map((person, index) => (

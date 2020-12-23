@@ -6,7 +6,7 @@ import { socket } from "../socket";
 
 import { connect } from "react-redux";
 
-import classnames from 'classnames';
+import classnames from "classnames";
 
 import Header from "../Header";
 
@@ -30,6 +30,8 @@ function Main(props) {
 
   const [empty, setEmpty] = useState(null);
 
+  const [subComp, setSubComp] = useState("matches");
+
   useEffect(() => {
     socket.emit("userBecameOnline", props.auth.user.id);
   }, []);
@@ -47,7 +49,11 @@ function Main(props) {
       setOnlineUsers(onlineUsers.filter((id) => id !== userId));
     });
 
-    return () => {socket.off("sendOnlineMatches"); socket.off("online"); socket.off("offline");};
+    return () => {
+      socket.off("sendOnlineMatches");
+      socket.off("online");
+      socket.off("offline");
+    };
   }, [onlineUsers]);
 
   function swipe(value) {
@@ -64,21 +70,6 @@ function Main(props) {
 
   function emptyFnc(value) {
     setEmpty(value);
-  }
-
-  function _renderSubComp() {
-    if (window.location.pathname === "/app/profile") {
-      return <ProfileSettings />;
-    } else {
-      switch (render) {
-        case "matches":
-          return <Matches match={matchUser} onlineUsers={onlineUsers} activeChat={props.match.params.id} />;
-        case "profile":
-          return <ProfileSettings />;
-        case "messages":
-          return <ChatList activeChat={props.match.params.id} onlineUsers={onlineUsers}/>;
-      }
-    }
   }
 
   function _renderMainComp() {
@@ -98,10 +89,15 @@ function Main(props) {
     } else {
       return (
         <div className="app">
-          { empty === true ? (
+          {empty === true ? (
             <div className="emptyWrapper">
               <div className="emptyInside">
-                <div className="pictureEmpty" style={{ backgroundImage: `url(${props.auth.user.profileImg})` }}>
+                <div
+                  className="pictureEmpty"
+                  style={{
+                    backgroundImage: `url(${props.auth.user.profileImg})`,
+                  }}
+                >
                   <div className="circleOne"></div>
                   <div className="circleTwo"></div>
                   <div className="circleOneCopy"></div>
@@ -118,9 +114,7 @@ function Main(props) {
                 refresh={refresh}
                 empty={emptyFnc}
               />
-              {empty !== null ?
-              <SwipeButtons swipe={swipe} />
-     : null} 
+              {empty !== null ? <SwipeButtons swipe={swipe} /> : null}
             </div>
           )}
         </div>
@@ -132,9 +126,106 @@ function Main(props) {
     <div className="main">
       <div className="sidebar">
         <Header route={route} />
-        {_renderSubComp()}
+        <div
+          className={classnames(
+            "sidebarItemSelectorWrapper",
+               subComp === "matches"
+              ? "matches"
+              : subComp === "messages"
+              ? "messages"
+              : ""
+          )}
+        >
+          <button
+            className="sidebarItemSelector matches"
+            onClick={() => setSubComp("matches")}
+          >
+            Matches
+          </button>
+          <button
+            className="sidebarItemSelector messages"
+            onClick={() => setSubComp("messages")}
+          >
+            Messages
+          </button>
+        </div>
+        <div
+          className={classnames(
+            "sidebarItem matches",
+            subComp === "matches"
+                ? ""
+              : "hidden"
+          )}
+        >
+          <Matches
+            match={matchUser}
+            onlineUsers={onlineUsers}
+            activeChat={props.match.params.id}
+          />
+        </div>
+        <div
+          className={classnames(
+            "sidebarItem messages",
+            subComp === "messages"
+                ? ""
+              : "hidden"
+          )}
+        >
+          <ChatList
+            activeChat={props.match.params.id}
+            onlineUsers={onlineUsers}
+          />
+        </div>
+
+        <div
+          className={classnames(
+            "sidebarItem profile",
+            window.location.pathname === "/app/profile" ? "" : "hidden"
+          )}
+        >
+          <ProfileSettings />
+        </div>
       </div>
-      {_renderMainComp()}
+      {/* {_renderMainComp()} */}
+      <div className="app">
+        <div className={classnames("", props.match.params.id ? "" : "hidden")}>
+          <ChatWindow id={props.match.params.id} onlineUsers={onlineUsers} />
+        </div>
+        <div
+          className={classnames(
+            "",
+            window.location.pathname === "/app/profile" ? "" : "hidden"
+          )}
+        >
+          <Profile />
+        </div>
+        <div className={classnames("", empty === true && props.match.params.id === undefined && window.location.pathname !== "/app/profile"  ? "" : "hidden")}>
+          <div className="emptyWrapper">
+            <div className="emptyInside">
+              <div
+                className="pictureEmpty"
+                style={{
+                  backgroundImage: `url(${props.auth.user.profileImg})`,
+                }}
+              >
+                <div className="circleOne"></div>
+                <div className="circleTwo"></div>
+                <div className="circleOneCopy"></div>
+                <div className="circleTwoCopy"></div>
+              </div>
+              <div className="noConnections">No more connections found</div>
+              <div className="tryRealLife">Try real life!</div>
+            </div>
+          </div>
+        </div>
+
+        <div className={classnames("", empty === true ? "hidden" : "")}>
+          <TinderCards matchFnc={match} refresh={refresh} empty={emptyFnc} />
+          <div className={classnames("", empty !== null ? "" : "hidden")}>
+            <SwipeButtons swipe={swipe} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
