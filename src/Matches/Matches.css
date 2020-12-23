@@ -5,6 +5,11 @@
     margin: 20px 0;
 }
 
+.matchesContainer {
+    width: 336px;
+    margin: 0 auto;
+}
+
 .matchesFlexWrapper {
     display:flex;
     flex-wrap:wrap;
@@ -12,7 +17,7 @@
 
 .matchesContainer .match {
     width: 100px;
-    margin: 10px;
+    margin: 6px;
     height:150px;
     cursor: pointer;
     position: relative;
@@ -20,7 +25,7 @@
 }
 
 .matchesContainer .match:hover {
-    transform: scale(1.125);
+    transform: scale(1.0825);
 }
 
 .matchesContainer .match.faded {

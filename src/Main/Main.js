@@ -188,18 +188,19 @@ function Main(props) {
       </div>
       {/* {_renderMainComp()} */}
       <div className="app">
-        <div className={classnames("", props.match.params.id ? "" : "hidden")}>
+        <div className={classnames("chatWindow", props.match.params.id ? "" : "hidden")}>
           <ChatWindow id={props.match.params.id} onlineUsers={onlineUsers} />
         </div>
         <div
           className={classnames(
-            "",
+            "profile",
+            props.match.params.id ? "fromChat" : "",
             window.location.pathname === "/app/profile" ? "" : "hidden"
           )}
         >
           <Profile />
         </div>
-        <div className={classnames("", empty === true && props.match.params.id === undefined && window.location.pathname !== "/app/profile"  ? "" : "hidden")}>
+        <div className={classnames("", empty === true  ? "" : "hidden")}>
           <div className="emptyWrapper">
             <div className="emptyInside">
               <div

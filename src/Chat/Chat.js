@@ -44,13 +44,12 @@ function Chat(props) {
   }, [props.onlineUsers]);
 
   useEffect(() => {
-    if(matchString !== "")
-      socket.emit("join", matchString);
-      
-      if(props.id) {
+    if (matchString !== "") socket.emit("join", matchString);
+
+    if (props.id) {
       getMatchString(props.auth.user.id, props.id).then((data) => {
         setMatchString(data);
-      })
+      });
     }
 
     fetchMessages();
@@ -83,11 +82,18 @@ function Chat(props) {
   }
 
   const getMatchDate = (matches) => {
-    matches.map( (match) => {
-      if(match.id === props.id)
-        setMatchDate(match.date);
-    } )
-  }
+    matches.map((match) => {
+      if (match.id === props.id) setMatchDate(match.date);
+    });
+  };
+
+  const dateDiffInDays = (a, b) => {
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+    return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+  };
 
   async function fetchMessages() {
     const req = await axios.get("/tinder/messages/get", {
@@ -143,7 +149,7 @@ function Chat(props) {
                 <div className="borderNoBlur"></div>
               </div>
               <span className="chatStatusText">
-              {chatUser.name} is currently online{" "}
+                {chatUser.name} is currently online{" "}
               </span>
               <div className="currentlyOnline"></div>
             </div>
@@ -157,55 +163,84 @@ function Chat(props) {
                 <div className="borderNoBlur"></div>
               </div>
               <span className="chatStatusText">
-              You and {chatUser.name} are connected since {new Date(matchDate).toLocaleDateString()}.{" "}
+                You and {chatUser.name} are connected since{" "}
+                {new Date(matchDate).toLocaleDateString()}.{" "}
               </span>
             </div>
           )}
         </div>
       </div>
-      <Scrollbar className="chatMessagesWrapper" style={{ marginBottom: 0 }}>
-        {messages.map((msgObject, index) =>
-          msgObject.origin === props.auth.user.id ? (
-            <div
-              className={classnames(
-                "message right",
-                checkIfImg(index) ? "withImg" : null, index === 0 ? "first" : index === messages.length - 1 ? "last" : null
-              )}
-              key={index}
-            >
-              <div className="messageTextWrapper">
-                <span>{msgObject.message}</span>
+      {messages.length > 0 ? (
+        <Scrollbar className="chatMessagesWrapper" style={{ marginBottom: 0 }}>
+          {messages.map((msgObject, index) =>
+            msgObject.origin === props.auth.user.id ? (
+              <div
+                className={classnames(
+                  "message right",
+                  checkIfImg(index) ? "withImg" : null,
+                  index === 0
+                    ? "first"
+                    : index === messages.length - 1
+                    ? "last"
+                    : null
+                )}
+                key={index}
+              >
+                <div className="messageTextWrapper">
+                  <span>{msgObject.message}</span>
+                </div>
+                {checkIfImg(index) ? (
+                  <div
+                    className="userSentMessage"
+                    style={{
+                      backgroundImage: `url(${props.auth.user.profileImg})`,
+                    }}
+                  ></div>
+                ) : null}
               </div>
-              {checkIfImg(index) ? (
-                <div
-                  className="userSentMessage"
-                  style={{
-                    backgroundImage: `url(${props.auth.user.profileImg})`,
-                  }}
-                ></div>
-              ) : null}
-            </div>
-          ) : (
-            <div
-              className={classnames(
-                "message left",
-                checkIfImg(index) ? "withImg" : null, index === 0 ? "first" : index === messages.length - 1 ? "last" : null
-              )}
-              key={index}
-            >
-              {checkIfImg(index) ? (
-                <div
-                  className="userSentMessage"
-                  style={{ backgroundImage: `url(${chatUser.profileImg})` }}
-                ></div>
-              ) : null}
-              <div className="messageTextWrapper">
-                <span>{msgObject.message}</span>
+            ) : (
+              <div
+                className={classnames(
+                  "message left",
+                  checkIfImg(index) ? "withImg" : null,
+                  index === 0
+                    ? "first"
+                    : index === messages.length - 1
+                    ? "last"
+                    : null
+                )}
+                key={index}
+              >
+                {checkIfImg(index) ? (
+                  <div
+                    className="userSentMessage"
+                    style={{ backgroundImage: `url(${chatUser.profileImg})` }}
+                  ></div>
+                ) : null}
+                <div className="messageTextWrapper">
+                  <span>{msgObject.message}</span>
+                </div>
               </div>
-            </div>
-          )
-        )}
-      </Scrollbar>
+            )
+          )}
+        </Scrollbar>
+      ) : (
+        <Scrollbar
+          style={{ display: "flex", alignItems: "center" }}
+          className="chatMessagesWrapper nomessage"
+          style={{ marginBottom: 0 }}
+        >
+          <div>
+            <div>You are connected with <b>{chatUser.name}</b> </div>
+            <div>for <b>{dateDiffInDays( new Date(matchDate), new Date(Date.now()))} {dateDiffInDays( new Date(matchDate), new Date(Date.now())) > 1 ? "days" : "day"}</b></div>
+            <div
+              className="waitingForMessagePic"
+              style={{ backgroundImage: `url(${chatUser.profileImg})` }}
+            ></div>
+          </div>
+        </Scrollbar>
+      )}
+
       <div className="messageField">
         <input
           type="text"

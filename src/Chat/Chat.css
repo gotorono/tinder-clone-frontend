@@ -39,6 +39,23 @@
     box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.125);
 }
 
+.waitingForMessagePic {
+    height: 228px;
+    width: 228px;
+    margin: 0 auto;
+    margin-top:30px;
+    border-radius: 50%;
+    background-size: cover;
+}
+
+.chatMessagesWrapper.nomessage #chatMessagesWrapper{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
 .chatMessagesWrapper {
     width: 100%;
     padding: .5em 20px;

@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 30px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     background-color: white;
     border-bottom: 1px solid rgb(210,210,210);
 }
@@ -31,7 +31,7 @@
 }
 
 .appIcon {
-    transition: all 250ms ease !important;
+    animation: logoMoveOut 500ms 0s 1 ease;
 }
 
 .appIcon .MuiTouchRipple-root {
@@ -40,7 +40,36 @@
 
 .appIcon:hover {
     background-color: unset !important;
-    transform: scale(1.325);
+    animation: logoMoveIn 500ms 0s 1 ease;
+    transform: scale(1.25);
+}
+
+@keyframes logoMoveOut {
+    0% {
+        transform: rotate(0deg) scale(1.25);
+    }
+
+    50% {
+        transform: rotate(-30deg) scale(1.25);
+    }
+
+    100% {
+        transform: rotate(0deg) scale(1);
+    }
+}
+
+@keyframes logoMoveIn {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(-30deg) scale(1.25);
+    }
+
+    100% {
+        transform: rotate(0deg) scale(1.25);
+    }
 }
 
 .profilePicWrapper:hover {
@@ -63,7 +92,4 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-}
-
-.header__icon {
 }
