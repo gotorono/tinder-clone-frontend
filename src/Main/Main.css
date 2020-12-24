@@ -64,7 +64,7 @@ button.sidebarItemSelector.messages {
 }
 
 .sidebarItem {
-    transition: all 320ms ease;
+    transition: all 420ms ease;
     position: absolute;
     width: 100%;
     z-index: 1;
@@ -228,7 +228,7 @@ button.sidebarItemSelector.messages {
     left: 0;
     width: 100%;
     z-index:100;
-    transition: all 320ms ease;
+    transition: left 420ms ease;
 }
 
 .chatWindow.hidden {
@@ -248,11 +248,12 @@ button.sidebarItemSelector.messages {
     height:100%;
     background-color: rgb(236, 236, 236);
     z-index:100;
-    transition: all 320ms ease;
+    transition: all 420ms ease;
 }
 
 .profile.hidden {
     display:block;
     left: 100%;
+    visibility: hidden;
 }
 

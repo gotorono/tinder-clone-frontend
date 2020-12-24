@@ -19,6 +19,10 @@
   margin-right: 0.5em;
 }
 
+.profile.hiddenIn {
+  display:none;
+}
+
 .card.profile {
   height: 70vh;
   padding: 0 !important;

@@ -6,13 +6,26 @@ import classnames from 'classnames';
 
 import axios from "../axios";
 
+import { socket } from '../socket';
+
+import { getNotSeenCount } from '../variables';
+
 import { connect } from "react-redux";
 
 function ChatList(props) {
   const [activeChats, setActiveChats] = useState([]);
   const [currentActiveChat, setCurrentActiveChat] = useState("");
-
   const [onlineUsers, setOnlineUsers] = useState([]);
+
+  const getNotSeen = (activeChat) => {
+    return (
+      <div>
+        <div className="messageNotSeen">{getNotSeenCount(activeChat.notSeenCount)}</div>
+        <div className="notSeenBorder"></div>
+        <div className="notSeenBorderWhite"></div>
+      </div>
+    )
+  }
 
   const getActiveChats = async () => {
     const res = await axios.get("/tinder/users/activeChats", {
@@ -23,11 +36,18 @@ function ChatList(props) {
   };
 
   useEffect(() => {
+    socket.on("newMsg", (from) => {
+      if(from !== currentActiveChat && from !== props.auth.user.id) {
+        getActiveChats();
+      }
+    })
     getActiveChats();
-  }, []);
+    
+    return () => socket.off("newMsg");
+  }, [currentActiveChat])
 
   useEffect(() => {
-    setCurrentActiveChat(props.activeChat);
+      setCurrentActiveChat(props.activeChat);
   }, [props.activeChat])
 
   useEffect(() => {
@@ -44,6 +64,7 @@ function ChatList(props) {
               className="chatListingPic"
               style={{ backgroundImage: `url(${activeChat.pic})` }}
             >
+            {!activeChat.lastMessageSeen && activeChat.notSeenCount > 0 ? getNotSeen(activeChat) : null}
             {onlineUsers.includes(activeChat.userId) ? <div className="online" title="User is online"></div> : null}
             </div>
             <div className="chatListingDescWrapper">

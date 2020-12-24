@@ -236,7 +236,7 @@ function Profile(props) {
       <div className="cardContainer">
         <div className="swipe">
           <div
-            className={classnames("card profile", optionsOpen ? "hidden" : "")}
+            className={classnames("card profile", optionsOpen ? "hiddenIn" : "")}
           >
             <Slider {...sliderSettings}>
               {userImages.map((item, index) =>
