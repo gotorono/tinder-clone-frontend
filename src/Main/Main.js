@@ -72,56 +72,6 @@ function Main(props) {
     setEmpty(value);
   }
 
-  function _renderMainComp() {
-    if (props.match.params.id) {
-      return (
-        <div className="app">
-          <ChatWindow id={props.match.params.id} onlineUsers={onlineUsers} />
-        </div>
-      );
-    }
-    if (window.location.pathname === "/app/profile") {
-      return (
-        <div className="app">
-          <Profile />
-        </div>
-      );
-    } else {
-      return (
-        <div className="app">
-          {empty === true ? (
-            <div className="emptyWrapper">
-              <div className="emptyInside">
-                <div
-                  className="pictureEmpty"
-                  style={{
-                    backgroundImage: `url(${props.auth.user.profileImg})`,
-                  }}
-                >
-                  <div className="circleOne"></div>
-                  <div className="circleTwo"></div>
-                  <div className="circleOneCopy"></div>
-                  <div className="circleTwoCopy"></div>
-                </div>
-                <div className="noConnections">No more connections found</div>
-                <div className="tryRealLife">Try real life!</div>
-              </div>
-            </div>
-          ) : (
-            <div className={classnames("", empty !== false ? "hidden" : "")}>
-              <TinderCards
-                matchFnc={match}
-                refresh={refresh}
-                empty={emptyFnc}
-              />
-              {empty !== null ? <SwipeButtons swipe={swipe} /> : null}
-            </div>
-          )}
-        </div>
-      );
-    }
-  }
-
   return (
     <div className="main">
       <div className="sidebar">

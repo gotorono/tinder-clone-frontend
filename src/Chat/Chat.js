@@ -44,22 +44,26 @@ function Chat(props) {
   }, [props.onlineUsers]);
 
   useEffect(() => {
-    if (matchString !== "") socket.emit("join", matchString);
+    fetchMessages();
 
+    return () => {
+      if(matchString !== "") socket.emit("leave", matchString);
+    };
+  }, [matchString]);
+
+  useEffect(() => {
     if (props.id) {
       getMatchString(props.auth.user.id, props.id).then((data) => {
         setMatchString(data);
+        socket.emit("join", data);
       });
+    } else {
+      setMatchString("");
     }
 
-    fetchMessages();
     getProfile();
     getMatches();
-
-    return () => {
-      socket.emit("leave", matchString);
-    };
-  }, [props.id, matchString]);
+  }, [props.id]);
 
   useEffect(() => {
     socket.on("receiveMsg", msgHandler);
@@ -231,8 +235,18 @@ function Chat(props) {
           style={{ marginBottom: 0 }}
         >
           <div>
-            <div>You are connected with <b>{chatUser.name}</b> </div>
-            <div>for <b>{dateDiffInDays( new Date(matchDate), new Date(Date.now()))} {dateDiffInDays( new Date(matchDate), new Date(Date.now())) > 1 ? "days" : "day"}</b></div>
+            <div>
+              You are connected with <b>{chatUser.name}</b>{" "}
+            </div>
+            <div>
+              for{" "}
+              <b>
+                {dateDiffInDays(new Date(matchDate), new Date(Date.now()))}{" "}
+                {dateDiffInDays(new Date(matchDate), new Date(Date.now())) > 1
+                  ? "days"
+                  : "day"}
+              </b>
+            </div>
             <div
               className="waitingForMessagePic"
               style={{ backgroundImage: `url(${chatUser.profileImg})` }}
