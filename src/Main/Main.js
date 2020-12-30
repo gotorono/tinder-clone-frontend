@@ -10,21 +10,27 @@ import classnames from "classnames";
 
 import Header from "../Header";
 
-import ChatWindow from "../Chat/ChatWindow";
+import ChatWindow from "../ChatComponents/ChatWindow";
 
-import ChatList from "../Chat/ChatList";
+import axios from "../axios";
+
+import ChatList from "../ChatComponents/ChatList";
 import Matches from "../Matches/Matches";
 import Profile from "../Profile/Profile";
 import ProfileSettings from "../Profile/ProfileSettings";
 import TinderCards from "../TinderCards";
 import SwipeButtons from "../SwipeButtons";
 
+import { getNotSeenCount } from '../variables';
+
 function Main(props) {
   const [refresh, setRefresh] = useState({ swipe: 0 });
 
   const [matchUser, setMatchUser] = useState("");
 
-  const [render, setRender] = useState("matches");
+  const [forceActiveChats, setForceActiveChats] = useState(false);
+
+  const [notSeenCount, setNotSeenCount] = useState(0);
 
   const [onlineUsers, setOnlineUsers] = useState([]);
 
@@ -34,6 +40,7 @@ function Main(props) {
 
   useEffect(() => {
     socket.emit("userBecameOnline", props.auth.user.id);
+    notSeenHandler();
   }, []);
 
   useEffect(() => {
@@ -60,10 +67,6 @@ function Main(props) {
     setRefresh({ swipe: value });
   }
 
-  function route(value) {
-    setRender(value);
-  }
-
   function match(value) {
     setMatchUser(value);
   }
@@ -72,14 +75,26 @@ function Main(props) {
     setEmpty(value);
   }
 
+  function forceActiveChatsRender() {
+    setForceActiveChats(!forceActiveChats);
+  }
+
+  async function notSeenHandler() {
+    const req = await axios.get("/tinder/messages/notSeen", {
+      params: {
+        _id: props.auth.user.id,
+      },
+    });
+    setNotSeenCount(getNotSeenCount(req.data))
+  }
   return (
     <div className="main">
       <div className="sidebar">
-        <Header route={route} />
+        <Header />
         <div
           className={classnames(
             "sidebarItemSelectorWrapper",
-               subComp === "matches"
+            subComp === "matches"
               ? "matches"
               : subComp === "messages"
               ? "messages"
@@ -93,18 +108,17 @@ function Main(props) {
             Matches
           </button>
           <button
-            className="sidebarItemSelector messages"
+            className={classnames("sidebarItemSelector messages", notSeenCount === 0 ? "" : "notSeen")}
             onClick={() => setSubComp("messages")}
           >
             Messages
+          {notSeenCount === 0 ? null : <div className="notSeenMessages">{notSeenCount}</div>}
           </button>
         </div>
         <div
           className={classnames(
             "sidebarItem matches",
-            subComp === "matches"
-                ? ""
-              : "hidden"
+            subComp === "matches" ? "" : "hidden"
           )}
         >
           <Matches
@@ -116,14 +130,14 @@ function Main(props) {
         <div
           className={classnames(
             "sidebarItem messages",
-            subComp === "messages"
-                ? ""
-              : "hidden"
+            subComp === "messages" ? "" : "hidden"
           )}
         >
           <ChatList
             activeChat={props.match.params.id}
             onlineUsers={onlineUsers}
+            notSeen={notSeenHandler}
+            forceActiveChatsRender={forceActiveChats}
           />
         </div>
 
@@ -136,10 +150,14 @@ function Main(props) {
           <ProfileSettings />
         </div>
       </div>
-      {/* {_renderMainComp()} */}
       <div className="app">
-        <div className={classnames("chatWindow", props.match.params.id ? "" : "hidden")}>
-          <ChatWindow id={props.match.params.id} onlineUsers={onlineUsers} />
+        <div
+          className={classnames(
+            "chatWindow",
+            props.match.params.id ? "" : "hidden"
+          )}
+        >
+          <ChatWindow id={props.match.params.id} onlineUsers={onlineUsers} notSeen={notSeenHandler} forceActiveChatsRender={forceActiveChatsRender} />
         </div>
         <div
           className={classnames(
@@ -150,7 +168,7 @@ function Main(props) {
         >
           <Profile />
         </div>
-        <div className={classnames("", empty === true  ? "" : "hidden")}>
+        <div className={classnames("", empty === true ? "" : "hidden")}>
           <div className="emptyWrapper">
             <div className="emptyInside">
               <div

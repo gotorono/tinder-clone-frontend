@@ -1,14 +1,14 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import "./ChatWindow.css";
 
-import Chat from "./Chat";
+import Chat from "./Chat/Chat";
 import ChatMatchProfile from "./ChatMatchProfile";
 
 function ChatWindow(props) {
 
   return (
     <div className="chatWindow">
-        <Chat id={props.id} onlineUsers={props.onlineUsers} />
+        <Chat id={props.id} onlineUsers={props.onlineUsers} notSeen={props.notSeen} forceActiveChatsRender={props.forceActiveChatsRender} />
         <ChatMatchProfile id={props.id} />
     </div>
   );

@@ -4,7 +4,7 @@ import "./Matches.css";
 import axios from "../axios";
 import { connect } from "react-redux";
 
-import classnames from 'classnames';
+import classnames from "classnames";
 
 import { socket } from "../socket";
 
@@ -13,52 +13,68 @@ function Matches(props) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [activeChat, setActiveChat] = useState("");
 
+  const [loadingMatches, setLoadingMatches] = useState(true);
+
   useEffect(() => {
     setActiveChat(props.activeChat);
-  }, [props.activeChat])
+  }, [props.activeChat]);
 
   useEffect(() => {
     setOnlineUsers(props.onlineUsers);
   }, [props.onlineUsers]);
 
   async function getMatches() {
+    setLoadingMatches(true);
     const req = await axios.get("/tinder/cards/matches", {
       params: { user: props.auth.user.id },
     });
+    setLoadingMatches(false);
     setMatches(req.data);
   }
 
   useEffect(() => {
     getMatches();
-    socket.emit('getOnlineMatches', props.auth.user.id);
+    socket.emit("getOnlineMatches", props.auth.user.id);
   }, []);
 
   useEffect(() => {
     getMatches();
   }, [props.match]);
 
-
   return (
     <div className="matchesContainer">
-      <div className="matchesFlexWrapper">
-        {matches
-          ? matches.map((person, index) => (
-              <Link to={`/app/messages/${person._id}`} key={person._id}>
-                <div className={classnames("match", activeChat === person._id ? "active" : null, activeChat === undefined ? "" : "faded")} title="Click to chat">
-                  {onlineUsers.includes(person._id) ? <div className="online" title="User is online"></div> : null}
+      {loadingMatches ? (
+        <div className="loadingWrapperSidebar"><div className="loadbar" /></div>
+      ) : (
+        <div className="matchesFlexWrapper">
+          {matches
+            ? matches.map((person, index) => (
+                <Link to={`/app/messages/${person._id}`} key={person._id}>
                   <div
-                    style={{ backgroundImage: `url(${person.profileImg})` }}
-                    className="matchCard"
+                    className={classnames(
+                      "match",
+                      activeChat === person._id ? "active" : null,
+                      activeChat === undefined ? "" : "faded"
+                    )}
+                    title="Click to chat"
                   >
-                    <div className="desc-container">
-                      <h3>{person.name}</h3>
+                    {onlineUsers.includes(person._id) ? (
+                      <div className="online" title="User is online"></div>
+                    ) : null}
+                    <div
+                      style={{ backgroundImage: `url(${person.profileImg})` }}
+                      className="matchCard"
+                    >
+                      <div className="desc-container">
+                        <h3>{person.name}</h3>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))
-          : null}
-      </div>
+                </Link>
+              ))
+            : null}
+        </div>
+      )}
     </div>
   );
 }

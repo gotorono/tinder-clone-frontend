@@ -66,6 +66,33 @@ textarea.styled::placeholder {
   font-size: .925em;
 }
 
+.loadbar {
+  border: 6px solid #e72424;
+  border-top: 6px solid #dadada;
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.125),
+    inset 0 0 4px 2px rgba(0, 0, 0, 0.25);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  animation: Loading 1s linear infinite;
+}
+
+@keyframes Loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingWrapperSidebar {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  height: 162px;
+}
+
 select.styled {
   padding: 15px 20px;
   font-size: 1.125em;

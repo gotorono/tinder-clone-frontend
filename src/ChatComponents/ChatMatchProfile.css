@@ -47,6 +47,15 @@
     font-weight: 400;
 }
 
+.loadingProfileChatMatch {
+    background-color: white;
+    height:100%;
+    width:100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .chatMatchProfileWrapper .desc {
     letter-spacing: .025em;
 }
