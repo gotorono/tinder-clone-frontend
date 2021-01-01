@@ -8,7 +8,7 @@ import axios from "../axios";
 
 import { socket } from "../socket";
 
-import { setSeen, getNotSeenCount, getMatchString } from "../variables";
+import { getNotSeenCount, getMatchString } from "../variables";
 
 import { connect } from "react-redux";
 
@@ -20,22 +20,23 @@ function ChatList(props) {
   const [matchString, setMatchString] = useState("");
 
   useEffect(() => {
-    socket.on("newMsg", ({from, msg}) => {
-      // if (from !== currentActiveChat && from !== props.auth.user.id) {
-      // }
-      if(from === currentActiveChat || from === props.auth.user.id) {
-        setActiveChats(activeChats.map((activeChat) => {
-          if(activeChat.userId === currentActiveChat) {
-            activeChat.lastMessage = msg;
-            activeChat.lastMessageFromMe = from === props.auth.user.id ? true : false;
-          }
-          return activeChat;
-        }))
+    socket.on("newMsg", ({ from, msg }) => {
+      if (from === currentActiveChat || from === props.auth.user.id) {
+        setActiveChats(
+          activeChats.map((activeChat) => {
+            if (activeChat.userId === currentActiveChat) {
+              activeChat.lastMessage = msg;
+              activeChat.lastMessageFromMe =
+                from === props.auth.user.id ? true : false;
+            }
+            return activeChat;
+          })
+        );
       } else {
         getActiveChats();
-        setTimeout(function() {
+        setTimeout(function () {
           props.notSeen();
-        }, 250)
+        }, 250);
       }
     });
 
@@ -52,10 +53,6 @@ function ChatList(props) {
     getActiveChats(props.activeChat);
     setCurrentActiveChat(props.activeChat);
   }, [props.activeChat, props.forceActiveChatsRender]);
-
-  useEffect(() => {
-    getActiveChats();
-  }, [props.forceActiveChatsRender])
 
   useEffect(() => {
     setOnlineUsers(props.onlineUsers);
@@ -77,17 +74,19 @@ function ChatList(props) {
     const res = await axios.get("/tinder/users/activeChats", {
       params: { _id: props.auth.user.id },
     });
-
-    setActiveChats(res.data.map((chat) => {
-        if (chat.userId === currActiveChat) {
-          chat.notSeenCount = 0;
-          chat.lastMessageSeen = true;
-          return chat;
-        } else {
-          return chat;
-        }
-      })
-    );
+    if (res.data !== "") {
+      setActiveChats(
+        res.data.map((chat) => {
+          if (chat.userId === currActiveChat) {
+            chat.notSeenCount = 0;
+            chat.lastMessageSeen = true;
+            return chat;
+          } else {
+            return chat;
+          }
+        })
+      );
+    }
   };
 
   return (

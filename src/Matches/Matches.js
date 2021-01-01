@@ -35,10 +35,6 @@ function Matches(props) {
   useEffect(() => {
     getMatches();
     socket.emit("getOnlineMatches", props.auth.user.id);
-  }, []);
-
-  useEffect(() => {
-    getMatches();
   }, [props.match]);
 
   return (

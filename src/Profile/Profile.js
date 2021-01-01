@@ -217,10 +217,6 @@ function Profile(props) {
   };
 
   useEffect(() => {
-    fetchImgs();
-  }, []);
-
-  useEffect(() => {
     setUser(props.auth.user);
     setGender(props.auth.user.gender);
     setOrientation(props.auth.user.orientation);

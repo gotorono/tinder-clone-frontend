@@ -45,8 +45,10 @@ function Chat(props) {
   };
 
   const msgHandler = (msg) => {
-    if(messages.length === 0) {
-      props.forceActiveChatsRender();
+    if (messages.length === 0) {
+      setTimeout(function () {
+        props.forceActiveChatsRender();
+      }, 250);
     }
     setMessages([...messages, msg]);
     scrollToBottom();
@@ -70,9 +72,9 @@ function Chat(props) {
       getMatchString(props.auth.user.id, props.id).then((data) => {
         setMatchString(data);
         socket.emit("join", data);
-        setTimeout(function() {
+        setTimeout(function () {
           props.notSeen();
-        }, 250)
+        }, 250);
       });
     } else {
       setMatchString("");
@@ -111,20 +113,22 @@ function Chat(props) {
   };
 
   async function fetchMessages() {
-    setLoading(true);
-    const req = await axios.get("/tinder/messages/get", {
-      params: { matchString },
-    });
-    setLoading(false);
-    setMessages(
-      req.data.map(({ _id, body, from, timeSent }) => ({
-        _id,
-        message: body,
-        origin: from,
-        timeSent,
-      }))
-    );
-    scrollToBottom();
+    if (matchString !== "") {
+      setLoading(true);
+      const req = await axios.get("/tinder/messages/get", {
+        params: { matchString },
+      });
+      setLoading(false);
+      setMessages(
+        req.data.map(({ _id, body, from, timeSent }) => ({
+          _id,
+          message: body,
+          origin: from,
+          timeSent,
+        }))
+      );
+      scrollToBottom();
+    }
   }
 
   const handleSendMessage = (message) => {

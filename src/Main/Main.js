@@ -87,6 +87,7 @@ function Main(props) {
     });
     setNotSeenCount(getNotSeenCount(req.data))
   }
+
   return (
     <div className="main">
       <div className="sidebar">
@@ -108,7 +109,7 @@ function Main(props) {
             Matches
           </button>
           <button
-            className={classnames("sidebarItemSelector messages", notSeenCount === 0 ? "" : "notSeen")}
+            className="sidebarItemSelector messages"
             onClick={() => setSubComp("messages")}
           >
             Messages
