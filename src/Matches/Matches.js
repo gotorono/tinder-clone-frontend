@@ -23,19 +23,19 @@ function Matches(props) {
     setOnlineUsers(props.onlineUsers);
   }, [props.onlineUsers]);
 
-  async function getMatches() {
-    setLoadingMatches(true);
-    const req = await axios.get("/tinder/cards/matches", {
-      params: { user: props.auth.user.id },
-    });
-    setLoadingMatches(false);
-    setMatches(req.data);
-  }
-
   useEffect(() => {
+    const getMatches = async() => {
+      setLoadingMatches(true);
+      const req = await axios.get("/tinder/cards/matches", {
+        params: { user: props.auth.user.id },
+      });
+      setLoadingMatches(false);
+      setMatches(req.data);
+    }
+
     getMatches();
     socket.emit("getOnlineMatches", props.auth.user.id);
-  }, [props.match]);
+  }, [props.match, props.auth.user.id]);
 
   return (
     <div className="matchesContainer">

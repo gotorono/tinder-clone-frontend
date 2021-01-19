@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import TinderCard from "react-tinder-card";
 import "./TinderCards.css";
 import axios from "./axios";
@@ -7,49 +7,92 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { sliderSettings } from "./sliderSettings";
 
+import classnames from "classnames";
+
 import Slider from "react-slick";
 
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
+import MatchAnimation from "./MatchAnimation";
+
+import CancelIcon from '@material-ui/icons/Cancel';
+
 function TinderCards(props) {
   const [people, setPeople] = useState([]);
+  const [playAnimation, setPlayAnimation] = useState(false);
+  const [newMatch, setNewMatch] = useState({});
+  const [origin, setOrigin] = useState("none");
 
-  let origin = "none";
+  // function getLocation() {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(showPosition);
+  //   }
+  // }
 
-  function getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
-    }
-  }
+  // function showPosition(position) {
+  //   //console.log("Latitude: " + position.coords.latitude);
+  //   //console.log("Longitude: " + position.coords.longitude);
+  // }
 
-  function showPosition(position) {
-    //console.log("Latitude: " + position.coords.latitude);
-    //console.log("Longitude: " + position.coords.longitude);
-  }
+  // getLocation();
 
-  getLocation();
-
-  function handleEmpty(array) {
+  const handleEmpty = useCallback((array) => {
     setTimeout(function () {
       if (array.length === 0) props.empty(true);
       else props.empty(false);
     }, 750);
-  }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function handleMatch(res) {
+  const handleMatch = (res) => {
     if (props.matchFnc) {
       setTimeout(function () {
-        props.matchFnc(res);
-      }, 250);
+        if (res) {
+          playMatchAnimation(res);
+          setNewMatch(res.user);
+          props.matchFnc(res);
+        } else {
+          handleEmpty(people);
+        }
+      }, 500);
     }
-  }
+  };
 
   useEffect(() => {
+    if(people.length === 0)
+      if (playAnimation === false) handleEmpty(people);
+  }, [playAnimation, handleEmpty, people]);
+
+  const playMatchAnimation = () => {
+    setPlayAnimation(true);
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      const req = await axios.get("/tinder/cards/get", {
+        params: { user: props.auth.user.id },
+      });
+      setPeople(req.data);
+      handleEmpty(req.data);
+    }
+
     fetchData();
-  }, []);
+  }, [handleEmpty, props.auth.user.id]);
+
+  const childRefs = useMemo(
+    () =>
+      Array(100)
+        .fill(0)
+        .map((i) => React.createRef()),
+    []
+  );
 
   useEffect(() => {
+    const swipe = (dir) => {
+      setOrigin("btn");
+      if (people.length > 0) childRefs[people.length - 1].current.swipe(dir);
+    };
+
     switch (props.refresh.swipe) {
       case "replay":
         break;
@@ -67,28 +110,7 @@ function TinderCards(props) {
       default:
         break;
     }
-  }, [props.refresh]);
-
-  async function fetchData() {
-    const req = await axios.get("/tinder/cards/get", {
-      params: { user: props.auth.user.id },
-    });
-    setPeople(req.data);
-    handleEmpty(req.data);
-  }
-
-  const childRefs = useMemo(
-    () =>
-      Array(100)
-        .fill(0)
-        .map((i) => React.createRef()),
-    []
-  );
-
-  const swipe = (dir) => {
-    origin = "btn";
-    if (people.length > 0) childRefs[people.length - 1].current.swipe(dir);
-  };
+  }, [props.refresh, childRefs, people.length]);
 
   const swiped = (direction, user) => {
     let a = people;
@@ -97,8 +119,6 @@ function TinderCards(props) {
       1
     );
     setPeople(a);
-
-    handleEmpty(a);
 
     let push;
 
@@ -136,7 +156,7 @@ function TinderCards(props) {
         break;
     }
 
-    origin = "none";
+    setOrigin("none");
   };
 
   const outOfFrame = (name) => {
@@ -146,6 +166,52 @@ function TinderCards(props) {
   return (
     <div className="tinderCards">
       <div className="tinderCards__cardContainer">
+        <div
+          className={classnames(
+            "newMatchWrapper",
+            playAnimation === true ? "active" : ""
+          )}
+        >
+          <div className="newMatchContainer">
+            {Object.keys(newMatch).length !== 0 &&
+            newMatch.constructor === Object ? (
+              <div className="swipe newMatch">
+                <div className="closeNewMatch" onClick={() => setPlayAnimation(false)}>
+                  <CancelIcon />
+                </div>
+                <div className="card">       
+                  <Slider {...sliderSettings}>
+                    <div className="itemWrapper">
+                      <div
+                        style={{
+                          backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.125), rgba(0, 0, 0, 0.75)), url(${newMatch.profileImg})`,
+                        }}
+                        className="backgroundItem"
+                      >
+                        <MatchAnimation
+                          play={playAnimation}
+                          name={newMatch.name}
+                          to={newMatch._id}
+                          close={() => setPlayAnimation(false)}
+                        />
+                      </div>
+                    </div>
+                    {newMatch.imgs.map((item, index) => (
+                      <div className="itemWrapper" key={index}>
+                        <div
+                          style={{
+                            backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.125), rgba(0, 0, 0, 0.75)), url(${item.url})`,
+                          }}
+                          className="backgroundItem"
+                        ></div>
+                      </div>
+                    ))}
+                  </Slider>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </div>
         {people.map((person, index) => (
           <TinderCard
             ref={childRefs[index]}

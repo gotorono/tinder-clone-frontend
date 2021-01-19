@@ -50,3 +50,47 @@
    font-weight: 300;
    color: #fff; 
 }
+
+.newMatchWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: rgba(0,0,0,0.5);
+    visibility: hidden;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 250ms ease, visibility 250ms ease;
+}
+
+.closeNewMatch {
+    position: absolute;
+    z-index: 10;
+    right: -50px;
+    cursor: pointer;
+}
+
+.closeNewMatch svg {
+    color: white;
+    font-size: 2.5em;
+    transition: color 250ms ease;
+}
+
+.closeNewMatch:hover svg {
+    color: #3EEA9E;
+    font-size: 2.5em;
+}
+
+.newMatchWrapper.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.newMatchWrapper .newMatchContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 10vh;
+    position: relative;
+}

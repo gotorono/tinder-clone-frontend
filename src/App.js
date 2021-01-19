@@ -44,8 +44,6 @@ function App() {
             <Login />
           </Route>
 
-          {/* <PrivateRoute exact path="/messages" component={Main} /> */}
-
           <PrivateRoute exact path="/app/profile" component={Main} />
 
           <PrivateRoute exact path="/app/messages/:id" component={Main} />

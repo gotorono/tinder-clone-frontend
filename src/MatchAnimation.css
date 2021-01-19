@@ -1,0 +1,179 @@
+.matchAnimation {
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 250ms ease, visibility 250ms ease;
+  position: absolute;
+  width: 100%;
+  cursor: default;
+  font-family: inherit;
+  color: white;
+  height:100%;
+}
+
+.matchAnimation .animatedTextWrapper {
+  position: relative;
+  font-size: 1.75em;
+  font-family: 'Roboto';
+  height: auto;
+}
+
+.matchAnimation .animatedText span {
+    font-size: 3.125em;
+    letter-spacing: 0.05em;
+}
+
+.matchAnimation .animatedText {
+  margin-top: 20%;
+  font-weight: 900;
+  text-align: center;
+  z-index: 10;
+  background: -webkit-linear-gradient(rgb(22, 218, 169), rgb(21, 235, 120));
+  background-clip: text;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.175);
+  font-style: italic;
+  -webkit-text-fill-color: transparent;
+  height:auto;
+}
+
+.matchAnimation .animatedTextAbsolute {
+  font-size: 3.125em;
+  font-weight: 900;
+  background-clip: text;
+  -webkit-text-stroke-width: .5px;
+  -webkit-text-stroke-color :rgb(70, 221, 141);
+  margin-top:-4%;
+  font-style: italic;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.05em;
+  max-height: 0px;
+  overflow:hidden;
+  display:flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-left: -12px;
+  opacity: .9;
+}
+
+.matchAnimation .animatedTextAbsolute.second {
+    margin-top:-3.5%;
+    margin-left: -24px;
+    opacity: .5;
+}
+
+.matchAnimation.play .animatedTextAbsolute {
+    animation: absoluteText 250ms ease .95s;
+    animation-fill-mode: forwards;
+}
+
+.matchAnimation.play .animatedTextAbsolute.second {
+    animation: absoluteText 250ms ease .875s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes absoluteText {
+    0% {
+        max-height: 0;
+    }
+    100% {
+        max-height: 50px;
+    }
+}
+
+.matchAnimation.play {
+  opacity: 1;
+  visibility: visible;
+}
+
+.matchAnimation.play .animatedText {
+  animation: matchAnimation 1s alternate ease;
+  animation-iteration-count: 1;
+}
+
+@keyframes matchAnimation {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(10deg) scale(1.25);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.matchAnimation .bottomNewMatch {
+    position: absolute;
+    bottom: 20px;
+    font-size: 1.125em;
+    font-weight: 500;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    width:100%;
+    height:auto;
+    flex-wrap: wrap;
+}
+
+.matchAnimation .closeNewMatch {
+  height: auto;
+  position: absolute;
+  right: -10px;
+}
+
+.matchAnimation .bottomNewMatch .connected{
+    margin-bottom: 10px;
+    font-size: .85em;
+}
+
+.matchAnimation .bottomNewMatch .heart{
+    margin-bottom: 10px;
+    font-size: .85em;
+    color: rgb(59, 248, 147);
+}
+
+.matchAnimation .bottomNewMatch > div{
+    flex-basis: 100%;
+    text-align: center;
+}
+
+.matchAnimation .bottomNewMatch .firstMessage input{
+    width: 70%;
+    padding: .825em 1.325em;
+    font-size: .85em;
+    border: none;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    font-family: inherit;
+}
+
+.matchAnimation .bottomNewMatch .firstMessage input::placeholder{
+    font-size: .9em;
+ }
+
+.matchAnimation .bottomNewMatch .firstMessage input:focus{
+    outline: none;
+}
+
+.matchAnimation .bottomNewMatch .firstMessage button{
+    cursor: pointer;
+    background-color: white;
+    padding: .825em 1.325em;
+    font-size: .85em;
+    border: none;
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    font-family: inherit;
+    font-weight: 700;
+    transition: color 250ms ease;
+}
+
+.matchAnimation .bottomNewMatch .firstMessage button:hover{
+    color: rgba(58, 204, 126, 0.75);
+ }
+
+ .matchAnimation .bottomNewMatch .firstMessage button:focus{
+    color: rgb(16, 240, 121);
+    outline:none;
+ }
+

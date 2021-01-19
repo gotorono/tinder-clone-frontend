@@ -3,7 +3,7 @@ import "./Chat.css";
 
 import axios from "../../axios";
 
-import classnames from "classnames";
+// import classnames from "classnames";
 
 import { socket } from "../../socket";
 
@@ -17,9 +17,13 @@ import { connect } from "react-redux";
 
 //CHAT COMPONENTS
 
+import { dateDiffInMinutes } from "../../variables";
+
 import Message from "./Message";
 import NoMessages from "./NoMessages";
 import MessageInput from "./MessageInput";
+
+import DateLine from "./DateLine";
 
 import ChatHeader from "./ChatHeader";
 
@@ -44,21 +48,30 @@ function Chat(props) {
     });
   };
 
-  const msgHandler = (msg) => {
-    if (messages.length === 0) {
-      setTimeout(function () {
-        props.forceActiveChatsRender();
-      }, 250);
-    }
-    setMessages([...messages, msg]);
-    scrollToBottom();
-  };
-
   useEffect(() => {
     setOnlineUsers(props.onlineUsers);
   }, [props.onlineUsers]);
 
   useEffect(() => {
+    async function fetchMessages() {
+      if (matchString !== "") {
+        setLoading(true);
+        const req = await axios.get("/tinder/messages/get", {
+          params: { matchString },
+        });
+        setLoading(false);
+        setMessages(
+          req.data.map(({ _id, body, from, timeSent }) => ({
+            _id,
+            message: body,
+            origin: from,
+            timeSent,
+          }))
+        );
+        scrollToBottom();
+      }
+    }
+
     fetchMessages();
 
     return () => {
@@ -67,6 +80,29 @@ function Chat(props) {
   }, [matchString]);
 
   useEffect(() => {
+    async function getProfile() {
+      setLoadingProfile(true);
+      const req = await axios.get("/tinder/users/profile/get", {
+        params: { _id: props.id },
+      });
+      setLoadingProfile(false);
+      setChatUser(req.data);
+    }
+
+    const getMatchDate = (matches) => {
+      matches.map((match) => {
+        if (match.id === props.id) setMatchDate(match.date);
+        return match;
+      });
+    };
+  
+    async function getMatches() {
+      const req = await axios.get("/tinder/users/matches", {
+        params: { user: props.auth.user.id },
+      });
+      getMatchDate(req.data);
+    }
+
     setLoading(true);
     if (props.id) {
       getMatchString(props.auth.user.id, props.id).then((data) => {
@@ -82,54 +118,23 @@ function Chat(props) {
 
     getProfile();
     getMatches();
-  }, [props.id]);
+  }, [props.id, props.auth.user.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    const msgHandler = (msg) => {
+      if (messages.length === 0) {
+        setTimeout(function () {
+          props.forceActiveChatsRender();
+        }, 250);
+      }
+      setMessages([...messages, msg]);
+      scrollToBottom();
+    };
+
     socket.on("receiveMsg", msgHandler);
 
     return () => socket.off("receiveMsg");
-  }, [messages]);
-
-  async function getProfile() {
-    setLoadingProfile(true);
-    const req = await axios.get("/tinder/users/profile/get", {
-      params: { _id: props.id },
-    });
-    setLoadingProfile(false);
-    setChatUser(req.data);
-  }
-
-  async function getMatches() {
-    const req = await axios.get("/tinder/users/matches", {
-      params: { user: props.auth.user.id },
-    });
-    getMatchDate(req.data);
-  }
-
-  const getMatchDate = (matches) => {
-    matches.map((match) => {
-      if (match.id === props.id) setMatchDate(match.date);
-    });
-  };
-
-  async function fetchMessages() {
-    if (matchString !== "") {
-      setLoading(true);
-      const req = await axios.get("/tinder/messages/get", {
-        params: { matchString },
-      });
-      setLoading(false);
-      setMessages(
-        req.data.map(({ _id, body, from, timeSent }) => ({
-          _id,
-          message: body,
-          origin: from,
-          timeSent,
-        }))
-      );
-      scrollToBottom();
-    }
-  }
+  }, [messages, props]);
 
   const handleSendMessage = (message) => {
     if (message !== "") {
@@ -141,6 +146,11 @@ function Chat(props) {
         origin: props.auth.user.id,
       });
     }
+  };
+
+  const timeDifferenceBetweenMessages = (a, b) => {
+    const minutesDiff = dateDiffInMinutes(a, b);
+    return minutesDiff;
   };
 
   return (
@@ -157,33 +167,45 @@ function Chat(props) {
         </div>
       ) : messages.length > 0 ? (
         <Scrollbar className="chatMessagesWrapper" style={{ marginBottom: 0 }}>
-          {messages.map((msgObject, index) =>
-            msgObject.origin === props.auth.user.id ? (
-              <Message
-                type="right"
-                msgObject={msgObject}
-                index={index}
-                messages={messages}
-                profileImg={props.auth.user.profileImg}
-                key={msgObject._id ? msgObject._id : index}
-              />
-            ) : (
-              <Message
-                type="left"
-                msgObject={msgObject}
-                index={index}
-                messages={messages}
-                chatUserProfileImg={chatUser.profileImg}
-                key={msgObject._id ? msgObject._id : index}
-              />
-            )
-          )}
+          {messages.map((msgObject, index) => (
+            <div key={index}>
+              {index !== 0 ? (
+                timeDifferenceBetweenMessages(
+                  msgObject.timeSent,
+                  messages[index - 1].timeSent
+                ) > 30 ? (
+                  <DateLine date={msgObject.timeSent} />
+                ) : null
+              ) : (
+                <DateLine date={msgObject.timeSent} />
+              )}
+
+              {msgObject.origin === props.auth.user.id ? (
+                <Message
+                  type="right"
+                  msgObject={msgObject}
+                  index={index}
+                  messages={messages}
+                  profileImg={props.auth.user.profileImg}
+                  key={msgObject._id ? msgObject._id : index}
+                />
+              ) : (
+                <Message
+                  type="left"
+                  msgObject={msgObject}
+                  index={index}
+                  messages={messages}
+                  chatUserProfileImg={chatUser.profileImg}
+                  key={msgObject._id ? msgObject._id : index}
+                />
+              )}
+            </div>
+          ))}
         </Scrollbar>
       ) : (
         <Scrollbar
-          style={{ display: "flex", alignItems: "center" }}
+          style={{ display: "flex", alignItems: "center", marginBottom: 0 }}
           className="chatMessagesWrapper nomessage"
-          style={{ marginBottom: 0 }}
         >
           <NoMessages matchDate={matchDate} chatUser={chatUser} />
         </Scrollbar>

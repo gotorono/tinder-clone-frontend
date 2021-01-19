@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./ChatList.css";
 import { Link } from "react-router-dom";
 
@@ -18,6 +18,25 @@ function ChatList(props) {
   const [onlineUsers, setOnlineUsers] = useState([]);
 
   const [matchString, setMatchString] = useState("");
+
+  const getActiveChats = useCallback(async (currActiveChat) => {
+    const res = await axios.get("/tinder/users/activeChats", {
+      params: { _id: props.auth.user.id },
+    });
+    if (res.data !== "") {
+      setActiveChats(
+        res.data.map((chat) => {
+          if (chat.userId === currActiveChat) {
+            chat.notSeenCount = 0;
+            chat.lastMessageSeen = true;
+            return chat;
+          } else {
+            return chat;
+          }
+        })
+      );
+    }
+  }, [props.auth.user.id]);
 
   useEffect(() => {
     socket.on("newMsg", ({ from, msg }) => {
@@ -41,7 +60,7 @@ function ChatList(props) {
     });
 
     return () => socket.off("newMsg");
-  }, [matchString, activeChats, currentActiveChat]);
+  }, [matchString, activeChats, currentActiveChat, getActiveChats, props.auth.user.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (props.activeChat) {
@@ -52,7 +71,7 @@ function ChatList(props) {
 
     getActiveChats(props.activeChat);
     setCurrentActiveChat(props.activeChat);
-  }, [props.activeChat, props.forceActiveChatsRender]);
+  }, [props.activeChat, props.forceActiveChatsRender, props.auth.user.id, getActiveChats]);
 
   useEffect(() => {
     setOnlineUsers(props.onlineUsers);
@@ -68,25 +87,6 @@ function ChatList(props) {
         <div className="notSeenBorderWhite"></div>
       </div>
     );
-  };
-
-  const getActiveChats = async (currActiveChat) => {
-    const res = await axios.get("/tinder/users/activeChats", {
-      params: { _id: props.auth.user.id },
-    });
-    if (res.data !== "") {
-      setActiveChats(
-        res.data.map((chat) => {
-          if (chat.userId === currActiveChat) {
-            chat.notSeenCount = 0;
-            chat.lastMessageSeen = true;
-            return chat;
-          } else {
-            return chat;
-          }
-        })
-      );
-    }
   };
 
   return (

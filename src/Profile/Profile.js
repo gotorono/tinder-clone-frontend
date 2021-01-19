@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./Profile.css";
 import PropTypes from "prop-types";
 
@@ -64,7 +64,7 @@ function Profile(props) {
     } else setClickAwayOrigin(false);
   });
 
-  async function fetchImgs() {
+  const fetchImgs = useCallback(async() => {
     const req = await axios.get("/tinder/users/imgs", {
       params: { user: props.auth.user.id },
     });
@@ -75,7 +75,7 @@ function Profile(props) {
     }
     setUserImagesOptions(imgArray);
     setUserImages(req.data);
-  }
+  }, [props.auth.user.id])
 
   function birthDateClicked(e) {
     if (e !== null) {
@@ -134,7 +134,6 @@ function Profile(props) {
           }
         })
     updateUser();
-
 
     showOptions(e);
   }
@@ -225,7 +224,7 @@ function Profile(props) {
     setDescription(props.auth.user.description);
     fetchImgs();
     if (props.errors) setErrors(props.errors);
-  }, [props]);
+  }, [props, fetchImgs]);
 
   return (
     <div>

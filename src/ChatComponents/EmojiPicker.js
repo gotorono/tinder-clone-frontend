@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 import { EmojiList } from "./EmojiList.js";
 
@@ -30,9 +30,9 @@ function EmojiPicker(props) {
     setSearch(e.target.value);
   };
 
-  const showCategoryEmojis = () => {
+  const showCategoryEmojis = useCallback(() => {
     document.getElementById("categoryAnchor" + category).scrollIntoView();
-  };
+  }, [category]);
 
   const mouseOverEmoji = (emoji, desc) => {
     setHoverEmoji({ emoji, desc });
@@ -56,55 +56,56 @@ function EmojiPicker(props) {
       }, 200)
       setMouseClick("");
     }
-  }, [mouseClick]);
+  }, [mouseClick]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    const setDefaultEmojis = () => {
+      let categoryList = [];
+      EmojiList.categories.forEach((category, CategoryIndex) => {
+        categoryList.push({
+          html: [
+            <li
+              key={"Category" + category}
+              className="categoryTitle"
+              id={"category" + CategoryIndex}
+            >
+              {category}
+              <div
+                className="categoryAnchor"
+                id={"categoryAnchor" + CategoryIndex}
+              ></div>
+            </li>,
+          ],
+        });
+      });
+      EmojiList.emoji.map((emoji, index) => {
+        categoryList[emoji.category].html.push(
+          <li
+            key={emoji.emoji}
+            className="emoji"
+            onMouseOver={() => mouseOverEmoji(emoji.emoji, emoji.name)}
+            onMouseOut={() => mouseOutEmoji()}
+            onClick={() => mouseClickEmoji(emoji.emoji)}
+          >
+            {emoji.emoji}
+          </li>
+        );
+        return emoji;
+      });
+      let mergedCategories = categoryList.map((category, index) => {
+        return category.html;
+      });
+      setListOfEmojis([].concat.apply([], mergedCategories));
+    };
+
     setDefaultEmojis();
   }, []);
-
-  const setDefaultEmojis = () => {
-    let categoryList = [];
-    EmojiList.categories.forEach((category, CategoryIndex) => {
-      categoryList.push({
-        html: [
-          <li
-            key={"Category" + category}
-            className="categoryTitle"
-            id={"category" + CategoryIndex}
-          >
-            {category}
-            <div
-              className="categoryAnchor"
-              id={"categoryAnchor" + CategoryIndex}
-            ></div>
-          </li>,
-        ],
-      });
-    });
-    EmojiList.emoji.map((emoji, index) => {
-      categoryList[emoji.category].html.push(
-        <li
-          key={emoji.emoji}
-          className="emoji"
-          onMouseOver={() => mouseOverEmoji(emoji.emoji, emoji.name)}
-          onMouseOut={() => mouseOutEmoji()}
-          onClick={() => mouseClickEmoji(emoji.emoji)}
-        >
-          {emoji.emoji}
-        </li>
-      );
-    });
-    let mergedCategories = categoryList.map((category, index) => {
-      return category.html;
-    });
-    setListOfEmojis([].concat.apply([], mergedCategories));
-  };
 
   useEffect(() => {
     if (category !== -1) {
       showCategoryEmojis();
     }
-  }, [category]);
+  }, [category, showCategoryEmojis]);
 
   useEffect(() => {
     if (search === "") {
@@ -129,7 +130,7 @@ function EmojiPicker(props) {
         })
       );
     }
-  }, [search]);
+  }, [search, category, showCategoryEmojis]);
 
   return (
       <div className="emojiPickerWrapper">

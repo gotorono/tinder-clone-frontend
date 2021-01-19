@@ -1,0 +1,9 @@
+.dateLine {
+    text-align: center;
+    font-size: .75em;
+    font-weight: 600;
+    color: rgb(70, 70, 70);
+    width: 50%;
+    margin: .5em auto;
+    padding: .5em 0;
+}

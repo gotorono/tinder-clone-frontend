@@ -18,15 +18,6 @@ function ChatMatchProfile(props) {
   const [matchProfile, setMatchProfile] = useState({});
   const [loadingProfile, setLoadingProfile] = useState(true);
 
-  async function getProfile() {
-    setLoadingProfile(true);
-    const req = await axios.get("/tinder/users/profile/get", {
-      params: { _id: props.id },
-    });
-    setLoadingProfile(false);
-    setMatchProfile(req.data);
-  }
-
   const genderHandler = () => {
     switch (matchProfile.gender) {
       case "M":
@@ -53,6 +44,15 @@ function ChatMatchProfile(props) {
   };
 
   useEffect(() => {
+    async function getProfile() {
+      setLoadingProfile(true);
+      const req = await axios.get("/tinder/users/profile/get", {
+        params: { _id: props.id },
+      });
+      setLoadingProfile(false);
+      setMatchProfile(req.data);
+    }
+
     getProfile();
   }, [props.id]);
 

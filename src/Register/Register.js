@@ -84,7 +84,7 @@ function Register(props) {
         });
       setErrors(props.errors);
     }
-  }, [props]);
+  }, [props, imageURL]);
 
   const resizeFile = (file) =>
     new Promise((resolve) => {

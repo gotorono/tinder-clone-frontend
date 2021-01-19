@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import "./Main.css";
 
@@ -38,10 +38,19 @@ function Main(props) {
 
   const [subComp, setSubComp] = useState("matches");
 
+  const notSeenHandler = useCallback(async() => {
+    const req = await axios.get("/tinder/messages/notSeen", {
+      params: {
+        _id: props.auth.user.id,
+      },
+    });
+    setNotSeenCount(getNotSeenCount(req.data))
+  }, [props.auth.user.id])
+
   useEffect(() => {
     socket.emit("userBecameOnline", props.auth.user.id);
     notSeenHandler();
-  }, []);
+  }, [props.auth.user.id, notSeenHandler]);
 
   useEffect(() => {
     socket.on("sendOnlineMatches", (onlineUsers) => {
@@ -77,15 +86,6 @@ function Main(props) {
 
   function forceActiveChatsRender() {
     setForceActiveChats(!forceActiveChats);
-  }
-
-  async function notSeenHandler() {
-    const req = await axios.get("/tinder/messages/notSeen", {
-      params: {
-        _id: props.auth.user.id,
-      },
-    });
-    setNotSeenCount(getNotSeenCount(req.data))
   }
 
   return (

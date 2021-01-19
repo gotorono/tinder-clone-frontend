@@ -1,8 +1,11 @@
 import React from "react";
 import "./ProfileSettings.css";
+
+import axios from '../axios';
+
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { logoutUser, deleteSwiped } from "../actions/authActions";
+import { logoutUser } from "../actions/authActions";
 
 function ProfileSettings(props) {
   function onLogoutClick(e) {
@@ -10,20 +13,29 @@ function ProfileSettings(props) {
     props.logoutUser();
   }
 
-  function deleteSwipedFnc(e) {
+  // function deleteAll(e) {
+  //   e.preventDefault();
+  //   axios.post("tinder/cards/delete/all").then(() => {
+  //     console.log("Deleted");
+  //   })
+  // }
+
+  function deleteSwiped(e) {
     e.preventDefault();
-    const userData = {
-      user: props.auth.user,
-    };
-    props.deleteSwiped(userData);
+    axios.post("tinder/cards/delete/swiped", {id: props.auth.user.id}).then(() => {
+      console.log("Deleted");
+    })
   }
 
   return (
     <div className="profileSettings">
       <div className="profileSettingsItemsWrapper">
-        <div className="profileSettingsItem" onClick={(e) => deleteSwipedFnc(e)}>
+        <div className="profileSettingsItem" onClick={(e) => deleteSwiped(e)}>
           <span>WIP: Delete swiped</span>
         </div>
+        {/* <div className="profileSettingsItem" onClick={(e) => deleteAll(e)}>
+          <span>WIP: Delete all</span>
+        </div> */}
         <div className="profileSettingsItem"  onClick={(e) => onLogoutClick(e)}>
           <span>Logout</span>
         </div>
@@ -43,5 +55,4 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
   logoutUser,
-  deleteSwiped,
 })(ProfileSettings);

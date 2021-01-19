@@ -25,6 +25,12 @@ export const dateDiffInDays = (a, b) => {
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 };
 
+export const dateDiffInMinutes = (a, b) => {
+  var diff = Math.abs(new Date(a) - new Date(b));
+  var minutes = Math.floor((diff/1000)/60);
+  return minutes;
+}
+
 export const setSeen = (id, matchString) => {
   axios.post("/tinder/messages/setSeen", {
       _id: id,
