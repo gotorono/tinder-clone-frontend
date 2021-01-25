@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import "./Header.css";
 import IconButton from "@material-ui/core/IconButton";
 
+import Logo from './img/logo.png';
+
 import { connect } from "react-redux";
 
 function Header(props) {
@@ -19,13 +21,11 @@ function Header(props) {
       </Link>
 
       <Link to="/app" title="Connections">
-        <IconButton className="appIcon">
           <img
             className="header__logo"
-            src="https://1000logos.net/wp-content/uploads/2018/07/tinder-logo.png"
+            src={Logo}
             alt=""
           />
-        </IconButton>
       </Link>
     </div>
   );

@@ -7,6 +7,21 @@
     padding-top:30px;
 }
 
+
+.profileSettingsItemsWrapper .profileSettingsItem.sliderItem {
+    cursor: default;
+    border: none;
+    border-radius: 2px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.125);
+    height: auto;
+}
+
+.ageRangeTitle {
+    padding-left: 1em;
+    font-size: 1.05em;
+    margin-bottom: .25em;
+}
+
 .profileSettingsItemsWrapper .profileSettingsItem {
     background-color: white;
     text-align: center;
@@ -30,4 +45,34 @@
 
 .profileSettingsItem:hover span {
     font-size: 1.125em;
+}
+
+.profileSettingsSelect {
+    width: 50% !important;
+}
+
+.lookingForWrapper {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.lookingForWrapper > div:not(.errorWrapper) {
+    width: 50%;
+}
+
+.borderSpacer {
+    width: 75%;
+    border-top: 2px solid rgb(224, 224, 224);
+    margin: 40px auto;
+}
+
+.lookingForWrapper > div.inputTitle {
+    display: flex;
+    align-items: center;
+}
+
+.lookingForWrapper .errorWrapper {
+    flex-basis: 100%;
 }

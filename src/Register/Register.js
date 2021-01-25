@@ -20,11 +20,13 @@ import classnames from "classnames";
 
 import Resizer from "react-image-file-resizer";
 
-import { orientationOptions, genderOptions } from '../variables';
+import { orientationOptions, genderOptions } from "../variables";
 
 import cryptoRandomString from "crypto-random-string";
 
 import { storage } from "../firebase/firebase";
+
+import validateRegisterInput from "./validation";
 
 function Register(props) {
   const [email, setEmail] = useState("");
@@ -37,7 +39,6 @@ function Register(props) {
   const [orientation, setOrientation] = useState("");
   const [description, setDescription] = useState("");
 
-  const [imageURL, setImageURL] = useState("");
   const [imageBase64, setImageBase64] = useState();
 
   const [calendarVisible, setCalendarVisible] = useState(false);
@@ -73,18 +74,13 @@ function Register(props) {
     }
   });
 
+  console.log(errors);
+
   useEffect(() => {
     if (props.errors) {
-      storage
-        .ref("images")
-        .child(imageURL)
-        .delete()
-        .catch(function (err) {
-          console.log(err);
-        });
       setErrors(props.errors);
     }
-  }, [props, imageURL]);
+  }, [props]);
 
   const resizeFile = (file) =>
     new Promise((resolve) => {
@@ -118,13 +114,14 @@ function Register(props) {
       gender: gender,
       orientation: orientation,
       birthDate: birthDate,
-      description: description
+      description: description,
+      image: imageBase64,
     };
 
-    if (imageBase64 == null) {
-      console.error("not an image");
-    } else {
-      const rnd = cryptoRandomString({ length: 32, type: "base64" });
+    const validation = validateRegisterInput(newUser);
+
+    if (validation.isValid === true) {
+      const rnd = cryptoRandomString({ length: 32, type: "url-safe" });
       const uploadTask = storage
         .ref(`/images/${rnd}`)
         .putString(imageBase64, "data_url", { contentType: "image/jpeg" });
@@ -144,11 +141,12 @@ function Register(props) {
             .getDownloadURL()
             .then((fireBaseUrl) => {
               newUser.profileImg = fireBaseUrl;
-              setImageURL(rnd);
               props.registerUser(newUser, props.history);
             });
         }
       );
+    } else {
+      setErrors(validation.errors);
     }
   }
 
@@ -167,6 +165,9 @@ function Register(props) {
             </label>
             <input type="file" id="profileImg" onChange={handleImageAsFile} />
           </div>
+          <div className="errorWrapper image">
+            <span>{errors.image && imageBase64 === undefined ? errors.image : null}</span>
+          </div>
           <div
             className="profileImgWrapper"
             style={imageBase64 == null ? { display: "none" } : null}
@@ -177,38 +178,38 @@ function Register(props) {
 
         <div className="flexColumnWrapper">
           <div className="flexColumn">
-            <div >
+            <div>
               <div className="inputTitle">First name</div>
               <input
-              spellCheck="false"
+                spellCheck="false"
                 autoComplete="new-password"
                 onChange={(e) => setName(e.target.value)}
                 value={name}
                 error={errors.name}
-                className={classnames("styled", { invalid: errors.name })}
+                className={classnames("styled", { invalid: errors.name && name === "" })}
                 id="name"
                 type="text"
               />
               <div className="errorWrapper">
-                <span>{errors.name}</span>
+                <span>{errors.name && name === "" ? errors.name : null}</span>
               </div>
             </div>
             <div>
               <div className="inputTitle">Email address</div>
               <input
-              spellCheck="false"
+                spellCheck="false"
                 autoComplete="new-password"
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
                 error={errors.email}
-                className={classnames("styled", { invalid: errors.email })}
+                className={classnames("styled", { invalid: (errors.email && email === "") || errors.emailinvalid })}
                 id="email"
                 type="email"
               />
               <div className="errorWrapper">
                 <span>
-                  {errors.email}
-                  {errors.emailnotfound}
+                  {errors.email && email === "" ? errors.email : null}
+                  {errors.emailinvalid && email !== "" ? errors.emailinvalid : null}
                 </span>
               </div>
             </div>
@@ -218,35 +219,35 @@ function Register(props) {
             <div>
               <div className="inputTitle">Password</div>
               <input
-              spellCheck="false"
+                spellCheck="false"
                 autoComplete="new-password"
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
                 error={errors.password}
-                className={classnames("styled", { invalid: errors.password })}
+                className={classnames("styled", { invalid: errors.password && password === "" && password.length < 6 })}
                 id="password"
                 type="password"
               />
               <div className="errorWrapper">
-                <span>{errors.password}</span>
+                <span>{errors.password && password === "" && password.length < 6 ? errors.password : null }</span>
               </div>
             </div>
             <div>
               <div className="inputTitle">Repeat your password</div>
               <input
-              spellCheck="false"
+                spellCheck="false"
                 autoComplete="new-password"
                 onChange={(e) => setPasswordRepeat(e.target.value)}
                 value={passwordRepeat}
                 error={errors.passwordRepeat}
                 className={classnames("styled", {
-                  invalid: errors.passwordRepeat,
+                  invalid: (errors.passwordRepeat && passwordRepeat === "") || passwordRepeat !== password && errors.passwordRepeat,
                 })}
                 id="passwordRepeat"
                 type="password"
               />
               <div className="errorWrapper">
-                <span>{errors.passwordRepeat}</span>
+                <span>{(errors.passwordRepeat && passwordRepeat === "") || passwordRepeat !== password ? errors.passwordRepeat : null}</span>
               </div>
             </div>
           </div>
@@ -257,7 +258,7 @@ function Register(props) {
 
               <Select
                 className={classnames("", {
-                  invalid: errors.gender,
+                  invalid: errors.gender && gender === "",
                 })}
                 onChange={(e) => setGender(e.value)}
                 options={genderOptions}
@@ -267,7 +268,7 @@ function Register(props) {
               />
 
               <div className="errorWrapper">
-                <span>{errors.gender}</span>
+                <span>{errors.gender && gender === "" ? errors.gender : ""}</span>
               </div>
             </div>
             <div>
@@ -275,7 +276,7 @@ function Register(props) {
 
               <Select
                 className={classnames("", {
-                  invalid: errors.orientation,
+                  invalid: errors.orientation && orientation === "",
                 })}
                 onChange={(e) => setOrientation(e.value)}
                 options={orientationOptions}
@@ -285,7 +286,7 @@ function Register(props) {
               />
 
               <div className="errorWrapper">
-                <span>{errors.orientation}</span>
+                <span>{errors.orientation && orientation === "" ? errors.orientation : null}</span>
               </div>
             </div>
             <div className="flexbasis100"></div>
@@ -297,7 +298,7 @@ function Register(props) {
                 className={classnames(
                   calendarVisible ? "active" : "",
                   birthDate ? "active hasValue" : "placeholder",
-                  errors.birthDate ? "invalid" : ""
+                  errors.birthDate && birthDate === "" ? "invalid" : ""
                 )}
                 id="birthDateButton"
                 onClick={(e) => birthDateClicked(e)}
@@ -344,7 +345,7 @@ function Register(props) {
               />
 
               <div className="errorWrapper">
-                <span>{errors.birthDate}</span>
+                <span>{errors.birthDate && birthDate === "" ? errors.birthDate : null}</span>
               </div>
             </div>
             <div className="descriptionWrapper">

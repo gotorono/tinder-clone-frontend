@@ -148,7 +148,7 @@ function Profile(props) {
     if (image == null) {
       console.error("not an image");
     } else {
-      const rnd = cryptoRandomString({ length: 32, type: "base64" });
+      const rnd = cryptoRandomString({ length: 32, type: "url-safe" });
       const uploadTask = storage
         .ref(`/images/${rnd}`)
         .putString(image, "data_url", { contentType: "image/jpeg" });
@@ -257,8 +257,7 @@ function Profile(props) {
                 {user.name}
                 <span className="age">
                   &nbsp;
-                  {new Date().getFullYear() -
-                    new Date(user.birthDate).getFullYear()}
+                  {Math.abs(new Date(Date.now() - new Date(user.birthDate).getTime()).getUTCFullYear() - 1970)}
                 </span>
               </h3>
               <div className="desc">{user.description}</div>

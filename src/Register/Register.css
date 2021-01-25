@@ -156,11 +156,11 @@ button#birthDateButton.placeholder span.textBirth {
 
 
 button#birthDateButton:hover {
-    border-color: rgb(180,58,165);
+    border-color: rgb(255, 89, 134);
 }
 
 button#birthDateButton.active {
-    border-color: rgb(180,58,165) !important;
+    border-color: rgb(255, 89, 134) !important;
 }
 
 .birthDateWrapper {
@@ -172,7 +172,7 @@ button#birthDateButton.active {
     width: 350px;
     z-index:10;
     margin: 2px 0;
-    border-color: rgb(180,58,165) !important;
+    border-color: rgb(255, 89, 134) !important;
 }
 
 .descriptionWrapper textarea {
@@ -238,4 +238,8 @@ span.uploadIcon .MuiSvgIcon-root{
     color: white;
     margin-right: .5em;
     font-size:1.75em;
+}
+
+div.errorWrapper.image {
+    text-align: center;
 }

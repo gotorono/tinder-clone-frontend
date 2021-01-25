@@ -16,18 +16,18 @@ export const customStyles = {
           ...base,
           boxShadow: state.isFocused ? 0 : 0,
           borderColor: state.isFocused
-            ? 'rgb(180,58,165)' :
-            state.hasValue ? 'rgb(180,58,165)'
+            ? 'rgb(255, 89, 134)' :
+            state.hasValue ? 'rgb(255, 89, 134)'
             : base.borderColor,
           '&:hover': {
-            borderColor: 'rgb(180,58,165)',
+            borderColor: 'rgb(255, 89, 134)',
           }
       }),
       menu: (base, state) => ({
         ...base,
         margin: '2px 0',
         padding: 0,
-        border: '1px solid rgb(180,58,165)',
+        border: '1px solid rgb(255, 89, 134)',
       }),
       menuList: (base, state) => ({
         ...base,

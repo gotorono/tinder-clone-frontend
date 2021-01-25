@@ -57,12 +57,12 @@ function Login(props) {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
             error={errors.password}
-            className={classnames("styled", { invalid: errors.password })}
+            className={classnames("styled", { invalid: errors.password || errors.passwordincorrect})}
             id="password"
             type="password"
           />
           <div className="errorWrapper">
-            <span>{errors.password}</span>
+            <span>{errors.password}{errors.passwordincorrect}</span>
           </div>
         </div>
         <div className="buttonLast">

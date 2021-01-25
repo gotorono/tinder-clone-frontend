@@ -36,6 +36,8 @@ function Main(props) {
 
   const [empty, setEmpty] = useState(null);
 
+  const [forceUpdate, setForceUpdate] = useState(false);
+
   const [subComp, setSubComp] = useState("matches");
 
   const notSeenHandler = useCallback(async() => {
@@ -148,7 +150,7 @@ function Main(props) {
             window.location.pathname === "/app/profile" ? "" : "hidden"
           )}
         >
-          <ProfileSettings />
+          <ProfileSettings forceUpdate={() => setForceUpdate(!forceUpdate)} />
         </div>
       </div>
       <div className="app">
@@ -190,7 +192,7 @@ function Main(props) {
         </div>
 
         <div className={classnames("", empty === true ? "hidden" : "")}>
-          <TinderCards matchFnc={match} refresh={refresh} empty={emptyFnc} />
+          <TinderCards matchFnc={match} refresh={refresh} forceUpdate={forceUpdate} empty={emptyFnc} />
           <div className={classnames("", empty !== null ? "" : "hidden")}>
             <SwipeButtons swipe={swipe} />
           </div>

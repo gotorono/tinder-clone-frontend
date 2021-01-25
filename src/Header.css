@@ -26,54 +26,16 @@
 }
 
 .header__logo {
-    object-fit: contain;
-    height: 40px;
-}
-
-.appIcon {
-    animation: logoMoveOut 500ms 0s 1 ease;
+    height: 48px;
+    transition: transform 250ms ease;
 }
 
 .appIcon .MuiTouchRipple-root {
     display: none;
 }
 
-.appIcon:hover {
-    background-color: unset !important;
-    animation: logoMoveIn 500ms 0s 1 ease;
+.header__logo:hover {
     transform: scale(1.25);
-}
-
-@keyframes logoMoveOut {
-    0% {
-        transform: rotate(0deg) scale(1.25);
-    }
-
-    50% {
-        transform: rotate(-30deg) scale(1.25);
-    }
-
-    100% {
-        transform: rotate(0deg) scale(1);
-    }
-}
-
-@keyframes logoMoveIn {
-    0% {
-        transform: rotate(0deg) scale(1);
-    }
-
-    50% {
-        transform: rotate(-30deg) scale(1.25);
-    }
-
-    100% {
-        transform: rotate(0deg) scale(1.25);
-    }
-}
-
-.profilePicWrapper:hover {
-    transform: scale(1.125);
 }
 
 .profilePicWrapper {

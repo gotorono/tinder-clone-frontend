@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import TinderCard from "react-tinder-card";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import TinderCard from "./TinderCard/TinderCard";
 import "./TinderCards.css";
 import axios from "./axios";
 
@@ -16,13 +16,18 @@ import { withRouter } from "react-router-dom";
 
 import MatchAnimation from "./MatchAnimation";
 
-import CancelIcon from '@material-ui/icons/Cancel';
+import CancelIcon from "@material-ui/icons/Cancel";
 
 function TinderCards(props) {
   const [people, setPeople] = useState([]);
   const [playAnimation, setPlayAnimation] = useState(false);
   const [newMatch, setNewMatch] = useState({});
   const [origin, setOrigin] = useState("none");
+
+  const cardRefs = React.useMemo(
+    () => Array.from({ length: people.length }, () => React.createRef()),
+    [people.length]
+  );
 
   // function getLocation() {
   //   if (navigator.geolocation) {
@@ -59,8 +64,7 @@ function TinderCards(props) {
   };
 
   useEffect(() => {
-    if(people.length === 0)
-      if (playAnimation === false) handleEmpty(people);
+    if (people.length === 0) if (playAnimation === false) handleEmpty(people);
   }, [playAnimation, handleEmpty, people]);
 
   const playMatchAnimation = () => {
@@ -77,20 +81,15 @@ function TinderCards(props) {
     }
 
     fetchData();
-  }, [handleEmpty, props.auth.user.id]);
-
-  const childRefs = useMemo(
-    () =>
-      Array(100)
-        .fill(0)
-        .map((i) => React.createRef()),
-    []
-  );
+  }, [handleEmpty, props.auth.user.id, props.forceUpdate]);
 
   useEffect(() => {
     const swipe = (dir) => {
       setOrigin("btn");
-      if (people.length > 0) childRefs[people.length - 1].current.swipe(dir);
+      if (people.length > 0) {
+        cardRefs[people.length - 1].current.swipe(dir);
+        swiped(dir, people[people.length - 1]);
+      }
     };
 
     switch (props.refresh.swipe) {
@@ -110,7 +109,7 @@ function TinderCards(props) {
       default:
         break;
     }
-  }, [props.refresh, childRefs, people.length]);
+  }, [props.refresh, people.length, cardRefs]);
 
   const swiped = (direction, user) => {
     let a = people;
@@ -159,10 +158,6 @@ function TinderCards(props) {
     setOrigin("none");
   };
 
-  const outOfFrame = (name) => {
-    console.log(name + " has left the screen");
-  };
-
   return (
     <div className="tinderCards">
       <div className="tinderCards__cardContainer">
@@ -176,10 +171,13 @@ function TinderCards(props) {
             {Object.keys(newMatch).length !== 0 &&
             newMatch.constructor === Object ? (
               <div className="swipe newMatch">
-                <div className="closeNewMatch" onClick={() => setPlayAnimation(false)}>
+                <div
+                  className="closeNewMatch"
+                  onClick={() => setPlayAnimation(false)}
+                >
                   <CancelIcon />
                 </div>
-                <div className="card">       
+                <div className="card">
                   <Slider {...sliderSettings}>
                     <div className="itemWrapper">
                       <div
@@ -214,12 +212,9 @@ function TinderCards(props) {
         </div>
         {people.map((person, index) => (
           <TinderCard
-            ref={childRefs[index]}
-            className="swipe"
-            key={person._id}
-            preventSwipe={["up", "down"]}
+            ref={cardRefs[index]}
             onSwipe={(dir) => swiped(dir, person)}
-            onCardLeftScreen={() => outOfFrame(person.name)}
+            key={person._id}
           >
             <div className="card">
               <Slider {...sliderSettings}>
@@ -244,8 +239,7 @@ function TinderCards(props) {
                   <span className="age">
                     {" "}
                     &nbsp;
-                    {new Date().getFullYear() -
-                      new Date(person.birthDate).getFullYear()}
+                    {Math.abs(new Date(Date.now() - new Date(person.birthDate).getTime()).getUTCFullYear() - 1970)}
                   </span>
                 </h3>
                 <div className="desc">{person.description}</div>

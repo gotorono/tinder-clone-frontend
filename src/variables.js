@@ -12,6 +12,12 @@ export const orientationOptions = [
   { value: "bi", label: "Bisexual" },
 ];
 
+export const showOptions = [
+  { value: "men", label: "Men" },
+  { value: "women", label: "Women" },
+  { value: "everyone", label: "Everyone" },
+];
+
 export const getNotSeenCount = (unseenCount) => {
   if (unseenCount > 9) return "9+";
   else return unseenCount;
