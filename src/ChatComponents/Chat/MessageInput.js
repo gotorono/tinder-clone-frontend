@@ -71,6 +71,10 @@ function MessageInput(props) {
       >
         <InsertEmoticonIcon />
       </div>
+      <div className="chessGameInvite"
+      onClick={props.chessGameInvite}>
+        C
+      </div>
 
       <input
         className={classnames("", message === "" ? "" : "canSend")}

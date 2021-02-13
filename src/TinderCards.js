@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import TinderCard from "./TinderCard/TinderCard";
 import "./TinderCards.css";
 import axios from "./axios";
@@ -42,29 +42,30 @@ function TinderCards(props) {
 
   // getLocation();
 
-  const handleEmpty = useCallback((array) => {
-    setTimeout(function () {
-      if (array.length === 0) props.empty(true);
-      else props.empty(false);
-    }, 750);
+  const handleEmpty = useCallback((array, delay) => {
+    if (array.length === 0)
+      setTimeout(() => {
+        props.empty(true);
+      }, delay === true ? 500 : 0);
+    else props.empty(false);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleMatch = (res) => {
     if (props.matchFnc) {
-      setTimeout(function () {
-        if (res) {
+      if (res) {
+        setTimeout(() => {
           playMatchAnimation(res);
           setNewMatch(res.user);
           props.matchFnc(res);
-        } else {
-          handleEmpty(people);
-        }
-      }, 500);
+        }, 500)
+      } else {
+        handleEmpty(people, true);
+      }
     }
   };
 
   useEffect(() => {
-    if (people.length === 0) if (playAnimation === false) handleEmpty(people);
+    if (people.length === 0) if (playAnimation === false) handleEmpty(people, false);
   }, [playAnimation, handleEmpty, people]);
 
   const playMatchAnimation = () => {
@@ -77,7 +78,7 @@ function TinderCards(props) {
         params: { user: props.auth.user.id },
       });
       setPeople(req.data);
-      handleEmpty(req.data);
+      handleEmpty(req.data, false);
     }
 
     fetchData();
@@ -109,7 +110,7 @@ function TinderCards(props) {
       default:
         break;
     }
-  }, [props.refresh, people.length, cardRefs]);
+  }, [props.refresh, people, cardRefs]);
 
   const swiped = (direction, user) => {
     let a = people;
@@ -129,6 +130,8 @@ function TinderCards(props) {
         axios.post("/tinder/cards/push/left", {
           userId: props.auth.user.id,
           swipedId: user._id,
+        }).then(() => {
+          handleEmpty(people, true)
         });
         break;
       case "right":
@@ -239,7 +242,11 @@ function TinderCards(props) {
                   <span className="age">
                     {" "}
                     &nbsp;
-                    {Math.abs(new Date(Date.now() - new Date(person.birthDate).getTime()).getUTCFullYear() - 1970)}
+                    {Math.abs(
+                      new Date(
+                        Date.now() - new Date(person.birthDate).getTime()
+                      ).getUTCFullYear() - 1970
+                    )}
                   </span>
                 </h3>
                 <div className="desc">{person.description}</div>

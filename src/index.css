@@ -138,3 +138,18 @@ div.online span {
   margin-left: 1.275em;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.75);
 }
+
+.emptyList.smaller {
+  font-size: .825em;
+}
+
+.emptyList {
+  text-align: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.emptyList .up {
+  font-size: 1.25em; 
+  font-weight: 500;
+}

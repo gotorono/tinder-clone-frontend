@@ -44,6 +44,8 @@ function App() {
             <Login />
           </Route>
 
+          <PrivateRoute exact path="/app/chess/:game" component={Main} />
+
           <PrivateRoute exact path="/app/profile" component={Main} />
 
           <PrivateRoute exact path="/app/messages/:id" component={Main} />

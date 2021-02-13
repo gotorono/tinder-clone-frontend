@@ -91,10 +91,6 @@ export default React.forwardRef(function TinderCard(props, ref) {
         window.innerWidth
       }px, 0);`;
       cardRef.current.children[0].style = `transition: opacity 100ms ease; opacity: 1;`;
-    //   setTimeout(() => {
-    //     if (cardRef.current && cardRef.current.style);
-    //         cardRef.current.style = "display: none;";
-    //   }, 750);
     } else if (direction === "right") {
       cardRef.current.style = `transition: transform ${
         type === "button" ? "1000ms" : "750ms"
@@ -102,10 +98,6 @@ export default React.forwardRef(function TinderCard(props, ref) {
         window.innerWidth
       }px, 0);`;
       cardRef.current.children[1].style = `transition: opacity 100ms ease; opacity: 1;`;
-    //   setTimeout(() => {
-    //     if (cardRef.current && cardRef.current.style);
-    //     cardRef.current.style = "display: none;";
-    //   }, 750);
     }
   };
 

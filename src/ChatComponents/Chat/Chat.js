@@ -2,18 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./Chat.css";
 
 import axios from "../../axios";
-
-// import classnames from "classnames";
-
 import { socket } from "../../socket";
-
 import Scrollbar from "../../Scrollbar";
-
 import { getMatchString } from "../../variables";
-
 import { animateScroll } from "react-scroll";
-
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 //CHAT COMPONENTS
 
@@ -22,9 +16,7 @@ import { dateDiffInMinutes } from "../../variables";
 import Message from "./Message";
 import NoMessages from "./NoMessages";
 import MessageInput from "./MessageInput";
-
 import DateLine from "./DateLine";
-
 import ChatHeader from "./ChatHeader";
 
 function Chat(props) {
@@ -211,7 +203,7 @@ function Chat(props) {
         </Scrollbar>
       )}
 
-      <MessageInput handleSendMessage={handleSendMessage} />
+      <MessageInput handleSendMessage={handleSendMessage} chessGameInvite={() => props.history.push(`/app/chess/${chatUser._id}`)} />
     </div>
   );
 }
@@ -220,4 +212,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps)(Chat);
+export default connect(mapStateToProps)(withRouter(Chat));

@@ -91,7 +91,7 @@ function ChatList(props) {
 
   return (
     <div className="chatList">
-      {activeChats.map((activeChat) => (
+      {activeChats.length > 0 ? activeChats.map((activeChat) => (
         <Link to={`/app/messages/${activeChat.userId}`} key={activeChat.userId}>
           <div
             className={classnames(
@@ -122,7 +122,7 @@ function ChatList(props) {
             </div>
           </div>
         </Link>
-      ))}
+      )): <div className="emptyList smaller"><span className="up">No messages have been found</span> <br /> <span className="down"><b>Match</b> with someone and tell them something!</span></div>}
     </div>
   );
 }

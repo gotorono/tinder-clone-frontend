@@ -43,7 +43,7 @@ function Matches(props) {
         <div className="loadingWrapperSidebar"><div className="loadbar" /></div>
       ) : (
         <div className="matchesFlexWrapper">
-          {matches
+          {matches.length > 0
             ? matches.map((person, index) => (
                 <Link to={`/app/messages/${person._id}`} key={person._id}>
                   <div
@@ -68,7 +68,7 @@ function Matches(props) {
                   </div>
                 </Link>
               ))
-            : null}
+            : <div className="emptyList"><span className="up">You have no matches yet </span> <br /> <span className="down"><b>Swipe</b> to find a match!</span></div>}
         </div>
       )}
     </div>

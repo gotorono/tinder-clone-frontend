@@ -20,13 +20,14 @@ import Profile from "../Profile/Profile";
 import ProfileSettings from "../Profile/ProfileSettings";
 import TinderCards from "../TinderCards";
 import SwipeButtons from "../SwipeButtons";
+import Board from "../Chess/Board/Board";
 
-import { getNotSeenCount } from '../variables';
+import { getNotSeenCount } from "../variables";
 
 function Main(props) {
   const [refresh, setRefresh] = useState({ swipe: 0 });
 
-  const [matchUser, setMatchUser] = useState("");
+  const [matchUser, setMatchUser] = useState({});
 
   const [forceActiveChats, setForceActiveChats] = useState(false);
 
@@ -40,19 +41,34 @@ function Main(props) {
 
   const [subComp, setSubComp] = useState("matches");
 
-  const notSeenHandler = useCallback(async() => {
+  const [playing, setPlaying] = useState("");
+
+  const notSeenHandler = useCallback(async () => {
     const req = await axios.get("/tinder/messages/notSeen", {
       params: {
         _id: props.auth.user.id,
       },
     });
-    setNotSeenCount(getNotSeenCount(req.data))
-  }, [props.auth.user.id])
+    setNotSeenCount(getNotSeenCount(req.data));
+  }, [props.auth.user.id]);
+
+  const sides = (state) => {
+    if(state.white === props.auth.user.id)
+      setPlaying("white");
+    else
+      setPlaying("black");
+  }
 
   useEffect(() => {
     socket.emit("userBecameOnline", props.auth.user.id);
     notSeenHandler();
   }, [props.auth.user.id, notSeenHandler]);
+
+  useEffect(() => {
+    if(props.match.params.game !== "") {
+
+    }
+  }, [props.match.params.game])
 
   useEffect(() => {
     socket.on("sendOnlineMatches", (onlineUsers) => {
@@ -115,7 +131,9 @@ function Main(props) {
             onClick={() => setSubComp("messages")}
           >
             Messages
-          {notSeenCount === 0 ? null : <div className="notSeenMessages">{notSeenCount}</div>}
+            {notSeenCount === 0 ? null : (
+              <div className="notSeenMessages">{notSeenCount}</div>
+            )}
           </button>
         </div>
         <div
@@ -160,7 +178,12 @@ function Main(props) {
             props.match.params.id ? "" : "hidden"
           )}
         >
-          <ChatWindow id={props.match.params.id} onlineUsers={onlineUsers} notSeen={notSeenHandler} forceActiveChatsRender={forceActiveChatsRender} />
+          <ChatWindow
+            id={props.match.params.id}
+            onlineUsers={onlineUsers}
+            notSeen={notSeenHandler}
+            forceActiveChatsRender={forceActiveChatsRender}
+          />
         </div>
         <div
           className={classnames(
@@ -171,6 +194,17 @@ function Main(props) {
         >
           <Profile />
         </div>
+        {props.match.params.game ? (
+          <div
+            className={classnames(
+              "chess"
+              // props.match.params.game ? "" : "hidden"
+            )}
+          >
+            <Board playing={playing} sides={sides} />
+          </div>
+        ) : null}
+
         <div className={classnames("", empty === true ? "" : "hidden")}>
           <div className="emptyWrapper">
             <div className="emptyInside">
@@ -192,7 +226,12 @@ function Main(props) {
         </div>
 
         <div className={classnames("", empty === true ? "hidden" : "")}>
-          <TinderCards matchFnc={match} refresh={refresh} forceUpdate={forceUpdate} empty={emptyFnc} />
+          <TinderCards
+            matchFnc={match}
+            refresh={refresh}
+            forceUpdate={forceUpdate}
+            empty={emptyFnc}
+          />
           <div className={classnames("", empty !== null ? "" : "hidden")}>
             <SwipeButtons swipe={swipe} />
           </div>
