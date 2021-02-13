@@ -42,7 +42,7 @@
 
 .playerInfo {
     position: absolute;
-    left: 1px;
+    left: 0;
     bottom: unset;
     top: 100%;
     margin-top: 5px;
