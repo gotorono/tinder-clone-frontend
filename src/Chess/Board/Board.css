@@ -40,6 +40,111 @@
     margin-left: -7px;
 }
 
+.chessActions {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    float: left;
+    display: flex;
+}
+
+.newGameBox {
+    padding: 30px;
+    background-color:rgba(61, 61, 61, 0.875);
+    color: white;
+    width: 45%;
+    height: 30%;
+    flex-wrap: wrap;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(235, 235, 235, 0.325);
+}
+
+.newGameBox > div {
+    width: 100%;
+}
+
+.newGameResult {
+    text-align: center;
+    font-size: 1.75em;
+    font-weight: 600;
+}
+
+.newGameActions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.newGameBox button {
+    font-size: .925em;
+    font-family: inherit;
+    padding: 0.4em 1em;
+    font-weight: bold;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    border: unset;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.325), inset 0 0 4px rgba(0, 0, 0, 0.125);
+    transition: background-color 250ms ease;
+}
+
+.newGameBox button:hover {
+    background: rgb(231, 231, 231);
+}
+
+.newGameBox button:focus {
+    background: rgb(218, 218, 218);
+    outline: none;
+}
+
+.newGame {
+    font-family: "Nunito";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    background-color: rgba(0, 0, 0, 0.325);
+    top:0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chessboardWrapper {
+    display: flex;
+}
+
+.chessSidebar {
+    width: 300px;
+    margin-left: 25px;
+}
+
+.chessActions > button {
+    font-size: .925em;
+    font-family: inherit;
+    padding: 0.625em 1em;
+    font-weight: bold;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    border: unset;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.325), inset 0 0 4px rgba(0, 0, 0, 0.125);
+    transition: background-color 250ms ease;
+}
+
+.chessActions > button:hover {
+    background: rgb(231, 231, 231);
+}
+
+.chessActions > button:focus {
+    background: rgb(218, 218, 218);
+    outline: none;
+}
+
 .playerInfo {
     position: absolute;
     left: 0;
@@ -133,8 +238,7 @@
 .moveHistory {
     font-family: 'Nunito';
     float:left;
-    margin-left: 25px;
-    width: 300px;
+    width: 100%;
     height: 400px;
     background-color: rgb(240, 240, 240);
     padding: 0px 0px;

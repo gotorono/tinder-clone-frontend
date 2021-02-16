@@ -89,7 +89,7 @@ function ChatMatchProfile(props) {
                 <span className="age">
                   {" "}
                   &nbsp;
-                  {Math.abs(new Date(Date.now() - new Date(user.birthDate).getTime()).getUTCFullYear() - 1970)}
+                  {Math.abs(new Date(Date.now() - new Date(matchProfile.birthDate).getTime()).getUTCFullYear() - 1970)}
                 </span>
               </h3>
               {genderHandler()}

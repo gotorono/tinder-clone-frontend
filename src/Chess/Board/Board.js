@@ -11,6 +11,8 @@ import classnames from "classnames";
 
 import moveSoundFile from "./audio/move.wav";
 
+import { Link } from "react-router-dom";
+
 import King from "../pieces/King";
 import Rook from "../pieces/Rook";
 import Bishop from "../pieces/Bishop";
@@ -41,6 +43,7 @@ import {
 function Board(props) {
   const [isDown, setIsDown] = useState({ state: false, pos: { x: 0, y: 0 } });
   const [boardSize, setBoardSize] = useState({});
+  const [gameState, setGameState] = useState({});
 
   const [opponent, setOpponent] = useState({});
   const [matchString, setMatchString] = useState("");
@@ -116,37 +119,80 @@ function Board(props) {
     });
   };
 
+  const setNewGame = (data) => {
+    setGameState(data.game.game);
+    setCanCastle(data.game.castles);
+    setCaptures(data.game.captures);
+    setEnPassant(data.game.enPassant);
+    setBoardHistory(data.game.boardHistory);
+    setMoveHistory(data.game.moveHistory);
+    setBoard(data.game.board);
+
+    setTurn(data.game.turn);
+    props.sides(data.game.game);
+
+    setOpponent(data.opponent);
+  };
+
+  const fetchData = useCallback(async () => {
+    const req = await axios.get("/tinder/chess/game", {
+      params: {
+        id: props.auth.user.id,
+        opponentId: props.match.params.game,
+        matchString,
+      },
+    });
+
+    if (req.data.game) {
+      setGameState(req.data.game.game);
+      setBoard(req.data.game.board);
+      setCanCastle(req.data.game.castles);
+      setCaptures(req.data.game.captures);
+      setEnPassant(req.data.game.enPassant);
+      setBoardHistory(req.data.game.boardHistory);
+      setMoveHistory(req.data.game.moveHistory);
+      setTurn(req.data.game.turn);
+      props.sides(req.data.game.game);
+    } else {
+      setTurn("white");
+      setGameState(req.data.state);
+      props.sides(req.data.state);
+    }
+    setOpponent(req.data.opponent);
+  }, [props.auth.user.id, props.match.params.game, matchString]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      const req = await axios.get("/tinder/chess/game", {
-        params: {
-          id: props.auth.user.id,
-          opponentId: props.match.params.game,
-          matchString,
-        },
-      });
+    socket.on("inviteSent", () => {
+      setGameState({...gameState, invited: [props.auth.user.id]})
+    });
 
-      if (req.data.game) {
-        setBoard(req.data.game.board);
-        setCanCastle(req.data.game.castles);
-        setCaptures(req.data.game.captures);
-        setEnPassant(req.data.game.enPassant);
-        setBoardHistory(req.data.game.boardHistory);
-        setMoveHistory(req.data.game.moveHistory);
-        setTurn(req.data.game.turn);
-        props.sides(req.data.game.game);
-      } else {
-        setTurn("white");
-        props.sides(req.data.state);
-      }
-
-      setOpponent(req.data.opponent);
-    };
-
-    if (matchString !== "") fetchData();
+    socket.on("hasBeenInvited", () => {
+      setGameState({...gameState, invited: [props.match.params.game]})
+    });
 
     return () => {
-      if (matchString !== "") socket.emit("chessLeave", matchString);
+        socket.off("inviteSent");
+        socket.off("hasBeenInvited");
+    };
+  }, [gameState])
+
+  useEffect(() => {
+    if (matchString !== "") {
+      fetchData();
+
+      socket.on("newGame", (data) => {
+        console.log(data);
+        setNewGame(data);
+      });
+    }
+
+    return () => {
+      if (matchString !== "") {
+        socket.emit("chessLeave", matchString);
+        socket.off("inviteSent");
+        socket.off("hasBeenInvited");
+        socket.off("newGame");
+      }
     };
   }, [matchString, props.match.params.game, props.auth.user.id]);
 
@@ -1612,16 +1658,33 @@ function Board(props) {
 
   const gameEnded = useCallback(
     (color, state) => {
-      socket.emit("gameEnded", {
-        id: props.auth.user.id,
-        opponentId: props.match.params.game,
-        matchString,
-        playing: props.playing,
-        state,
-        color,
-      });
+      if (gameState.result === null) {
+        setGameState({
+          ...gameState,
+          result:
+            state === "checkmate"
+              ? color === props.playing
+                ? props.auth.user.id
+                : props.match.params.game
+              : state,
+        });
+        socket.emit("gameEnded", {
+          _id: props.auth.user.id,
+          opponentId: props.match.params.game,
+          matchString,
+          playing: props.playing,
+          state,
+          color,
+        });
+      }
     },
-    [matchString, props.playing, props.auth.user.id, props.match.params.game]
+    [
+      matchString,
+      props.playing,
+      props.auth.user.id,
+      props.match.params.game,
+      gameState,
+    ]
   );
 
   useEffect(() => {
@@ -1638,7 +1701,7 @@ function Board(props) {
         ) {
           console.log(turn + " is checkmated");
           console.log(boardHistory);
-          gameEnded(turn, "checkmate");
+          gameEnded(turn === "white" ? "black" : "white", "checkmate");
         }
       } else if (
         isCheckmateOrStalemate(_.cloneDeep(board), turn, enPassant[turn]) ===
@@ -1651,7 +1714,6 @@ function Board(props) {
         if (refs.current[i]) refs.current[i].classList.remove("active", "take");
       }
     }
-
 
     if (opponent.name)
       setTableBoard(
@@ -1709,13 +1771,61 @@ function Board(props) {
       }
     },
     [refs.current, JSON.stringify(board), turn, isDown, moveHistory.length]
-  );
+  ); 
 
+  //enPassant captures
   return (
     <div className="chessboardWrapper">
       <div className="chessboard">
         {promote.state === true ? promoteWrapper() : null}
         {getNotation()}
+        {gameState.result !== null ? (
+          <div className="newGame">
+            <div className="newGameBox">
+              <div className="newGameResult">
+                {
+                gameState.result === "draw" ? "DRAW" :
+                gameState.result === "stalemate" ? "STALEMATE" :
+                gameState.result === props.auth.user.id
+                  ? `${props.playing} is victorious`.toUpperCase()
+                  : props.playing === "white"
+                  ? "BLACK IS VICTORIOUS"
+                  : "WHITE IS VICTORIOUS"}
+              </div>
+              <div className="newGameActions">
+                <button
+                  onClick={
+                    gameState.invited
+                      ? !gameState.invited.includes(props.auth.user.id)
+                        ? 
+                        () => {
+                            socket.emit("newGameInvite", {
+                              _id: props.auth.user.id,
+                              matchString,
+                              opponentId: props.match.params.game,
+                            });
+                          }
+                        : null
+                      : null
+                  }
+                >
+                  {gameState.invited
+                    ? gameState.invited.includes(props.auth.user.id)
+                      ? "Opponent invited"
+                      : gameState.invited.includes(props.match.params.game)
+                      ? "Accept rematch"
+                      : "Invite for rematch"
+                    : null}
+                </button>
+                <button>
+                  <Link to={"/app/messages/" + props.match.params.game}>
+                    Close
+                  </Link>
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
         <div
           ref={tableRef}
           style={{
@@ -1772,7 +1882,7 @@ function Board(props) {
             <div
               className={classnames(
                 "captures",
-                props.playing === "white" ? "" : ""
+                props.playing === "white" ? "black" : ""
               )}
             >
               {props.playing === "white"
@@ -1782,12 +1892,18 @@ function Board(props) {
           </div>
         </div>
       </div>
-      <div className="moveHistory">
-        {formatMoves(
-          moveHistory,
-          (i) => setLiveHistoryBoard(i),
-          () => setLiveBoard()
-        )}
+      <div className="chessSidebar">
+        <div className="moveHistory">
+          {formatMoves(
+            moveHistory,
+            (i) => setLiveHistoryBoard(i),
+            () => setLiveBoard()
+          )}
+        </div>
+        <div className="chessActions">
+          <button>Resign</button>
+          <button>Offer a draw</button>
+        </div>
       </div>
     </div>
   );
