@@ -89,6 +89,13 @@ function ChatList(props) {
     );
   };
 
+  const formatLastMessage = (message) => {
+    if(message.length >= 13)
+      return message.substr(0, 13) + "...";
+    else 
+      return message
+  }
+
   return (
     <div className="chatList">
       {activeChats.length > 0 ? activeChats.map((activeChat) => (
@@ -115,8 +122,8 @@ function ChatList(props) {
                 <div className="chatListingName">{activeChat.name}</div>
                 <div className="chatListingMessage">
                   {activeChat.lastMessageFromMe
-                    ? "Me: " + activeChat.lastMessage
-                    : activeChat.lastMessage}
+                    ? "Me: " + formatLastMessage(activeChat.lastMessage)
+                    : formatLastMessage(activeChat.lastMessage)}
                 </div>
               </div>
             </div>

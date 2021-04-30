@@ -72,8 +72,9 @@ function MessageInput(props) {
         <InsertEmoticonIcon />
       </div>
       <div className="chessGameInvite"
+      title="Invite for chess match"
       onClick={props.chessGameInvite}>
-        C
+        P
       </div>
 
       <input

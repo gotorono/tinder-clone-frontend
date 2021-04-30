@@ -1773,7 +1773,6 @@ function Board(props) {
     [refs.current, JSON.stringify(board), turn, isDown, moveHistory.length]
   ); 
 
-  //enPassant captures
   return (
     <div className="chessboardWrapper">
       <div className="chessboard">

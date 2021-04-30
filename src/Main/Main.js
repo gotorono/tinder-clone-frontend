@@ -194,16 +194,16 @@ function Main(props) {
         >
           <Profile />
         </div>
-        {props.match.params.game ? (
+        {/* {props.match.params.game ? ( */}
           <div
             className={classnames(
-              "chess"
-              // props.match.params.game ? "" : "hidden"
+              "chess",
+              props.match.params.game ? "" : "hidden"
             )}
           >
             <Board playing={playing} sides={sides} />
           </div>
-        ) : null}
+        {/* ) : null} */}
 
         <div className={classnames("", empty === true ? "" : "hidden")}>
           <div className="emptyWrapper">
