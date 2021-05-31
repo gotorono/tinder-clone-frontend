@@ -467,6 +467,7 @@ function Board(props) {
     let notation = [
       letters.map((letter, i) => (
         <div
+          key={i}
           className="mark"
           style={
             boardSize.width
@@ -484,6 +485,7 @@ function Board(props) {
       )),
       numbers.map((number, i) => (
         <div
+          key={i}
           className="mark"
           style={
             boardSize.width
