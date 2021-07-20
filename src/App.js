@@ -36,13 +36,9 @@ function App() {
     <Provider store={store}>
       <Router>
         <Switch>
-          <Route path="/register">
-            <Register />
-          </Route>
+          <Route path="/register" component={Register} />
 
-          <Route path="/login">
-            <Login />
-          </Route>
+          <Route path="/login" component={Login} />
 
           <PrivateRoute exact path="/app/chess/:game" component={Main} />
 
@@ -52,9 +48,7 @@ function App() {
 
           <PrivateRoute exact path="/app" component={Main} />
 
-          <Route path="/">
-            <LandingPage />
-          </Route>
+          <Route path="/" component={LandingPage} />
         </Switch>
       </Router>
     </Provider>

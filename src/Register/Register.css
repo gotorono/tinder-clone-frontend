@@ -33,8 +33,6 @@
     border-radius: 12px !important;
 }
 
-
-
 .profileImgWrapper div {
     background-size: cover;
     background-repeat: no-repeat;
@@ -54,10 +52,6 @@
     display:flex;
     justify-content: center;
     align-items: center;
-}
-
-.registerWrapper form div div > div:not(.react-calendar *){
-    margin: 20px 0;
 }
 
 .flexColumn {
@@ -96,12 +90,12 @@
     width: 500px;
     min-height: calc(100vh - 40px);
 }
-
+/* 
 .registerWrapper form div div div > div:first-child:not(.react-calendar *) {
-    font-size: 1.25em;
+    font-size: 1.125em;
     margin-left: .25em;
     margin-bottom: .5em;
-}
+} */
 
 button#signUp {
     width: 250px;

@@ -7,8 +7,8 @@ import { loginUser } from "../actions/authActions";
 import classnames from "classnames";
 
 function Login(props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("luke@admin.cz");
+  const [password, setPassword] = useState("123123");
   const [errors, setErrors] = useState({});
 
   useEffect(() => {

@@ -1,92 +1,92 @@
-import React, { useEffect, useState, useCallback } from "react";
-import "./Profile.css";
-import PropTypes from "prop-types";
+import React, { useEffect, useState, useCallback } from "react"
+import "./Profile.css"
+import PropTypes from "prop-types"
 
-import { useClickAway } from "use-click-away";
+import { useClickAway } from "use-click-away"
 
-import classnames from "classnames";
-import { updateUser } from "../actions/authActions";
+import classnames from "classnames"
+import { updateUser } from "../actions/authActions"
 
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
+import Calendar from "react-calendar"
+import "react-calendar/dist/Calendar.css"
 
-import ClearIcon from "@material-ui/icons/Clear";
-import AddIcon from "@material-ui/icons/Add";
-import PersonIcon from "@material-ui/icons/Person";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ClearIcon from "@material-ui/icons/Clear"
+import AddIcon from "@material-ui/icons/Add"
+import PersonIcon from "@material-ui/icons/Person"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 
-import Select from "react-select";
-import { customStyles } from "../customStyles/select";
+import Select from "react-select"
+import { customStyles } from "../customStyles/select"
 
-import { orientationOptions, genderOptions } from "../variables";
+import { orientationOptions, genderOptions } from "../variables"
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { sliderSettings } from "../sliderSettings";
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css"
+import { sliderSettings } from "../sliderSettings"
 
-import Slider from "react-slick";
-import axios from "../axios";
+import Slider from "react-slick"
+import axios from "../axios"
 
-import cryptoRandomString from "crypto-random-string";
+import cryptoRandomString from "crypto-random-string"
 
-import { storage } from "../firebase/firebase";
+import { storage } from "../firebase/firebase"
 
-import Resizer from "react-image-file-resizer";
+import Resizer from "react-image-file-resizer"
 
-import { connect } from "react-redux";
+import { connect } from "react-redux"
 
 function Profile(props) {
-  const [user, setUser] = useState({});
-  const [userImages, setUserImages] = useState([]);
-  const [userImagesOptions, setUserImagesOptions] = useState([]);
+  const [user, setUser] = useState({})
+  const [userImages, setUserImages] = useState([])
+  const [userImagesOptions, setUserImagesOptions] = useState([])
 
-  const [optionsOpen, setOptionsOpen] = useState(false);
-  const [canSetProfile, setCanSetProfile] = useState(true);
+  const [optionsOpen, setOptionsOpen] = useState(false)
+  const [canSetProfile, setCanSetProfile] = useState(true)
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({})
 
-  const [gender, setGender] = useState("");
-  const [name, setName] = useState("");
+  const [gender, setGender] = useState("")
+  const [name, setName] = useState("")
 
-  const [birthDate, setBirthDate] = useState("");
-  const [orientation, setOrientation] = useState("");
-  const [description, setDescription] = useState("");
+  const [birthDate, setBirthDate] = useState(new Date())
+  const [orientation, setOrientation] = useState("")
+  const [description, setDescription] = useState("")
 
-  const [calendarVisible, setCalendarVisible] = useState(false);
-  const [clickAwayOrigin, setClickAwayOrigin] = useState(false);
+  const [calendarVisible, setCalendarVisible] = useState(false)
+  const [clickAwayOrigin, setClickAwayOrigin] = useState(false)
 
-  const clickRef = React.useRef("");
+  const clickRef = React.useRef("")
 
   useClickAway(clickRef, () => {
     if (calendarVisible) {
-      setClickAwayOrigin(true);
-      setCalendarVisible(false);
-    } else setClickAwayOrigin(false);
-  });
+      setClickAwayOrigin(true)
+      setCalendarVisible(false)
+    } else setClickAwayOrigin(false)
+  })
 
-  const fetchImgs = useCallback(async() => {
+  const fetchImgs = useCallback(async () => {
     const req = await axios.get("/tinder/users/imgs", {
       params: { user: props.auth.user.id },
-    });
-    let imgArray = [];
+    })
+    let imgArray = []
     for (let i = 0; i < 9; i++) {
-      if (req.data[i]) imgArray.push(req.data[i]);
-      else imgArray.push(null);
+      if (req.data[i]) imgArray.push(req.data[i])
+      else imgArray.push(null)
     }
-    setUserImagesOptions(imgArray);
-    setUserImages(req.data);
+    setUserImagesOptions(imgArray)
+    setUserImages(req.data)
   }, [props.auth.user.id])
 
   function birthDateClicked(e) {
     if (e !== null) {
-      e.preventDefault();
+      e.preventDefault()
     }
 
     if (clickAwayOrigin) {
-      setCalendarVisible(false);
-      setClickAwayOrigin(false);
+      setCalendarVisible(false)
+      setClickAwayOrigin(false)
     } else {
-      calendarVisible ? setCalendarVisible(false) : setCalendarVisible(true);
+      calendarVisible ? setCalendarVisible(false) : setCalendarVisible(true)
     }
   }
 
@@ -100,11 +100,11 @@ function Profile(props) {
         90,
         0,
         (uri) => {
-          resolve(uri);
+          resolve(uri)
         },
         "base64"
-      );
-    });
+      )
+    })
 
   function uploadImg(imgURL) {
     axios
@@ -114,44 +114,43 @@ function Profile(props) {
       })
       .then(
         setTimeout(function () {
-          fetchImgs();
+          fetchImgs()
         }, 250)
-      );
+      )
   }
 
   async function saveButtonHandler(e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    await axios
-        .post("/tinder/users/updateProfile", {
-         user: {
-            id: user.id,
-            name: name,
-            description: description,
-            gender: gender,
-            orientation: orientation,
-            birthDate: birthDate
-          }
-        })
-    updateUser();
+    await axios.post("/tinder/users/updateProfile", {
+      user: {
+        id: user.id,
+        name: name,
+        description: description,
+        gender: gender,
+        orientation: orientation,
+        birthDate: birthDate,
+      },
+    })
+    updateUser()
 
-    showOptions(e);
+    showOptions(e)
   }
 
   function showOptions(e) {
-    e.preventDefault();
-    optionsOpen ? setOptionsOpen(false) : setOptionsOpen(true);
+    e.preventDefault()
+    optionsOpen ? setOptionsOpen(false) : setOptionsOpen(true)
   }
 
   const handleImageAsFile = async (e) => {
-    const image = await resizeFile(e.target.files[0]);
+    const image = await resizeFile(e.target.files[0])
     if (image == null) {
-      console.error("not an image");
+      console.error("not an image")
     } else {
-      const rnd = cryptoRandomString({ length: 32, type: "url-safe" });
+      const rnd = cryptoRandomString({ length: 32, type: "url-safe" })
       const uploadTask = storage
         .ref(`/images/${rnd}`)
-        .putString(image, "data_url", { contentType: "image/jpeg" });
+        .putString(image, "data_url", { contentType: "image/jpeg" })
 
       uploadTask.on(
         "state_changed",
@@ -159,7 +158,7 @@ function Profile(props) {
           //console.log(snapShot);
         },
         (err) => {
-          console.log(err);
+          console.log(err)
         },
         () => {
           storage
@@ -167,23 +166,23 @@ function Profile(props) {
             .child(rnd)
             .getDownloadURL()
             .then((fireBaseUrl) => {
-              uploadImg(fireBaseUrl);
-            });
+              uploadImg(fireBaseUrl)
+            })
         }
-      );
+      )
     }
-  };
+  }
 
   function updateUser() {
     const userData = {
       user: props.auth.user,
-    };
-    props.updateUser(userData);
+    }
+    props.updateUser(userData)
   }
 
   const setProfilePic = (e, imgID, url) => {
     if (canSetProfile === true) {
-      setCanSetProfile(false);
+      setCanSetProfile(false)
       axios
         .post("/tinder/users/imgs/setprofile", {
           id: user.id,
@@ -192,15 +191,15 @@ function Profile(props) {
         })
         .then(() => {
           setTimeout(function () {
-            fetchImgs();
-          }, 500);
+            fetchImgs()
+          }, 500)
           setTimeout(function () {
-            updateUser();
-            setCanSetProfile(true);
-          }, 1000);
-        });
+            updateUser()
+            setCanSetProfile(true)
+          }, 1000)
+        })
     }
-  };
+  }
 
   const handleDelete = (e, imgID) => {
     axios
@@ -210,28 +209,31 @@ function Profile(props) {
       })
       .then(
         setTimeout(function () {
-          fetchImgs();
+          fetchImgs()
         }, 250)
-      );
-  };
+      )
+  }
 
   useEffect(() => {
-    setUser(props.auth.user);
-    setGender(props.auth.user.gender);
-    setOrientation(props.auth.user.orientation);
-    setName(props.auth.user.name);
-    setBirthDate(new Date(props.auth.user.birthDate));
-    setDescription(props.auth.user.description);
-    fetchImgs();
-    if (props.errors) setErrors(props.errors);
-  }, [props, fetchImgs]);
+    setUser(props.auth.user)
+    setGender(props.auth.user.gender)
+    setOrientation(props.auth.user.orientation)
+    setName(props.auth.user.name)
+    setBirthDate(new Date(props.auth.user.birthDate))
+    setDescription(props.auth.user.description)
+    fetchImgs()
+    if (props.errors) setErrors(props.errors)
+  }, [props, fetchImgs])
 
   return (
     <div>
       <div className="cardContainer">
         <div className="swipe">
           <div
-            className={classnames("card profile", optionsOpen ? "hiddenIn" : "")}
+            className={classnames(
+              "card profile",
+              optionsOpen ? "hiddenIn" : ""
+            )}
           >
             <Slider {...sliderSettings}>
               {userImages.map((item, index) =>
@@ -257,7 +259,11 @@ function Profile(props) {
                 {user.name}
                 <span className="age">
                   &nbsp;
-                  {Math.abs(new Date(Date.now() - new Date(user.birthDate).getTime()).getUTCFullYear() - 1970)}
+                  {Math.abs(
+                    new Date(
+                      Date.now() - new Date(user.birthDate).getTime()
+                    ).getUTCFullYear() - 1970
+                  )}
                 </span>
               </h3>
               <div className="desc">{user.description}</div>
@@ -277,9 +283,6 @@ function Profile(props) {
                   onClick={(e) => saveButtonHandler(e)}
                 >
                   <div className="flex-center">
-                    {/* <span className="flex-center close">
-                      <ClearIcon />
-                    </span> */}
                     <span>Save</span>
                   </div>
                 </button>
@@ -290,7 +293,7 @@ function Profile(props) {
                 title="Current profile image"
                 className="imgItem"
                 style={{ backgroundImage: `url(${userImagesOptions[0]})` }}
-              ></div>
+               />
               {userImagesOptions
                 ? userImagesOptions.map((item, index) =>
                     index !== 0 ? (
@@ -332,7 +335,7 @@ function Profile(props) {
                 style={{ display: "none" }}
                 id="addImg"
                 onChange={handleImageAsFile}
-              ></input>
+              />
             </div>
             <div className="settingsWrapper">
               {/* First name */}
@@ -345,7 +348,7 @@ function Profile(props) {
                   placeholder="First name"
                   onChange={(e) => setName(e.target.value)}
                   value={name}
-                ></input>
+                />
               </div>
               {/* Description */}
               <div className="descriptionWrapper">
@@ -436,7 +439,7 @@ function Profile(props) {
                   </span>
                 </button>
                 <Calendar
-                  defaultValue={birthDate !== "" ? birthDate : new Date()}
+                  defaultValue={birthDate}
                   inputRef={clickRef}
                   onClickDay={() => birthDateClicked(null)}
                   className={classnames(calendarVisible ? "" : "hidden")}
@@ -468,15 +471,15 @@ function Profile(props) {
         </button>
       </div>
     </div>
-  );
+  )
 }
 
 Profile.propTypes = {
   auth: PropTypes.object.isRequired,
-};
+}
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-});
+})
 
-export default connect(mapStateToProps, { updateUser })(Profile);
+export default connect(mapStateToProps, { updateUser })(Profile)

@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from "react";
-import "./Chat.css";
+import React, { useState, useEffect } from "react"
+import "./Chat.css"
 
-import axios from "../../axios";
-import { socket } from "../../socket";
-import Scrollbar from "../../Scrollbar";
-import { getMatchString } from "../../variables";
-import { animateScroll } from "react-scroll";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import axios from "../../axios"
+import { socket } from "../../socket"
+import Scrollbar from "../../Scrollbar"
+import { getMatchString } from "../../variables"
+import { animateScroll } from "react-scroll"
+import { connect } from "react-redux"
+import { withRouter } from "react-router-dom"
 
 //CHAT COMPONENTS
 
-import { dateDiffInMinutes } from "../../variables";
+import { dateDiffInMinutes } from "../../variables"
 
-import Message from "./Message";
-import NoMessages from "./NoMessages";
-import MessageInput from "./MessageInput";
-import DateLine from "./DateLine";
-import ChatHeader from "./ChatHeader";
+import Message from "./Message"
+import NoMessages from "./NoMessages"
+import MessageInput from "./MessageInput"
+import DateLine from "./DateLine"
+import ChatHeader from "./ChatHeader"
 
 function Chat(props) {
-  const [messages, setMessages] = useState([]);
-  const [onlineUsers, setOnlineUsers] = useState([]);
-  const [matchDate, setMatchDate] = useState("");
+  const [messages, setMessages] = useState([])
+  const [onlineUsers, setOnlineUsers] = useState([])
+  const [matchDate, setMatchDate] = useState("")
 
-  const [loading, setLoading] = useState(true);
-  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [loading, setLoading] = useState(true)
+  const [loadingProfile, setLoadingProfile] = useState(true)
 
-  const [matchString, setMatchString] = useState("");
+  const [matchString, setMatchString] = useState("")
 
-  const [chatUser, setChatUser] = useState({});
+  const [chatUser, setChatUser] = useState({})
 
   const scrollToBottom = () => {
     animateScroll.scrollToBottom({
@@ -37,21 +37,21 @@ function Chat(props) {
       duration: 0,
       delay: 0,
       smooth: false,
-    });
-  };
+    })
+  }
 
   useEffect(() => {
-    setOnlineUsers(props.onlineUsers);
-  }, [props.onlineUsers]);
+    setOnlineUsers(props.onlineUsers)
+  }, [props.onlineUsers])
 
   useEffect(() => {
     async function fetchMessages() {
       if (matchString !== "") {
-        setLoading(true);
+        setLoading(true)
         const req = await axios.get("/tinder/messages/get", {
           params: { matchString },
-        });
-        setLoading(false);
+        })
+        setLoading(false)
         setMessages(
           req.data.map(({ _id, body, from, timeSent }) => ({
             _id,
@@ -59,74 +59,74 @@ function Chat(props) {
             origin: from,
             timeSent,
           }))
-        );
-        scrollToBottom();
+        )
+        scrollToBottom()
       }
     }
 
-    fetchMessages();
+    fetchMessages()
 
     return () => {
-      if (matchString !== "") socket.emit("leave", matchString);
-    };
-  }, [matchString]);
+      if (matchString !== "") socket.emit("leave", matchString)
+    }
+  }, [matchString])
 
   useEffect(() => {
     async function getProfile() {
-      setLoadingProfile(true);
+      setLoadingProfile(true)
       const req = await axios.get("/tinder/users/profile/get", {
         params: { _id: props.id },
-      });
-      setLoadingProfile(false);
-      setChatUser(req.data);
+      })
+      setLoadingProfile(false)
+      setChatUser(req.data)
     }
 
     const getMatchDate = (matches) => {
       matches.map((match) => {
-        if (match.id === props.id) setMatchDate(match.date);
-        return match;
-      });
-    };
-  
+        if (match.id === props.id) setMatchDate(match.date)
+        return match
+      })
+    }
+
     async function getMatches() {
       const req = await axios.get("/tinder/users/matches", {
         params: { user: props.auth.user.id },
-      });
-      getMatchDate(req.data);
+      })
+      getMatchDate(req.data)
     }
 
-    setLoading(true);
+    setLoading(true)
     if (props.id) {
       getMatchString(props.auth.user.id, props.id).then((data) => {
-        setMatchString(data);
-        socket.emit("join", data);
+        setMatchString(data)
+        socket.emit("join", data)
         setTimeout(function () {
-          props.notSeen();
-        }, 250);
-      });
+          props.notSeen()
+        }, 250)
+      })
     } else {
-      setMatchString("");
+      setMatchString("")
     }
 
-    getProfile();
-    getMatches();
-  }, [props.id, props.auth.user.id]); // eslint-disable-line react-hooks/exhaustive-deps
+    getProfile()
+    getMatches()
+  }, [props.id, props.auth.user.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const msgHandler = (msg) => {
       if (messages.length === 0) {
         setTimeout(function () {
-          props.forceActiveChatsRender();
-        }, 250);
+          props.forceActiveChatsRender()
+        }, 250)
       }
-      setMessages([...messages, msg]);
-      scrollToBottom();
-    };
+      setMessages([...messages, msg])
+      scrollToBottom()
+    }
 
-    socket.on("receiveMsg", msgHandler);
+    socket.on("receiveMsg", msgHandler)
 
-    return () => socket.off("receiveMsg");
-  }, [messages, props]);
+    return () => socket.off("receiveMsg")
+  }, [messages, props])
 
   const handleSendMessage = (message) => {
     if (message !== "") {
@@ -136,14 +136,14 @@ function Chat(props) {
         matchString,
         message: message,
         origin: props.auth.user.id,
-      });
+      })
     }
-  };
+  }
 
   const timeDifferenceBetweenMessages = (a, b) => {
-    const minutesDiff = dateDiffInMinutes(a, b);
-    return minutesDiff;
-  };
+    const minutesDiff = dateDiffInMinutes(a, b)
+    return minutesDiff
+  }
 
   return (
     <div className="chatWrapper">
@@ -203,13 +203,16 @@ function Chat(props) {
         </Scrollbar>
       )}
 
-      <MessageInput handleSendMessage={handleSendMessage} chessGameInvite={() => props.history.push(`/app/chess/${chatUser._id}`)} />
+      <MessageInput
+        handleSendMessage={handleSendMessage}
+        chessGameInvite={() => props.history.push(`/app/chess/${chatUser._id}`)}
+      />
     </div>
-  );
+  )
 }
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-});
+})
 
-export default connect(mapStateToProps)(withRouter(Chat));
+export default connect(mapStateToProps)(withRouter(Chat))

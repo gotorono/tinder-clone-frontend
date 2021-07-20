@@ -1901,10 +1901,10 @@ function Board(props) {
             () => setLiveBoard()
           )}
         </div>
-        <div className="chessActions">
+        {/* <div className="chessActions">
           <button>Resign</button>
           <button>Offer a draw</button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
